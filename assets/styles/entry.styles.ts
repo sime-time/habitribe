@@ -29,6 +29,8 @@ export const createEntryStyles = (colors: ColorScheme) => {
       flexDirection: "row",
       justifyContent: "space-between",
       marginBottom: spacing.md,
+      borderWidth: border.width,
+      borderColor: colors.border,
     },
     cardTextContainer: {
       gap: spacing.xs2,
@@ -36,7 +38,7 @@ export const createEntryStyles = (colors: ColorScheme) => {
     cardStart: {
       flexGrow: 1,
       flexDirection: "row",
-      gap: spacing.xs,
+      gap: spacing.sm,
     },
     cardEnd: {},
     cardIconContainer: {

@@ -21,16 +21,16 @@ export const createHabitStyles = (colors: ColorScheme) => {
       marginLeft: spacing.xs,
     },
     inputGroup: {
+      flex: 1,
       paddingHorizontal: spacing.md,
       backgroundColor: colors.card,
       borderRadius: border.radiusMedium,
-      flex: 1,
-      ...shadows.md,
+      borderWidth: border.width,
+      borderColor: colors.border,
     },
     inputDivider: {
       height: 1,
-      opacity: 0.3,
-      backgroundColor: colors.mutedForeground,
+      backgroundColor: colors.border,
     },
     inputContainer: {
       flex: 1,

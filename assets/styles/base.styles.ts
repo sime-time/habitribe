@@ -67,10 +67,7 @@ export const createBaseStyles = (colors: ColorScheme) => {
       color: colors.primaryForeground,
     },
     buttonContainer: {
-      flex: 1,
-      gap: spacing.md,
-      justifyContent: "flex-start",
-      alignItems: "center",
+      gap: spacing.xs,
     },
   });
 

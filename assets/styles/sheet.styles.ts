@@ -36,7 +36,7 @@ export const createSheetStyles = (colors: ColorScheme) => {
       borderTopRightRadius: border.radiusXL,
     },
     sheetTitle: {
-      ...typography.subheading,
+      ...typography.title,
       fontWeight: "600",
       color: colors.foreground,
       textAlign: "center",

@@ -22,22 +22,21 @@ export const text = {
   base: rem(1),
   lg: rem(1.125),
   xl: rem(1.25),
-  xl2: rem(1.5),
-  xl3: rem(1.875),
-  xl4: rem(2.25),
-  xl5: rem(3),
+  xl2: rem(1.6),
+  xl3: rem(1.75),
+  xl4: rem(1.875),
 } as const;
 
 export const typography = {
   title: {
     fontFamily: "Archivo",
-    fontSize: text.xl3,
+    fontSize: text.xl2,
     fontWeight: "700" as "700",
-    letterSpacing: -1,
+    letterSpacing: -0.5,
   },
   subtitle: {
     fontFamily: "Inter",
-    fontSize: text.xl2,
+    fontSize: text.xl,
     fontWeight: "500" as "500",
   },
   body: {
@@ -52,7 +51,7 @@ export const typography = {
 };
 
 export const border = {
-  width: 2,
+  width: 1.5,
   radiusSmall: 8,
   radiusMedium: 12,
   radiusLarge: 16,

@@ -63,7 +63,7 @@ export const createIconStyles = (colors: ColorScheme) => {
     // Tab navigation
     tabContainer: {
       flexDirection: "row",
-      backgroundColor: colors.secondary,
+      backgroundColor: colors.border,
       borderRadius: border.radiusMedium,
       padding: 4,
       marginBottom: spacing.lg,
@@ -76,7 +76,7 @@ export const createIconStyles = (colors: ColorScheme) => {
       justifyContent: "center",
     },
     activeTab: {
-      backgroundColor: colors.mutedForeground,
+      backgroundColor: colors.primary,
     },
     tabText: {
       fontSize: text.sm,

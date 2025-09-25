@@ -1,10 +1,12 @@
 import { useAuthActions } from "@convex-dev/auth/react";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { ConvexError } from "convex/values";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import {
   ActivityIndicator,
   Button,
+  ScrollView,
   StatusBar,
   Text,
   TextInput,
@@ -93,39 +95,70 @@ export default function SignIn() {
       <StatusBar barStyle={colors.statusBarStyle} />
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <Text style={styles.title}>Welcome! Let's get started.</Text>
+          <Text style={styles.title}>Welcome to Habitribe!</Text>
+          <Text style={styles.subtitle}>
+            Sign in or create an account to continue
+          </Text>
         </View>
 
         <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor={colors.mutedForeground}
-            onChangeText={setEmail}
-            value={email}
-            inputMode="email"
-            autoCapitalize="none"
-          />
-
-          <TouchableOpacity onPress={handleSignIn} disabled={loading}>
-            <LinearGradient
-              colors={
-                loading ? colors.gradients.muted : colors.gradients.primary
-              }
-              style={styles.button}
+          {/* OAUTH PROVIDERS */}
+          <View style={styles.authContainer}>
+            <TouchableOpacity
+              disabled={loading}
+              style={[styles.button, styles.appleButton]}
             >
-              {loading ? (
-                <ActivityIndicator
-                  size="small"
-                  color={colors.mutedForeground}
-                />
-              ) : (
-                <Text style={styles.buttonText}>
-                  {step === "signIn" ? "Sign in" : "Sign up"}
-                </Text>
-              )}
-            </LinearGradient>
-          </TouchableOpacity>
+              <AntDesign name="apple" size={24} color={colors.background} />
+              <Text style={[styles.buttonText, { color: colors.background }]}>
+                Continue with Apple
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              disabled={loading}
+              style={[styles.button, styles.googleButton]}
+            >
+              <AntDesign name="google" size={24} color={colors.foreground} />
+              <Text style={[styles.buttonText, { color: colors.foreground }]}>
+                Continue with Google
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.dividerContainer}>
+            <View style={styles.divider} />
+            <Text style={styles.muted}>or</Text>
+            <View style={styles.divider} />
+          </View>
+
+          {/* EMAIL OTP */}
+          <View style={styles.authContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor={colors.mutedForeground}
+              onChangeText={setEmail}
+              value={email}
+              inputMode="email"
+              autoCapitalize="none"
+            />
+
+            <TouchableOpacity onPress={handleSignIn} disabled={loading}>
+              <LinearGradient
+                colors={colors.gradients.primary}
+                style={styles.button}
+              >
+                {loading ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={colors.mutedForeground}
+                  />
+                ) : (
+                  <Text style={styles.buttonText}>Continue with Email</Text>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -140,35 +173,39 @@ export default function SignIn() {
           <Text style={styles.title}>Verify your Email</Text>
           <Text style={styles.subtitle}>We have sent a code to {email}</Text>
         </View>
+
         <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Code"
-            placeholderTextColor={colors.mutedForeground}
-            onChangeText={setCode}
-            value={code}
-          />
-          <TouchableOpacity onPress={handleVerifyCode} disabled={loading}>
-            <LinearGradient
-              colors={colors.gradients.primary}
-              style={styles.button}
-            >
-              {loading ? (
-                <ActivityIndicator
-                  size="large"
-                  color={colors.mutedForeground}
-                />
-              ) : (
-                <Text style={styles.buttonText}>Submit</Text>
-              )}
-            </LinearGradient>
-          </TouchableOpacity>
-          <Button
-            title="Cancel"
-            color={colors.secondaryForeground}
-            onPress={() => setStep("signIn")}
-            disabled={loading}
-          />
+          {/* VERIFY OTP */}
+          <View style={styles.authContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Code"
+              placeholderTextColor={colors.mutedForeground}
+              onChangeText={setCode}
+              value={code}
+            />
+            <TouchableOpacity onPress={handleVerifyCode} disabled={loading}>
+              <LinearGradient
+                colors={colors.gradients.primary}
+                style={styles.button}
+              >
+                {loading ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={colors.mutedForeground}
+                  />
+                ) : (
+                  <Text style={styles.buttonText}>Submit</Text>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
+            <Button
+              title="Cancel"
+              color={colors.mutedForeground}
+              onPress={() => setStep("signIn")}
+              disabled={loading}
+            />
+          </View>
         </View>
       </SafeAreaView>
     </LinearGradient>

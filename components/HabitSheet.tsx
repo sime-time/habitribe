@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useMutation } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -108,11 +109,13 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
             style={[styles.bottomSheet, { transform: [{ translateY: slide }] }]}
           >
             <View style={styles.sheetHeading}>
-              <Button
-                title="Delete"
-                color={colors.destructive}
-                onPress={confirmDelete}
-              />
+              <TouchableOpacity onPress={confirmDelete}>
+                <Ionicons
+                  name="trash-outline"
+                  color={colors.destructive}
+                  size={26}
+                />
+              </TouchableOpacity>
               <Button
                 title="Edit"
                 color={colors.primary}
@@ -134,7 +137,7 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
                   colors={colors.gradients.primary}
                   style={styles.button}
                 >
-                  <Text style={styles.body}>Complete</Text>
+                  <Text style={styles.buttonText}>Complete</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>

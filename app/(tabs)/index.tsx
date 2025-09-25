@@ -80,13 +80,13 @@ export default function Index() {
             <Link href="/habit/form" asChild>
               <Pressable>
                 <LinearGradient
-                  colors={colors.gradients.muted}
+                  colors={colors.gradients.primary}
                   style={styles.addIconContainer}
                 >
                   <Ionicons
                     name="add"
                     size={spacing.lg}
-                    color={colors.primary}
+                    color={colors.primaryForeground}
                   />
                 </LinearGradient>
               </Pressable>

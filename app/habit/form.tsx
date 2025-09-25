@@ -174,15 +174,18 @@ export default function HabitForm() {
         <ScrollView style={styles.scrollView}>
           <View style={styles.form}>
             <View style={styles.container}>
-              <Text style={styles.inputLabel}>NAME</Text>
+              <Text style={styles.inputLabel}>DETAILS</Text>
               <View style={styles.inputGroup}>
-                <TextInput
-                  value={name}
-                  style={[styles.inputContainer, styles.body]}
-                  placeholder="E.g., Exercise"
-                  placeholderTextColor={colors.mutedForeground}
-                  onChangeText={(text) => updateForm("name", text)}
-                />
+                <View style={styles.inputContainer}>
+                  <Text style={styles.body}>Name</Text>
+                  <TextInput
+                    value={name}
+                    style={[styles.body]}
+                    placeholder="E.g., Exercise"
+                    placeholderTextColor={colors.mutedForeground}
+                    onChangeText={(text) => updateForm("name", text)}
+                  />
+                </View>
                 <View style={styles.inputDivider} />
                 <Link href="/habit/icon" asChild>
                   <TouchableOpacity style={styles.inputContainer}>
@@ -224,13 +227,18 @@ export default function HabitForm() {
                 {/* REMINDERS */}
                 <View style={styles.inputContainer}>
                   <Text style={styles.body}>Reminders</Text>
-                  <Switch
-                    value={remindersEnabled}
-                    onChange={() => toggleReminders()}
-                    thumbColor={colors.primaryForeground}
-                    trackColor={{ false: colors.border, true: colors.primary }}
-                    ios_backgroundColor={colors.border}
-                  />
+                  <View>
+                    <Switch
+                      value={remindersEnabled}
+                      onChange={() => toggleReminders()}
+                      thumbColor={colors.primaryForeground}
+                      trackColor={{
+                        false: colors.border,
+                        true: colors.primary,
+                      }}
+                      ios_backgroundColor={colors.border}
+                    />
+                  </View>
                 </View>
 
                 {remindersEnabled && (
@@ -292,7 +300,7 @@ export default function HabitForm() {
               <View style={styles.inputGroup}>
                 <Link href="/habit/target" asChild>
                   <TouchableOpacity style={styles.inputContainer}>
-                    <Text style={styles.body}>Target</Text>
+                    <Text style={styles.body}>Proof</Text>
                     <View style={styles.inputIcon}>
                       <Text style={styles.muted}>
                         {getGoalDisplayText(goalTarget, goalUnit)}
@@ -313,7 +321,7 @@ export default function HabitForm() {
                 colors={colors.gradients.primary}
                 style={styles.button}
               >
-                <Text style={styles.body}>
+                <Text style={styles.buttonText}>
                   {isEditMode ? "Update Habit" : "Add Habit"}
                 </Text>
               </LinearGradient>

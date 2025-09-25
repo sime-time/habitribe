@@ -152,24 +152,26 @@ export default function HabitIcon() {
           </View>
 
           {/* Icon Grid */}
-          {activeTab === "Icons" && (
-            <FlashList
-              data={filteredIcons}
-              renderItem={renderIcon}
-              numColumns={6}
-              keyExtractor={(item) => item.name}
-            />
-          )}
+          <View>
+            {activeTab === "Icons" && (
+              <FlashList
+                data={filteredIcons}
+                renderItem={renderIcon}
+                numColumns={6}
+                keyExtractor={(item) => item.name}
+              />
+            )}
 
-          {/* Emoji Grid */}
-          {activeTab === "Emojis" && (
-            <FlashList
-              data={filteredEmojis}
-              renderItem={renderEmoji}
-              numColumns={6}
-              keyExtractor={(item) => item.emoji}
-            />
-          )}
+            {/* Emoji Grid */}
+            {activeTab === "Emojis" && (
+              <FlashList
+                data={filteredEmojis}
+                renderItem={renderEmoji}
+                numColumns={6}
+                keyExtractor={(item) => item.emoji}
+              />
+            )}
+          </View>
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>

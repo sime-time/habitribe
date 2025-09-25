@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { Cog, ScrollText } from "lucide-react-native";
 import { border } from "@/assets/styles/token.styles";
 import HabitSheet from "@/components/HabitSheet";
 import useTheme from "@/hooks/useTheme";
@@ -34,7 +35,7 @@ export default function TabsLayout() {
           options={{
             title: "Home",
             tabBarIcon: ({ color, size }) => (
-              <Feather name="home" size={size} color={color} />
+              <ScrollText size={size} color={color} />
             ),
           }}
         />
@@ -57,9 +58,7 @@ export default function TabsLayout() {
           name="settings"
           options={{
             title: "Settings",
-            tabBarIcon: ({ color, size }) => (
-              <Feather name="settings" size={size} color={color} />
-            ),
+            tabBarIcon: ({ color, size }) => <Cog size={size} color={color} />,
           }}
         />
       </Tabs>
