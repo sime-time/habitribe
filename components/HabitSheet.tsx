@@ -2,16 +2,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import {
   Alert,
-  Animated,
   Button,
   Pressable,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
 import { createSheetStyles } from "@/assets/styles/sheet.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
@@ -31,37 +31,17 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
 
   const deleteHabit = useMutation(api.exec.delete.deleteHabit);
 
-  const slide = useRef(new Animated.Value(300)).current;
-  const backdrop = useRef(new Animated.Value(0)).current;
-  const duration = 200;
+  const slide = useSharedValue(300);
+  const backdrop = useSharedValue(0);
+  const duration = 250;
 
   const slideUp = () => {
-    Animated.parallel([
-      Animated.timing(slide, {
-        toValue: 0,
-        duration,
-        useNativeDriver: true,
-      }),
-      Animated.timing(backdrop, {
-        toValue: 1,
-        duration,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    slide.value = withSpring(0, { duration });
+    backdrop.value = withSpring(1, { duration });
   };
   const slideDown = () => {
-    Animated.parallel([
-      Animated.timing(slide, {
-        toValue: 300,
-        duration,
-        useNativeDriver: true,
-      }),
-      Animated.timing(backdrop, {
-        toValue: 0,
-        duration,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    slide.value = withSpring(300, { duration });
+    backdrop.value = withSpring(0, { duration });
   };
 
   useEffect(() => {
