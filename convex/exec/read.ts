@@ -87,7 +87,8 @@ export const getHabitReminders = query({
           q.eq(q.field("userId"), args.userId),
         ),
       )
-      .order("desc");
+      .order("desc")
+      .collect();
     return reminders;
   },
 });
@@ -100,7 +101,15 @@ export const getUserReminders = query({
     const reminders = ctx.db
       .query("reminders")
       .filter((q) => q.and(q.eq(q.field("userId"), args.userId)))
-      .order("desc");
+      .order("desc")
+      .collect();
     return reminders;
+  },
+});
+
+export const getProofTypes = query({
+  handler: async (ctx) => {
+    const proofTypes = ctx.db.query("proofTypes").collect();
+    return proofTypes;
   },
 });

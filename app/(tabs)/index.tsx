@@ -69,7 +69,7 @@ export default function Index() {
       colors={colors.gradients.background}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.scrollView}>
           {/* HEADER */}
           <View style={styles.header}>

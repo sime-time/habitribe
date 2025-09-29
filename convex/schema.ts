@@ -12,6 +12,7 @@ export default defineSchema({
     description: v.optional(v.string()),
     icon: v.optional(v.string()),
     color: v.optional(v.string()),
+    proofTypeId: v.id("proofTypes"),
     goalTarget: v.number(),
     goalUnit: v.string(), // e.g., time (in seconds)
     startDate: v.string(), // "YYYY-MM-DD" format
@@ -41,5 +42,11 @@ export default defineSchema({
     habitId: v.id("habits"),
     userId: v.id("users"),
     time: v.string(), // "HH:mm" format (24-hour)
+  }),
+
+  proofTypes: defineTable({
+    name: v.string(),
+    order: v.number(),
+    description: v.string(),
   }),
 });

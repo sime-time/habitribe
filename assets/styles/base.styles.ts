@@ -8,9 +8,6 @@ export const createBaseStyles = (colors: ColorScheme) => {
     container: {
       flex: 1,
     },
-    safeArea: {
-      flex: 1,
-    },
     scrollView: {
       flex: 1,
       padding: spacing.lg,

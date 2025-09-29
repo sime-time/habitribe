@@ -1,9 +1,10 @@
+import type { Doc, Id } from "@/convex/_generated/dataModel";
+
 export enum Period {
   Daily = "daily",
   Weekly = "weekly",
   Monthly = "monthly",
 }
-
 export function getFrequencyText(
   period: Period,
   interval: number | number[],
@@ -72,4 +73,15 @@ export function getGoalDisplayText(goalTarget: number, goalUnit: string) {
       // Custom unit
       return `${goalTarget} ${goalUnit}`;
   }
+}
+
+type ProofType = Doc<"proofTypes">;
+export function getProofTypeName(
+  id: string,
+  proofTypes: ProofType[] | undefined,
+) {
+  if (!proofTypes) return "Select type";
+  const proofTypeId = id as Id<"proofTypes">;
+  const proofType = proofTypes.find((pt) => pt._id === proofTypeId);
+  return proofType?.name || "Select type";
 }

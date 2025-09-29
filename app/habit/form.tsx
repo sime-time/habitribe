@@ -29,6 +29,7 @@ import { useHabitFormStore } from "@/stores/habitFormStore";
 import {
   getFrequencyText,
   getGoalDisplayText,
+  getProofTypeName,
   type Period,
 } from "@/utils/habitFormLabels";
 import { type HabitFormData, HabitSchema } from "@/validation/HabitSchema";
@@ -46,15 +47,16 @@ export default function HabitForm() {
   const isEditMode = id !== undefined;
 
   // Habit state
+  const habitForm = useHabitFormStore((state) => state.habitForm);
   const name = useHabitFormStore((state) => state.habitForm.name);
   const icon = useHabitFormStore((state) => state.habitForm.icon);
   const color = useHabitFormStore((state) => state.habitForm.color);
-  const reminders = useHabitFormStore((state) => state.reminders);
-  const remindersEnabled = useHabitFormStore((state) => state.remindersEnabled);
   const schedule = useHabitFormStore((state) => state.habitForm.schedule);
+  const proofTypeId = useHabitFormStore((state) => state.habitForm.proofTypeId);
   const goalTarget = useHabitFormStore((state) => state.habitForm.goalTarget);
   const goalUnit = useHabitFormStore((state) => state.habitForm.goalUnit);
-  const habitForm = useHabitFormStore((state) => state.habitForm);
+  const reminders = useHabitFormStore((state) => state.reminders);
+  const remindersEnabled = useHabitFormStore((state) => state.remindersEnabled);
 
   // in "edit" mode the initial form becomes populated
   // with the current data of the habit being updated
@@ -71,27 +73,29 @@ export default function HabitForm() {
   const updateHabit = useMutation(api.exec.update.editHabit);
 
   // in "create" mode this query will be undefined (skipped)
-  const getHabit = useQuery(
+  const currentHabit = useQuery(
     api.exec.read.getHabit,
     isEditMode ? { habitId: id as HabitId } : "skip",
   );
+  const proofTypes = useQuery(api.exec.read.getProofTypes);
 
   // set the initialForm to be the current habit data
   // so when a user resets the form, it returns to the original habit data
   useEffect(() => {
     let initialForm: HabitFormData;
-    if (isEditMode && getHabit) {
+    if (isEditMode && currentHabit) {
       console.log("EDIT MODE");
       initialForm = {
-        name: getHabit.name,
-        color: getHabit.color,
-        icon: getHabit.icon,
-        goalTarget: getHabit.goalTarget,
-        goalUnit: getHabit.goalUnit,
-        startDate: getHabit.startDate,
+        name: currentHabit.name,
+        color: currentHabit.color,
+        icon: currentHabit.icon,
+        proofTypeId: currentHabit.proofTypeId,
+        goalTarget: currentHabit.goalTarget,
+        goalUnit: currentHabit.goalUnit,
+        startDate: currentHabit.startDate,
         schedule: {
-          period: getHabit.schedule.period as Period,
-          interval: getHabit.schedule.interval,
+          period: currentHabit.schedule.period as Period,
+          interval: currentHabit.schedule.interval,
         },
       };
     } else {
@@ -100,6 +104,7 @@ export default function HabitForm() {
         name: "",
         color: iconColors[0],
         icon: "barbell",
+        proofTypeId: "",
         goalTarget: 1,
         goalUnit: "count",
         startDate: new Date().toISOString().split("T")[0], // "YYYY-MM-DD" format
@@ -111,11 +116,14 @@ export default function HabitForm() {
     }
     setInitialForm(initialForm);
     resetForm();
-  }, [isEditMode, getHabit, setInitialForm, resetForm]);
+  }, [isEditMode, currentHabit, setInitialForm, resetForm]);
 
   const createSubmit = async () => {
     const validHabitForm = HabitSchema.parse(habitForm);
-    const habitId = await createHabit(validHabitForm);
+    const habitId = await createHabit({
+      ...validHabitForm,
+      proofTypeId: validHabitForm.proofTypeId as Id<"proofTypes">,
+    });
 
     if (remindersEnabled) {
       for (const reminder of reminders) {
@@ -132,7 +140,12 @@ export default function HabitForm() {
   const updateSubmit = async (id: string) => {
     const habitId = id as HabitId;
     const validHabitForm = HabitSchema.parse(habitForm);
-    await updateHabit({ id: habitId, ...validHabitForm });
+    console.log("validHabit", validHabitForm);
+    await updateHabit({
+      id: habitId,
+      ...validHabitForm,
+      proofTypeId: validHabitForm.proofTypeId as Id<"proofTypes">,
+    });
 
     if (remindersEnabled) {
       for (const reminder of reminders) {
@@ -161,6 +174,8 @@ export default function HabitForm() {
         Toast.show({ type: "error", text1: err.issues[0].message });
       } else if (err instanceof ConvexError) {
         Toast.show({ type: "error", text1: err.data });
+      } else if (err instanceof Error) {
+        Toast.show({ type: "error", text1: err.message });
       }
     }
   };
@@ -170,7 +185,7 @@ export default function HabitForm() {
       colors={colors.gradients.background}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <View style={styles.form}>
             <View style={styles.container}>
@@ -296,11 +311,31 @@ export default function HabitForm() {
             </View>
 
             <View style={styles.container}>
-              <Text style={styles.inputLabel}>DAILY GOAL</Text>
+              <Text style={styles.inputLabel}>
+                {schedule.period.toUpperCase()} GOAL
+              </Text>
               <View style={styles.inputGroup}>
+                <Link href="/habit/proof" asChild>
+                  <TouchableOpacity style={styles.inputContainer}>
+                    <Text style={styles.body}>Evidence</Text>
+                    <View style={styles.inputIcon}>
+                      <Text style={styles.muted}>
+                        {getProofTypeName(proofTypeId, proofTypes)}
+                      </Text>
+                      <Ionicons
+                        name="chevron-forward"
+                        size={text.base}
+                        color={colors.mutedForeground}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </Link>
+
+                <View style={styles.inputDivider} />
+
                 <Link href="/habit/target" asChild>
                   <TouchableOpacity style={styles.inputContainer}>
-                    <Text style={styles.body}>Proof</Text>
+                    <Text style={styles.body}>Target</Text>
                     <View style={styles.inputIcon}>
                       <Text style={styles.muted}>
                         {getGoalDisplayText(goalTarget, goalUnit)}

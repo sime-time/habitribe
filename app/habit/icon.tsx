@@ -98,7 +98,7 @@ export default function HabitIcon() {
       colors={colors.gradients.background}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>

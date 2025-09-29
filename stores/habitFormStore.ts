@@ -47,6 +47,7 @@ const initialForm: HabitFormData = {
   name: "",
   color: iconColors[0],
   icon: "barbell",
+  proofTypeId: "",
   goalTarget: 1,
   goalUnit: "count",
   startDate: new Date().toISOString().split("T")[0], // "YYYY-MM-DD" format

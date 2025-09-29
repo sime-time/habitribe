@@ -66,7 +66,7 @@ export default function HabitFrequency() {
       colors={colors.gradients.background}
       style={styles.container}
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <View style={styles.form}>
             <View style={styles.container}>
