@@ -191,43 +191,26 @@ export default function HabitForm() {
             <View style={styles.container}>
               <Text style={styles.inputLabel}>DETAILS</Text>
               <View style={styles.inputGroup}>
+                {/* NAME */}
                 <View style={styles.inputContainer}>
                   <Text style={styles.body}>Name</Text>
                   <TextInput
                     value={name}
-                    style={[styles.body]}
+                    style={[styles.body, { flex: 1, textAlign: "right" }]}
                     placeholder="E.g., Exercise"
                     placeholderTextColor={colors.mutedForeground}
                     onChangeText={(text) => updateForm("name", text)}
                   />
                 </View>
+
                 <View style={styles.inputDivider} />
+
+                {/* ICON */}
                 <Link href="/habit/icon" asChild>
                   <TouchableOpacity style={styles.inputContainer}>
                     <Text style={styles.body}>Icon</Text>
                     <View style={styles.inputIcon}>
                       <IconOrEmoji iconName={icon} iconColor={color} />
-                      <Ionicons
-                        name="chevron-forward"
-                        size={text.base}
-                        color={colors.mutedForeground}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </Link>
-              </View>
-            </View>
-
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>RECURRING</Text>
-              <View style={styles.inputGroup}>
-                <Link href="/habit/frequency" asChild>
-                  <TouchableOpacity style={styles.inputContainer}>
-                    <Text style={styles.body}>Frequency</Text>
-                    <View style={styles.inputIcon}>
-                      <Text style={styles.muted}>
-                        {getFrequencyText(schedule.period, schedule.interval)}
-                      </Text>
                       <Ionicons
                         name="chevron-forward"
                         size={text.base}
@@ -310,44 +293,22 @@ export default function HabitForm() {
               </View>
             </View>
 
+            {/* COMMIT STATEMENT */}
             <View style={styles.container}>
-              <Text style={styles.inputLabel}>
-                {schedule.period.toUpperCase()} GOAL
-              </Text>
+              <Text style={styles.inputLabel}>COMMITMENT</Text>
               <View style={styles.inputGroup}>
-                <Link href="/habit/proof" asChild>
-                  <TouchableOpacity style={styles.inputContainer}>
-                    <Text style={styles.body}>Proof</Text>
-                    <View style={styles.inputIcon}>
-                      <Text style={styles.muted}>
-                        {getProofTypeName(proofTypeId, proofTypes)}
-                      </Text>
-                      <Ionicons
-                        name="chevron-forward"
-                        size={text.base}
-                        color={colors.mutedForeground}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </Link>
-
-                <View style={styles.inputDivider} />
-
-                <Link href="/habit/description" asChild>
-                  <TouchableOpacity style={styles.inputContainer}>
-                    <Text style={styles.body}>Description</Text>
-                    <View style={styles.inputIcon}>
-                      <Ionicons
-                        name="chevron-forward"
-                        size={text.base}
-                        color={colors.mutedForeground}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </Link>
+                <View style={styles.inputContainer}>
+                  <Text style={styles.body}>
+                    {"I will "}
+                    <Text style={styles.primaryText}>submit a photo</Text>
+                    {" of "}
+                    <Text style={styles.primaryText}>the gym</Text>
+                    {", every "}
+                    <Text style={styles.primaryText}>day</Text>
+                  </Text>
+                </View>
               </View>
             </View>
-
             <TouchableOpacity onPress={handleSubmit}>
               <LinearGradient
                 colors={colors.gradients.primary}

@@ -3,7 +3,7 @@ import type { ColorScheme } from "@/constants/colors";
 import { createBaseStyles } from "./base.styles";
 import { border, spacing } from "./token.styles";
 
-export const createEntryStyles = (colors: ColorScheme) => {
+export const createCardStyles = (colors: ColorScheme) => {
   const baseStyles = createBaseStyles(colors);
 
   const styles = StyleSheet.create({

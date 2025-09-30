@@ -35,6 +35,10 @@ export const createBaseStyles = (colors: ColorScheme) => {
       ...typography.muted,
       color: colors.mutedForeground,
     },
+    primaryText: {
+      ...typography.body,
+      color: colors.primary,
+    },
 
     // Form Elements
     form: {

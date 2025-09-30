@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Camera, FilePenLine, Info, Timer, Video } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createEntryStyles } from "@/assets/styles/entry.styles";
+import { createCardStyles } from "@/assets/styles/card.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
@@ -14,7 +14,7 @@ type ProofType = Doc<"proofTypes">;
 
 export default function HabitProof() {
   const { colors } = useTheme();
-  const styles = createEntryStyles(colors);
+  const styles = createCardStyles(colors);
 
   const proofId = useHabitFormStore((state) => state.habitForm.proofTypeId);
   const updateForm = useHabitFormStore((state) => state.updateForm);

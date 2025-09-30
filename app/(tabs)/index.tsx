@@ -5,7 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createEntryStyles } from "@/assets/styles/entry.styles";
+import { createCardStyles } from "@/assets/styles/card.styles";
 import { spacing } from "@/assets/styles/token.styles";
 import IconOrEmoji from "@/components/IconOrEmoji";
 import { api } from "@/convex/_generated/api";
@@ -18,7 +18,7 @@ type Habit = Doc<"habits">;
 
 export default function Index() {
   const { colors } = useTheme();
-  const styles = createEntryStyles(colors);
+  const styles = createCardStyles(colors);
   const openSheet = useHabitSheetStore((state) => state.openSheet);
 
   const today = new Date();

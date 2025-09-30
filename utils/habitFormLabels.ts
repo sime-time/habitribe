@@ -80,8 +80,8 @@ export function getProofTypeName(
   id: string,
   proofTypes: ProofType[] | undefined,
 ) {
-  if (!proofTypes) return "Select type";
+  if (!proofTypes) return "None";
   const proofTypeId = id as Id<"proofTypes">;
   const proofType = proofTypes.find((pt) => pt._id === proofTypeId);
-  return proofType?.name || "Select type";
+  return proofType?.name || "None";
 }

@@ -40,21 +40,6 @@ export default function TabsLayout() {
           }}
         />
         <Tabs.Screen
-          name="camera"
-          options={{
-            title: "",
-            tabBarIcon: ({ color, size }) => (
-              <Feather name="camera" size={size} color={color} />
-            ),
-            tabBarItemStyle: {
-              borderColor: colors.cardForeground,
-              borderWidth: 1,
-              borderRadius: border.radiusRound,
-              backgroundColor: colors.cardForeground,
-            },
-          }}
-        />
-        <Tabs.Screen
           name="settings"
           options={{
             title: "Settings",

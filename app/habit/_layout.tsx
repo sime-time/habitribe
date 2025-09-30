@@ -55,7 +55,16 @@ export default function CreateHabitLayout() {
       <Stack.Screen
         name="proof"
         options={{
-          headerTitle: "Evidence Type",
+          headerTitle: "Proof",
+          headerTitleStyle: styles.body,
+          headerStyle: styles.header,
+          headerLeft: () => renderReturnButton("Back"),
+        }}
+      />
+      <Stack.Screen
+        name="description"
+        options={{
+          headerTitle: "Description",
           headerTitleStyle: styles.body,
           headerStyle: styles.header,
           headerLeft: () => renderReturnButton("Back"),
