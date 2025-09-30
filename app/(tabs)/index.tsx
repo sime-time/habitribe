@@ -12,7 +12,7 @@ import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSheetStore } from "@/stores/habitSheetStore";
-import { getGoalDisplayText } from "@/utils/habitFormLabels";
+import { getGoalLabel } from "@/utils/habitFormLabels";
 
 type Habit = Doc<"habits">;
 
@@ -43,7 +43,7 @@ export default function Index() {
         <View style={styles.cardTextContainer}>
           <Text style={styles.body}>{item.name}</Text>
           <Text style={styles.muted}>
-            {getGoalDisplayText(item.goalTarget, item.goalUnit)}
+            {getGoalLabel(item.goalTarget, item.goalUnit)}
           </Text>
         </View>
       </Pressable>

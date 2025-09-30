@@ -6,7 +6,7 @@ export const HabitSchema = z.object({
   description: z.string().optional(),
   icon: z.string().optional(),
   color: z.string().optional(),
-  proofTypeId: z
+  proofMethodId: z
     .string()
     .min(1, "You must select a proof type")
     .refine(

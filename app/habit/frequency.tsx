@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -45,6 +46,15 @@ export default function HabitFrequency() {
         return "Every month";
       default:
         return null;
+    }
+  };
+
+  const getDayFrequency = (interval: number | number[]) => {
+    switch (interval) {
+      case 1:
+        return "Every day";
+      default:
+        return "Select week days";
     }
   };
 
@@ -106,35 +116,35 @@ export default function HabitFrequency() {
 
             <View style={styles.container}>
               <Text style={styles.inputLabel}>REPEAT</Text>
-
-              {/* Every period (Interval == 1) */}
               <View style={styles.inputGroup}>
-                <TouchableOpacity
-                  style={styles.inputContainer}
-                  onPress={() => setInterval(1)}
-                >
-                  <Text style={styles.body}>{singleInterval(period)}</Text>
-                  <View style={styles.inputIcon}>
-                    {interval === 1 ? (
-                      <Ionicons
-                        name="checkmark"
-                        color={colors.primary}
-                        size={CHECKMARK_SIZE}
-                      />
-                    ) : null}
-                  </View>
-                </TouchableOpacity>
-                <View style={styles.inputDivider} />
-
-                {period === Period.Daily ? (
+                {/* Every week or Every month has separate UI from Every day*/}
+                {period !== Period.Daily ? (
+                  <TouchableOpacity
+                    style={styles.inputContainer}
+                    onPress={() => setInterval(1)}
+                  >
+                    <Text style={styles.body}>{singleInterval(period)}</Text>
+                    <View style={styles.inputIcon}>
+                      {interval === 1 ? (
+                        <Ionicons
+                          name="checkmark"
+                          color={colors.primary}
+                          size={CHECKMARK_SIZE}
+                        />
+                      ) : null}
+                    </View>
+                  </TouchableOpacity>
+                ) : (
                   <>
                     <TouchableOpacity
                       style={styles.inputContainer}
-                      onPress={() => setInterval([])}
+                      onPress={() => setInterval(1)}
                     >
-                      <Text style={styles.body}>Days of week</Text>
+                      <Text style={styles.body}>
+                        {getDayFrequency(interval)}
+                      </Text>
                       <View style={styles.inputIcon}>
-                        {Array.isArray(interval) ? (
+                        {Array.isArray(interval) || interval === 1 ? (
                           <Ionicons
                             name="checkmark"
                             color={colors.primary}
@@ -143,15 +153,16 @@ export default function HabitFrequency() {
                         ) : null}
                       </View>
                     </TouchableOpacity>
-                    {Array.isArray(interval) ? (
+                    {Array.isArray(interval) || interval === 1 ? (
                       <WeekDaySelector
                         interval={interval}
                         setInterval={setInterval}
                       />
                     ) : null}
-                    <View style={styles.inputDivider} />
                   </>
-                ) : null}
+                )}
+
+                <View style={styles.inputDivider} />
 
                 {/* Custom repeat (Interval >= 2) */}
                 <TouchableOpacity

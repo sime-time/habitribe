@@ -19,7 +19,6 @@ import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 
 enum GoalUnit {
-  Count = "count",
   Time = "time",
   Custom = "custom",
 }
@@ -42,8 +41,6 @@ export default function HabitTarget() {
   // UI state derived from Habit state
   const derivedGoalUnit = (unit: string) => {
     switch (unit) {
-      case "count":
-        return GoalUnit.Count;
       case "time":
         return GoalUnit.Time;
       default:
@@ -71,7 +68,6 @@ export default function HabitTarget() {
 
   // Use Flashlist to iterate UI through this array
   const units = [
-    { title: "Count", data: GoalUnit.Count },
     { title: "Time", data: GoalUnit.Time },
     { title: "Custom", data: GoalUnit.Custom },
   ];

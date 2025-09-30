@@ -5,40 +5,37 @@ export enum Period {
   Weekly = "weekly",
   Monthly = "monthly",
 }
-export function getFrequencyText(
+export function getFrequencyLabel(
   period: Period,
   interval: number | number[],
 ): string {
   // Handle days of week (array format)
   if (Array.isArray(interval)) {
-    if (interval.length === 0) return "Select days";
+    if (interval.length === 0) return "Set Frequency...";
 
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const selectedDays = interval.map((day) => dayNames[day]).join(", ");
+    const sortedInterval = [...interval].sort((a, b) => a - b);
+    const selectedDays = sortedInterval.map((day) => dayNames[day]).join(", ");
 
-    // Abbreviate if too long
-    if (selectedDays.length > 20) {
-      return `${interval.length} days/week`;
-    }
     return selectedDays;
   }
 
   // Handle numeric intervals
   switch (period) {
     case Period.Daily:
-      return interval === 1 ? "Every day" : `Every ${interval} days`;
+      return interval === 1 ? "day" : `${interval} days`;
     case Period.Weekly:
-      return interval === 1 ? "Every week" : `Every ${interval} weeks`;
+      return interval === 1 ? "week" : `${interval} weeks`;
     case Period.Monthly:
-      return interval === 1 ? "Every month" : `Every ${interval} months`;
+      return interval === 1 ? "month" : `${interval} months`;
     default:
-      return "Every day";
+      return "day";
   }
 }
 
-export function getGoalDisplayText(goalTarget: number, goalUnit: string) {
+export function getGoalLabel(goalTarget: number, goalUnit: string) {
   if (!goalTarget || goalTarget === 0) {
-    return "Set target";
+    return "Set Goal...";
   }
 
   switch (goalUnit) {
@@ -75,13 +72,13 @@ export function getGoalDisplayText(goalTarget: number, goalUnit: string) {
   }
 }
 
-type ProofType = Doc<"proofTypes">;
-export function getProofTypeName(
+type ProofMethod = Doc<"proofMethods">;
+export function getProofMethodLabel(
   id: string,
-  proofTypes: ProofType[] | undefined,
+  proofMethods: ProofMethod[] | undefined,
 ) {
-  if (!proofTypes) return "None";
-  const proofTypeId = id as Id<"proofTypes">;
-  const proofType = proofTypes.find((pt) => pt._id === proofTypeId);
-  return proofType?.name || "None";
+  if (!proofMethods) return "select method";
+  const proofMethodId = id as Id<"proofMethods">;
+  const proofMethod = proofMethods.find((pt) => pt._id === proofMethodId);
+  return proofMethod?.description.toLowerCase() || "select method";
 }

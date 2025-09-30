@@ -107,9 +107,9 @@ export const getUserReminders = query({
   },
 });
 
-export const getProofTypes = query({
+export const getProofMethods = query({
   handler: async (ctx) => {
-    const proofTypes = ctx.db.query("proofTypes").collect();
-    return proofTypes;
+    const proofMethods = ctx.db.query("proofMethods").collect();
+    return proofMethods;
   },
 });

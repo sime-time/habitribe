@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
 import { createBaseStyles } from "./base.styles";
-import { border, shadows, spacing, text } from "./token.styles";
+import { border, shadows, spacing, text, typography } from "./token.styles";
 
 export const CHECKMARK_SIZE = 30;
 
@@ -82,6 +82,35 @@ export const createHabitStyles = (colors: ColorScheme) => {
       top: "50%",
       marginTop: -text.xl / 2, // nullify the fontsize for top positioning
       right: spacing.lg,
+    },
+    commitContainer: {
+      flex: 1,
+      gap: spacing.sm,
+      padding: spacing.sm,
+      paddingLeft: spacing.lg,
+      backgroundColor: colors.card,
+      borderRadius: border.radiusMedium,
+      borderWidth: border.width,
+      borderColor: colors.border,
+    },
+    commitRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      flexWrap: "wrap",
+    },
+    commitPill: {
+      backgroundColor: "transparent",
+      borderWidth: border.width,
+      borderColor: colors.primary,
+      borderRadius: border.radiusRound,
+      paddingVertical: spacing.xs,
+      paddingHorizontal: spacing.sm,
+      flexShrink: 1,
+    },
+    commitInput: {
+      ...typography.body,
+      color: colors.primary,
     },
   });
 

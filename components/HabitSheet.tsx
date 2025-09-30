@@ -16,7 +16,7 @@ import { createSheetStyles } from "@/assets/styles/sheet.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import { getGoalDisplayText } from "@/utils/habitFormLabels";
+import { getGoalLabel } from "@/utils/habitFormLabels";
 
 type Habit = Doc<"habits">;
 
@@ -109,7 +109,7 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
               <View style={styles.sheetTextContainer}>
                 <Text style={styles.sheetTitle}>{habit.name}</Text>
                 <Text style={styles.sheetText}>
-                  {getGoalDisplayText(habit.goalTarget, habit.goalUnit)}
+                  {getGoalLabel(habit.goalTarget, habit.goalUnit)}
                 </Text>
               </View>
               <TouchableOpacity>

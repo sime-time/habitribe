@@ -8,7 +8,7 @@ export const addHabit = mutation({
     icon: v.optional(v.string()),
     description: v.optional(v.string()),
     color: v.optional(v.string()),
-    proofTypeId: v.id("proofTypes"),
+    proofMethodId: v.id("proofMethods"),
     goalTarget: v.number(),
     goalUnit: v.string(),
     startDate: v.string(), // "YYYY-MM-DD"

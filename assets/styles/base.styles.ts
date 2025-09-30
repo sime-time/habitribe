@@ -24,8 +24,9 @@ export const createBaseStyles = (colors: ColorScheme) => {
       color: colors.foreground,
     },
     subtitle: {
-      ...typography.title,
-      color: colors.mutedForeground,
+      ...typography.subtitle,
+      color: colors.foreground,
+      opacity: 0.65,
     },
     body: {
       ...typography.body,

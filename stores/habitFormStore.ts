@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { iconColors } from "@/constants/colors";
-import { Period } from "@/utils/habitFormLabels";
+import { initialForm } from "@/constants/initialForm";
 import type { HabitFormData } from "@/validation/HabitSchema";
 
 interface HabitFormStore {
@@ -42,20 +42,6 @@ interface HabitFormStore {
   resetForm: () => void;
   isDraftSaved: boolean;
 }
-
-const initialForm: HabitFormData = {
-  name: "",
-  color: iconColors[0],
-  icon: "barbell",
-  proofTypeId: "",
-  goalTarget: 1,
-  goalUnit: "count",
-  startDate: new Date().toISOString().split("T")[0], // "YYYY-MM-DD" format
-  schedule: {
-    period: Period.Daily,
-    interval: 1,
-  },
-};
 
 export const useHabitFormStore = create<HabitFormStore>()(
   persist(

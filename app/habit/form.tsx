@@ -20,19 +20,15 @@ import { ZodError } from "zod";
 import { createHabitStyles } from "@/assets/styles/habit.styles";
 import { toastConfig } from "@/assets/styles/toast.config";
 import { text } from "@/assets/styles/token.styles";
+import CommitStatement from "@/components/CommitStatement";
 import IconOrEmoji from "@/components/IconOrEmoji";
-import { iconColors } from "@/constants/colors";
+import { initialForm } from "@/constants/initialForm";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
-import {
-  getFrequencyText,
-  getGoalDisplayText,
-  getProofTypeName,
-  type Period,
-} from "@/utils/habitFormLabels";
-import { type HabitFormData, HabitSchema } from "@/validation/HabitSchema";
+import type { Period } from "@/utils/habitFormLabels";
+import { HabitSchema } from "@/validation/HabitSchema";
 
 type HabitId = Id<"habits">;
 
@@ -51,10 +47,6 @@ export default function HabitForm() {
   const name = useHabitFormStore((state) => state.habitForm.name);
   const icon = useHabitFormStore((state) => state.habitForm.icon);
   const color = useHabitFormStore((state) => state.habitForm.color);
-  const schedule = useHabitFormStore((state) => state.habitForm.schedule);
-  const proofTypeId = useHabitFormStore((state) => state.habitForm.proofTypeId);
-  const goalTarget = useHabitFormStore((state) => state.habitForm.goalTarget);
-  const goalUnit = useHabitFormStore((state) => state.habitForm.goalUnit);
   const reminders = useHabitFormStore((state) => state.reminders);
   const remindersEnabled = useHabitFormStore((state) => state.remindersEnabled);
 
@@ -77,19 +69,18 @@ export default function HabitForm() {
     api.exec.read.getHabit,
     isEditMode ? { habitId: id as HabitId } : "skip",
   );
-  const proofTypes = useQuery(api.exec.read.getProofTypes);
 
   // set the initialForm to be the current habit data
   // so when a user resets the form, it returns to the original habit data
   useEffect(() => {
-    let initialForm: HabitFormData;
     if (isEditMode && currentHabit) {
       console.log("EDIT MODE");
-      initialForm = {
+      setInitialForm({
         name: currentHabit.name,
+        description: currentHabit.description,
         color: currentHabit.color,
         icon: currentHabit.icon,
-        proofTypeId: currentHabit.proofTypeId,
+        proofMethodId: currentHabit.proofMethodId,
         goalTarget: currentHabit.goalTarget,
         goalUnit: currentHabit.goalUnit,
         startDate: currentHabit.startDate,
@@ -97,24 +88,11 @@ export default function HabitForm() {
           period: currentHabit.schedule.period as Period,
           interval: currentHabit.schedule.interval,
         },
-      };
+      });
     } else {
       console.log("CREATE MODE");
-      initialForm = {
-        name: "",
-        color: iconColors[0],
-        icon: "barbell",
-        proofTypeId: "",
-        goalTarget: 1,
-        goalUnit: "count",
-        startDate: new Date().toISOString().split("T")[0], // "YYYY-MM-DD" format
-        schedule: {
-          period: "daily" as Period.Daily,
-          interval: 1,
-        },
-      };
+      setInitialForm(initialForm);
     }
-    setInitialForm(initialForm);
     resetForm();
   }, [isEditMode, currentHabit, setInitialForm, resetForm]);
 
@@ -122,7 +100,7 @@ export default function HabitForm() {
     const validHabitForm = HabitSchema.parse(habitForm);
     const habitId = await createHabit({
       ...validHabitForm,
-      proofTypeId: validHabitForm.proofTypeId as Id<"proofTypes">,
+      proofMethodId: validHabitForm.proofMethodId as Id<"proofMethods">,
     });
 
     if (remindersEnabled) {
@@ -144,7 +122,7 @@ export default function HabitForm() {
     await updateHabit({
       id: habitId,
       ...validHabitForm,
-      proofTypeId: validHabitForm.proofTypeId as Id<"proofTypes">,
+      proofMethodId: validHabitForm.proofMethodId as Id<"proofMethods">,
     });
 
     if (remindersEnabled) {
@@ -188,46 +166,35 @@ export default function HabitForm() {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <View style={styles.form}>
+            {/* COMMITMENT */}
+            <View style={styles.container}>
+              <Text style={styles.inputLabel}>COMMITMENT</Text>
+              <CommitStatement />
+            </View>
+
             <View style={styles.container}>
               <Text style={styles.inputLabel}>DETAILS</Text>
               <View style={styles.inputGroup}>
+                {/* NAME */}
                 <View style={styles.inputContainer}>
                   <Text style={styles.body}>Name</Text>
                   <TextInput
                     value={name}
-                    style={[styles.body]}
+                    style={[styles.body, { flex: 1, textAlign: "right" }]}
                     placeholder="E.g., Exercise"
                     placeholderTextColor={colors.mutedForeground}
                     onChangeText={(text) => updateForm("name", text)}
                   />
                 </View>
+
                 <View style={styles.inputDivider} />
+
+                {/* ICON */}
                 <Link href="/habit/icon" asChild>
                   <TouchableOpacity style={styles.inputContainer}>
                     <Text style={styles.body}>Icon</Text>
                     <View style={styles.inputIcon}>
                       <IconOrEmoji iconName={icon} iconColor={color} />
-                      <Ionicons
-                        name="chevron-forward"
-                        size={text.base}
-                        color={colors.mutedForeground}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </Link>
-              </View>
-            </View>
-
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>RECURRING</Text>
-              <View style={styles.inputGroup}>
-                <Link href="/habit/frequency" asChild>
-                  <TouchableOpacity style={styles.inputContainer}>
-                    <Text style={styles.body}>Frequency</Text>
-                    <View style={styles.inputIcon}>
-                      <Text style={styles.muted}>
-                        {getFrequencyText(schedule.period, schedule.interval)}
-                      </Text>
                       <Ionicons
                         name="chevron-forward"
                         size={text.base}
@@ -307,44 +274,6 @@ export default function HabitForm() {
                     </TouchableOpacity>
                   </>
                 )}
-              </View>
-            </View>
-
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>
-                {schedule.period.toUpperCase()} GOAL
-              </Text>
-              <View style={styles.inputGroup}>
-                <Link href="/habit/proof" asChild>
-                  <TouchableOpacity style={styles.inputContainer}>
-                    <Text style={styles.body}>Proof</Text>
-                    <View style={styles.inputIcon}>
-                      <Text style={styles.muted}>
-                        {getProofTypeName(proofTypeId, proofTypes)}
-                      </Text>
-                      <Ionicons
-                        name="chevron-forward"
-                        size={text.base}
-                        color={colors.mutedForeground}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </Link>
-
-                <View style={styles.inputDivider} />
-
-                <Link href="/habit/description" asChild>
-                  <TouchableOpacity style={styles.inputContainer}>
-                    <Text style={styles.body}>Description</Text>
-                    <View style={styles.inputIcon}>
-                      <Ionicons
-                        name="chevron-forward"
-                        size={text.base}
-                        color={colors.mutedForeground}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </Link>
               </View>
             </View>
 

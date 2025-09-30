@@ -61,15 +61,6 @@ export default function CreateHabitLayout() {
           headerLeft: () => renderReturnButton("Back"),
         }}
       />
-      <Stack.Screen
-        name="description"
-        options={{
-          headerTitle: "Description",
-          headerTitleStyle: styles.body,
-          headerStyle: styles.header,
-          headerLeft: () => renderReturnButton("Back"),
-        }}
-      />
     </Stack>
   );
 }

@@ -10,36 +10,35 @@ import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 
-type ProofType = Doc<"proofTypes">;
+type ProofMethod = Doc<"proofMethods">;
 
 export default function HabitProof() {
   const { colors } = useTheme();
   const styles = createCardStyles(colors);
 
-  const proofId = useHabitFormStore((state) => state.habitForm.proofTypeId);
+  const proofId = useHabitFormStore((state) => state.habitForm.proofMethodId);
   const updateForm = useHabitFormStore((state) => state.updateForm);
 
-  const proofTypes = useQuery(api.exec.read.getProofTypes);
+  const proofMethods = useQuery(api.exec.read.getProofMethods);
 
   const renderIcon = (name: string) => {
     const iconSize = 32;
     switch (name) {
-      case "Self-Verify":
-        return <FilePenLine color={colors.primary} size={iconSize} />;
-      case "Photo":
+      case "Camera":
         return <Camera color={colors.primary} size={iconSize} />;
       case "Time-lapse":
         return <Video color={colors.primary} size={iconSize} />;
       case "Focus Timer":
         return <Timer color={colors.primary} size={iconSize} />;
       default:
-        return null;
+        return <FilePenLine color={colors.primary} size={iconSize} />;
     }
   };
 
   // update the habit's proof type on press
-  const renderProofType = ({ item }: { item: ProofType }) => (
-    <View
+  const renderProofMethod = ({ item }: { item: ProofMethod }) => (
+    <Pressable
+      onPress={() => updateForm("proofMethodId", item._id)}
       style={[
         styles.card,
         {
@@ -49,22 +48,19 @@ export default function HabitProof() {
         },
       ]}
     >
-      <Pressable
-        style={styles.cardStart}
-        onPress={() => updateForm("proofTypeId", item._id)}
-      >
+      <View style={styles.cardStart}>
         <View style={styles.cardIconContainer}>{renderIcon(item.name)}</View>
         <View style={styles.cardTextContainer}>
           <Text style={styles.body}>{item.name}</Text>
           <Text style={styles.muted}>{item.description}</Text>
         </View>
-      </Pressable>
-      <View style={styles.cardEnd}>
+      </View>
+      <Pressable onPress={() => null} style={styles.cardEnd}>
         <View style={styles.cardIconContainer}>
           <Info size={26} color={colors.mutedForeground} />
         </View>
-      </View>
-    </View>
+      </Pressable>
+    </Pressable>
   );
 
   return (
@@ -74,8 +70,8 @@ export default function HabitProof() {
     >
       <SafeAreaView style={styles.scrollView}>
         <FlashList
-          data={proofTypes}
-          renderItem={renderProofType}
+          data={proofMethods}
+          renderItem={renderProofMethod}
           keyExtractor={(item) => item._id}
         />
       </SafeAreaView>
