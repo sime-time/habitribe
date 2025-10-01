@@ -54,7 +54,7 @@ export default function HabitFrequency() {
       case 1:
         return "Every day";
       default:
-        return "Select week days";
+        return "Select days";
     }
   };
 

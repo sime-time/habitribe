@@ -33,9 +33,9 @@ export default function WeekDaySelector({
       : [];
 
   const toggleDay = (dayValue: number) => {
-    console.log("WeekDaySelector: toggleDay called with", dayValue);
-    console.log("WeekDaySelector: current interval", interval);
-    console.log("WeekDaySelector: selectedDays", selectedDays);
+    // console.log("WeekDaySelector: toggleDay called with", dayValue);
+    // console.log("WeekDaySelector: current interval", interval);
+    // console.log("WeekDaySelector: selectedDays", selectedDays);
 
     // if (!Array.isArray(interval)) {
     //   console.error("WeekDaySelector: interval is not an array, returning");
@@ -46,7 +46,7 @@ export default function WeekDaySelector({
       ? selectedDays.filter((day) => day !== dayValue)
       : [...selectedDays, dayValue];
 
-    console.log("WeekDaySelector: Setting interval to", newInterval);
+    // console.log("WeekDaySelector: Setting interval to", newInterval);
 
     // If all 7 days are selected, switch to "every day" (interval = 1)
     if (newInterval.length === 7) {

@@ -25,53 +25,139 @@ export default function CommitStatement() {
   const updateForm = useHabitFormStore((state) => state.updateForm);
 
   const proofMethods = useQuery(api.exec.read.getProofMethods);
+  const proofMethodLabel = getProofMethodLabel(proofMethodId, proofMethods);
 
+  // Get the original proof method name for comparison
+  const proofMethod = proofMethods?.find((pm) => pm._id === proofMethodId);
+  const proofMethodName = proofMethod?.name || "";
+
+  const renderProofMethodButton = () => (
+    <TouchableOpacity
+      style={styles.commitPill}
+      onPress={() => router.push("/habit/proof")}
+    >
+      <Text style={styles.primaryText}>{proofMethodLabel}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderDescriptionInput = () => (
+    <TouchableOpacity style={styles.commitPill}>
+      <TextInput
+        value={description}
+        autoCapitalize="none"
+        style={styles.primaryText}
+        placeholder="insert text here..."
+        placeholderTextColor={colors.mutedForeground}
+        onChangeText={(text) => updateForm("description", text)}
+      />
+    </TouchableOpacity>
+  );
+
+  const renderGoalButton = () => (
+    <TouchableOpacity
+      style={styles.commitPill}
+      onPress={() => router.push("/habit/target")}
+    >
+      <Text style={styles.primaryText}>
+        {getGoalLabel(goalTarget, goalUnit)}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const renderFrequencyButton = () => (
+    <TouchableOpacity
+      style={styles.commitPill}
+      onPress={() => router.push("/habit/frequency")}
+    >
+      <Text style={styles.primaryText}>
+        {getFrequencyLabel(schedule.period, schedule.interval)}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  // Camera format: I'll [proofMethod] of [description] every [frequency]
+  if (proofMethodName === "Camera") {
+    return (
+      <View style={styles.commitContainer}>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>I'll</Text>
+          {renderProofMethodButton()}
+        </View>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>of</Text>
+          {renderDescriptionInput()}
+        </View>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>every</Text>
+          {renderFrequencyButton()}
+        </View>
+      </View>
+    );
+  }
+
+  // Time-lapse format: I'll [proofMethod] of [description] for [goalTarget] every [frequency]
+  if (proofMethodName === "Time-lapse") {
+    return (
+      <View style={styles.commitContainer}>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>I'll</Text>
+          {renderProofMethodButton()}
+        </View>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>of</Text>
+          {renderDescriptionInput()}
+        </View>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>for</Text>
+          {renderGoalButton()}
+        </View>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>every</Text>
+          {renderFrequencyButton()}
+        </View>
+      </View>
+    );
+  }
+
+  // Focus Timer format: I'll [proofMethod] for [goalTarget] to [description] every [frequency]
+  if (proofMethodName === "Focus Timer") {
+    return (
+      <View style={styles.commitContainer}>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>I'll</Text>
+          {renderProofMethodButton()}
+        </View>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>for</Text>
+          {renderGoalButton()}
+        </View>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>to</Text>
+          {renderDescriptionInput()}
+        </View>
+        <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>every</Text>
+          {renderFrequencyButton()}
+        </View>
+      </View>
+    );
+  }
+
+  // Default format: I'll [proofMethod] that I'll [description] every [frequency]. goal: [goalTarget]
   return (
     <View style={styles.commitContainer}>
       <View style={styles.commitRow}>
         <Text style={styles.subtitle}>I'll</Text>
-        <TouchableOpacity
-          style={styles.commitPill}
-          onPress={() => router.push("/habit/proof")}
-        >
-          <Text style={styles.primaryText}>
-            {getProofMethodLabel(proofMethodId, proofMethods)}
-          </Text>
-        </TouchableOpacity>
+        {renderProofMethodButton()}
       </View>
       <View style={styles.commitRow}>
-        <Text style={styles.subtitle}>for</Text>
-        <TouchableOpacity
-          style={styles.commitPill}
-          onPress={() => router.push("/habit/target")}
-        >
-          <Text style={styles.primaryText}>
-            {getGoalLabel(goalTarget, goalUnit)}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.commitRow}>
-        <Text style={styles.subtitle}>to</Text>
-        <TouchableOpacity style={styles.commitPill}>
-          <TextInput
-            value={description}
-            style={styles.primaryText}
-            placeholder="insert text here..."
-            placeholderTextColor={colors.mutedForeground}
-            onChangeText={(text) => updateForm("description", text)}
-          />
-        </TouchableOpacity>
+        <Text style={styles.subtitle}>that I'll</Text>
+        {renderDescriptionInput()}
+        {renderGoalButton()}
       </View>
       <View style={styles.commitRow}>
         <Text style={styles.subtitle}>every</Text>
-        <TouchableOpacity
-          style={styles.commitPill}
-          onPress={() => router.push("/habit/frequency")}
-        >
-          <Text style={styles.primaryText}>
-            {getFrequencyLabel(schedule.period, schedule.interval)}
-          </Text>
-        </TouchableOpacity>
+        {renderFrequencyButton()}
       </View>
     </View>
   );
