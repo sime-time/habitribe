@@ -166,12 +166,7 @@ export default function HabitForm() {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <View style={styles.form}>
-            {/* COMMITMENT */}
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>COMMITMENT</Text>
-              <CommitStatement />
-            </View>
-
+            {/* DETAILS */}
             <View style={styles.container}>
               <Text style={styles.inputLabel}>DETAILS</Text>
               <View style={styles.inputGroup}>
@@ -275,6 +270,12 @@ export default function HabitForm() {
                   </>
                 )}
               </View>
+            </View>
+
+            {/* COMMITMENT */}
+            <View style={styles.container}>
+              <Text style={styles.inputLabel}>COMMITMENT</Text>
+              <CommitStatement />
             </View>
 
             <TouchableOpacity onPress={handleSubmit}>

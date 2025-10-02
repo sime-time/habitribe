@@ -37,9 +37,9 @@ export function getGoalLabel(goalTarget: number, goalUnit: string) {
   if (!goalTarget || goalTarget === 0) {
     switch (goalUnit) {
       case "seconds":
-        return "insert time...";
+        return "0 minutes";
       default:
-        return "insert goal...";
+        return "0 times";
     }
   }
 
