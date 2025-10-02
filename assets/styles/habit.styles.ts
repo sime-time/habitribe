@@ -83,34 +83,27 @@ export const createHabitStyles = (colors: ColorScheme) => {
       marginTop: -text.xl / 2, // nullify the fontsize for top positioning
       right: spacing.lg,
     },
-    commitContainer: {
+    countContainer: {
       flex: 1,
-      gap: spacing.sm,
-      padding: spacing.sm,
-      paddingLeft: spacing.lg,
-      backgroundColor: colors.card,
-      borderRadius: border.radiusMedium,
-      borderWidth: border.width,
-      borderColor: colors.border,
-    },
-    commitRow: {
       flexDirection: "row",
+      justifyContent: "space-between",
       alignItems: "center",
-      gap: spacing.md,
-      flexWrap: "wrap",
+      marginVertical: spacing.md,
+      height: "auto",
     },
-    commitPill: {
-      backgroundColor: "transparent",
-      borderWidth: border.width,
-      borderColor: colors.primary,
-      borderRadius: border.radiusRound,
-      paddingVertical: spacing.xs,
-      paddingHorizontal: spacing.sm,
-      flexShrink: 1,
+    countButton: {
+      padding: spacing.sm,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: colors.primary,
+      borderRadius: border.radiusSmall,
     },
-    commitInput: {
-      ...typography.body,
-      color: colors.primary,
+    countText: {
+      flex: 1,
+      textAlign: "center",
+      color: colors.foreground,
+      fontSize: text.xl6,
+      fontWeight: "bold",
     },
   });
 

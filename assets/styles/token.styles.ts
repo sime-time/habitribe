@@ -25,6 +25,8 @@ export const text = {
   xl2: rem(1.6),
   xl3: rem(1.75),
   xl4: rem(1.875),
+  xl5: rem(2),
+  xl6: rem(2.25),
 } as const;
 
 export const typography = {

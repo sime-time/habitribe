@@ -17,7 +17,9 @@ export default function HabitProof() {
   const styles = createCardStyles(colors);
 
   const proofId = useHabitFormStore((state) => state.habitForm.proofMethodId);
-  const updateForm = useHabitFormStore((state) => state.updateForm);
+  const updateProofMethod = useHabitFormStore(
+    (state) => state.updateProofMethod,
+  );
 
   const proofMethods = useQuery(api.exec.read.getProofMethods);
 
@@ -38,7 +40,7 @@ export default function HabitProof() {
   // update the habit's proof type on press
   const renderProofMethod = ({ item }: { item: ProofMethod }) => (
     <Pressable
-      onPress={() => updateForm("proofMethodId", item._id)}
+      onPress={() => updateProofMethod(item._id, item.name)}
       style={[
         styles.card,
         {

@@ -3,7 +3,7 @@ import { Period } from "@/utils/habitFormLabels";
 
 export const HabitSchema = z.object({
   name: z.string().min(1, "Habit name is required"),
-  description: z.string().optional(),
+  description: z.string().min(2, "Habit description is required"),
   icon: z.string().optional(),
   color: z.string().optional(),
   proofMethodId: z
@@ -13,7 +13,7 @@ export const HabitSchema = z.object({
       (val) => /^[a-zA-Z][a-zA-Z0-9_]*$/.test(val),
       "Invalid proof type ID format",
     ),
-  goalTarget: z.number().min(1, "Goal target must be at least 1"),
+  goalTarget: z.number().min(1, "You must have a goal target"),
   goalUnit: z.string().min(1, "Goal unit is required"),
   startDate: z
     .string()

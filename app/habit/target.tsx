@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
+import { ChevronDown, Minus, Plus } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
   ScrollView,
@@ -19,7 +20,7 @@ import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 
 enum GoalUnit {
-  Time = "time",
+  Time = "seconds",
   Custom = "custom",
 }
 
@@ -38,10 +39,22 @@ export default function HabitTarget() {
     updateForm("goalUnit", unit.toLowerCase());
   };
 
+  // Increment/Decrement goal target
+  const incrementGoal = () => {
+    setGoalTarget(goalTarget + 1);
+  };
+  const decrementGoal = () => {
+    // cannot go lower than 0
+    const newGoalTarget = goalTarget - 1;
+    if (newGoalTarget >= 0) {
+      setGoalTarget(newGoalTarget);
+    }
+  };
+
   // UI state derived from Habit state
   const derivedGoalUnit = (unit: string) => {
     switch (unit) {
-      case "time":
+      case "seconds":
         return GoalUnit.Time;
       default:
         return GoalUnit.Custom;
@@ -54,9 +67,10 @@ export default function HabitTarget() {
   const [selectedHours, setSelectedHours] = useState<number>(0);
   const [selectedMinutes, setSelectedMinutes] = useState<number>(0);
 
-  // Initialize selectedHours and selectedMinutes based on goalTarget when goalUnit is "time"
+  // This is important for habit "edit" mode:
+  // Initialize selectedHours and selectedMinutes based on goalTarget when goalUnit is "seconds"
   useEffect(() => {
-    if (goalUnit === "time" && goalTarget > 0) {
+    if (goalUnit === "seconds" && goalTarget > 0) {
       const totalMinutes = Math.floor(goalTarget / 60);
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
@@ -66,11 +80,15 @@ export default function HabitTarget() {
     }
   }, [goalTarget, goalUnit]);
 
-  // Use Flashlist to iterate UI through this array
-  const units = [
-    { title: "Time", data: GoalUnit.Time },
-    { title: "Custom", data: GoalUnit.Custom },
-  ];
+  // Sync UI state when goalUnit changes from another screen (e.g., proof selection)
+  useEffect(() => {
+    // Reset time pickers when in time mode
+    if (goalUnit === GoalUnit.Time) {
+      setGoalUnitType(GoalUnit.Time);
+      setSelectedHours(0);
+      setSelectedMinutes(0);
+    }
+  }, [goalUnit]);
 
   return (
     <LinearGradient
@@ -82,54 +100,52 @@ export default function HabitTarget() {
           <View style={styles.form}>
             <View style={styles.container}>
               <Text style={styles.inputLabel}>UNIT</Text>
-
               <View style={styles.inputGroup}>
-                <FlashList
-                  data={units}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      style={styles.inputContainer}
-                      onPress={() => {
-                        // Reset the goal values when a new GoalUnitType is selected
-                        setGoalUnitType(item.data);
-                        if (item.data !== GoalUnit.Custom) {
-                          setGoalUnit(item.data);
-                        }
-                        // Set Default Target Value
-                        if (item.data === GoalUnit.Time) {
-                          setGoalTarget(
-                            selectedHours * 3600 + selectedMinutes * 60,
-                          );
-                        }
-                      }}
-                    >
-                      <Text style={styles.body}>{item.title}</Text>
-                      <View style={styles.inputIcon}>
-                        {item.data === goalUnitType && (
-                          <Ionicons
-                            name="checkmark"
-                            color={colors.primary}
-                            size={CHECKMARK_SIZE}
-                          />
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                  )}
-                  ItemSeparatorComponent={() => (
-                    <View style={styles.inputDivider} />
-                  )}
-                />
-                {goalUnitType === GoalUnit.Custom && (
-                  <>
-                    <View style={styles.inputDivider} />
-                    <TextInput
-                      style={[styles.inputContainer, styles.body]}
-                      placeholder={`Current Unit: (${goalUnit})`}
-                      placeholderTextColor={colors.mutedForeground}
-                      onChangeText={setGoalUnit}
-                    />
-                  </>
-                )}
+                <TouchableOpacity
+                  style={styles.inputContainer}
+                  onPress={() => {
+                    if (goalUnitType === GoalUnit.Custom) return;
+                    setGoalUnitType(GoalUnit.Custom);
+                    setGoalUnit("count");
+                    setGoalTarget(0);
+                    setSelectedHours(0);
+                    setSelectedMinutes(0);
+                  }}
+                >
+                  <Text style={styles.body}>Goal</Text>
+                  <View style={styles.inputIcon}>
+                    {goalUnitType === GoalUnit.Custom && (
+                      <Ionicons
+                        name="checkmark"
+                        color={colors.primary}
+                        size={CHECKMARK_SIZE}
+                      />
+                    )}
+                  </View>
+                </TouchableOpacity>
+
+                <View style={styles.inputDivider} />
+
+                <TouchableOpacity
+                  style={styles.inputContainer}
+                  onPress={() => {
+                    if (goalUnitType === GoalUnit.Time) return;
+                    setGoalUnitType(GoalUnit.Time);
+                    setGoalUnit(GoalUnit.Time);
+                    setGoalTarget(selectedHours * 3600 + selectedMinutes * 60);
+                  }}
+                >
+                  <Text style={styles.body}>Time</Text>
+                  <View style={styles.inputIcon}>
+                    {goalUnitType === GoalUnit.Time && (
+                      <Ionicons
+                        name="checkmark"
+                        color={colors.primary}
+                        size={CHECKMARK_SIZE}
+                      />
+                    )}
+                  </View>
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -137,7 +153,7 @@ export default function HabitTarget() {
               <Text style={styles.inputLabel}>TARGET</Text>
 
               <View style={styles.inputGroup}>
-                {/* Calculate targetValue in seconds */}
+                {/* Calculate time value in seconds */}
                 {goalUnitType === GoalUnit.Time ? (
                   <View style={styles.centered}>
                     <View
@@ -177,24 +193,49 @@ export default function HabitTarget() {
                     </View>
                   </View>
                 ) : (
-                  <TextInput
-                    keyboardType="numeric"
-                    style={[styles.inputContainer, styles.body]}
-                    placeholder={
-                      goalTarget ? String(goalTarget) : "Enter value"
-                    }
-                    placeholderTextColor={colors.mutedForeground}
-                    onChangeText={(text) => {
-                      const numericText = text.replace(/[^0-9]/g, ""); // Only allow digits
-                      if (numericText !== "") {
-                        // No decimal values
-                        const num = parseInt(numericText, 10);
-                        if (!Number.isNaN(num)) {
-                          setGoalTarget(num);
-                        }
-                      }
-                    }}
-                  />
+                  <>
+                    <View style={styles.countContainer}>
+                      <TouchableOpacity
+                        style={styles.countButton}
+                        onPress={decrementGoal}
+                      >
+                        <Minus color={colors.card} size={CHECKMARK_SIZE} />
+                      </TouchableOpacity>
+                      <TextInput
+                        value={goalTarget ? String(goalTarget) : undefined}
+                        style={styles.countText}
+                        placeholder={"0"}
+                        placeholderTextColor={colors.mutedForeground}
+                        keyboardType="numeric"
+                        onChangeText={(text) => {
+                          // Only allow whole numbers
+                          const numericText = text.replace(/[^0-9]/g, "");
+                          const num = Number(numericText);
+                          if (!Number.isNaN(num)) {
+                            setGoalTarget(num);
+                          }
+                        }}
+                      />
+                      <TouchableOpacity
+                        style={styles.countButton}
+                        onPress={incrementGoal}
+                      >
+                        <Plus color={colors.card} size={CHECKMARK_SIZE} />
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.inputDivider} />
+
+                    <TouchableOpacity style={styles.inputContainer}>
+                      <Text style={styles.body}>Count</Text>
+                      <View style={styles.inputIcon}>
+                        <ChevronDown
+                          color={colors.mutedForeground}
+                          size={CHECKMARK_SIZE}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  </>
                 )}
               </View>
             </View>

@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { iconColors } from "@/constants/colors";
 import { initialForm } from "@/constants/initialForm";
+import { proofMethodDefaults } from "@/constants/proofMethodDefaults";
 import type { HabitFormData } from "@/validation/HabitSchema";
 
 interface HabitFormStore {
@@ -25,6 +26,7 @@ interface HabitFormStore {
     value: string | number | number[],
   ) => void;
   updateSchedule: (schedule: HabitFormData["schedule"]) => void;
+  updateProofMethod: (proofMethodId: string, proofMethodName: string) => void;
 
   // Actions for reminders
   toggleReminders: () => void;
@@ -67,6 +69,21 @@ export const useHabitFormStore = create<HabitFormStore>()(
       updateSchedule(schedule) {
         set((state) => ({
           habitForm: { ...state.habitForm, schedule },
+          isDraftSaved: true,
+        }));
+      },
+
+      updateProofMethod(proofMethodId, proofMethodName) {
+        const defaults =
+          proofMethodDefaults[proofMethodName] || proofMethodDefaults.default;
+
+        set((state) => ({
+          habitForm: {
+            ...state.habitForm,
+            proofMethodId,
+            goalTarget: defaults.goalTarget,
+            goalUnit: defaults.goalUnit,
+          },
           isDraftSaved: true,
         }));
       },

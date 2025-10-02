@@ -77,7 +77,7 @@ export default function HabitForm() {
       console.log("EDIT MODE");
       setInitialForm({
         name: currentHabit.name,
-        description: currentHabit.description,
+        description: currentHabit.description || "",
         color: currentHabit.color,
         icon: currentHabit.icon,
         proofMethodId: currentHabit.proofMethodId,

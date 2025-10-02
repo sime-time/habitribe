@@ -11,7 +11,7 @@ export function getFrequencyLabel(
 ): string {
   // Handle days of week (array format)
   if (Array.isArray(interval)) {
-    if (interval.length === 0) return "Set Frequency...";
+    if (interval.length === 0) return "set frequency...";
 
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const sortedInterval = [...interval].sort((a, b) => a - b);
@@ -35,12 +35,17 @@ export function getFrequencyLabel(
 
 export function getGoalLabel(goalTarget: number, goalUnit: string) {
   if (!goalTarget || goalTarget === 0) {
-    return "Set Goal...";
+    switch (goalUnit) {
+      case "seconds":
+        return "insert time...";
+      default:
+        return "insert goal...";
+    }
   }
 
   switch (goalUnit) {
-    case "time": {
-      // goalTarget is stored in seconds
+    case "seconds": {
+      // time is stored in seconds
       const totalMinutes = Math.floor(goalTarget / 60);
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;

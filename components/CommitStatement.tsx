@@ -36,7 +36,16 @@ export default function CommitStatement() {
       style={styles.commitPill}
       onPress={() => router.push("/habit/proof")}
     >
-      <Text style={styles.primaryText}>{proofMethodLabel}</Text>
+      <Text
+        style={[
+          styles.body,
+          {
+            color: proofMethodId ? colors.primary : colors.mutedForeground,
+          },
+        ]}
+      >
+        {proofMethodLabel}
+      </Text>
     </TouchableOpacity>
   );
 
@@ -46,7 +55,7 @@ export default function CommitStatement() {
         value={description}
         autoCapitalize="none"
         style={styles.primaryText}
-        placeholder="insert text here..."
+        placeholder="describe habit..."
         placeholderTextColor={colors.mutedForeground}
         onChangeText={(text) => updateForm("description", text)}
       />
@@ -58,7 +67,15 @@ export default function CommitStatement() {
       style={styles.commitPill}
       onPress={() => router.push("/habit/target")}
     >
-      <Text style={styles.primaryText}>
+      <Text
+        style={[
+          styles.body,
+          {
+            color:
+              goalTarget && goalUnit ? colors.primary : colors.mutedForeground,
+          },
+        ]}
+      >
         {getGoalLabel(goalTarget, goalUnit)}
       </Text>
     </TouchableOpacity>
@@ -69,7 +86,17 @@ export default function CommitStatement() {
       style={styles.commitPill}
       onPress={() => router.push("/habit/frequency")}
     >
-      <Text style={styles.primaryText}>
+      <Text
+        style={[
+          styles.body,
+          {
+            color:
+              Array.isArray(schedule.interval) && schedule.interval.length === 0
+                ? colors.mutedForeground
+                : colors.primary,
+          },
+        ]}
+      >
         {getFrequencyLabel(schedule.period, schedule.interval)}
       </Text>
     </TouchableOpacity>
@@ -153,7 +180,11 @@ export default function CommitStatement() {
       <View style={styles.commitRow}>
         <Text style={styles.subtitle}>that I'll</Text>
         {renderDescriptionInput()}
+      </View>
+      <View style={styles.commitRow}>
+        <Text style={styles.subtitle}>(</Text>
         {renderGoalButton()}
+        <Text style={styles.subtitle}>)</Text>
       </View>
       <View style={styles.commitRow}>
         <Text style={styles.subtitle}>every</Text>

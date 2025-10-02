@@ -11,8 +11,9 @@ export const createCommitStyles = (colors: ColorScheme) => {
     commitContainer: {
       flex: 1,
       gap: spacing.sm,
-      padding: spacing.sm,
+      paddingVertical: spacing.md,
       paddingLeft: spacing.lg,
+      paddingRight: spacing.xs,
       backgroundColor: colors.card,
       borderRadius: border.radiusMedium,
       borderWidth: border.width,
