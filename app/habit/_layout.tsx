@@ -44,9 +44,18 @@ export default function CreateHabitLayout() {
         }}
       />
       <Stack.Screen
-        name="target"
+        name="goal"
         options={{
-          headerTitle: "Target",
+          headerTitle: "Set Goal",
+          headerTitleStyle: styles.body,
+          headerStyle: styles.header,
+          headerLeft: () => renderReturnButton("Back"),
+        }}
+      />
+      <Stack.Screen
+        name="time"
+        options={{
+          headerTitle: "Set Time",
           headerTitleStyle: styles.body,
           headerStyle: styles.header,
           headerLeft: () => renderReturnButton("Back"),

@@ -4,7 +4,6 @@ type ProofDefaults = {
 };
 
 export const proofMethodDefaults: Record<string, ProofDefaults> = {
-  Camera: { goalUnit: "photo/video", goalTarget: 1 },
   "Time-lapse": { goalUnit: "seconds", goalTarget: 0 },
   "Focus Timer": { goalUnit: "seconds", goalTarget: 0 },
   // Default for unknown/custom methods

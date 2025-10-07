@@ -65,7 +65,26 @@ export default function CommitStatement() {
   const renderGoalButton = () => (
     <TouchableOpacity
       style={styles.commitPill}
-      onPress={() => router.push("/habit/target")}
+      onPress={() => router.push("/habit/goal")}
+    >
+      <Text
+        style={[
+          styles.body,
+          {
+            color:
+              goalTarget && goalUnit ? colors.primary : colors.mutedForeground,
+          },
+        ]}
+      >
+        {getGoalLabel(goalTarget, goalUnit)}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const renderTimeButton = () => (
+    <TouchableOpacity
+      style={styles.commitPill}
+      onPress={() => router.push("/habit/time")}
     >
       <Text
         style={[
@@ -115,6 +134,11 @@ export default function CommitStatement() {
           {renderDescriptionInput()}
         </View>
         <View style={styles.commitRow}>
+          <Text style={styles.subtitle}>(</Text>
+          {renderGoalButton()}
+          <Text style={styles.subtitle}>)</Text>
+        </View>
+        <View style={styles.commitRow}>
           <Text style={styles.subtitle}>every</Text>
           {renderFrequencyButton()}
         </View>
@@ -136,7 +160,7 @@ export default function CommitStatement() {
         </View>
         <View style={styles.commitRow}>
           <Text style={styles.subtitle}>for</Text>
-          {renderGoalButton()}
+          {renderTimeButton()}
         </View>
         <View style={styles.commitRow}>
           <Text style={styles.subtitle}>every</Text>
@@ -156,7 +180,7 @@ export default function CommitStatement() {
         </View>
         <View style={styles.commitRow}>
           <Text style={styles.subtitle}>for</Text>
-          {renderGoalButton()}
+          {renderTimeButton()}
         </View>
         <View style={styles.commitRow}>
           <Text style={styles.subtitle}>to</Text>
