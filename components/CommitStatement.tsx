@@ -134,9 +134,8 @@ export default function CommitStatement() {
           {renderDescriptionInput()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>(</Text>
+          <Text style={styles.subtitle}>at least</Text>
           {renderGoalButton()}
-          <Text style={styles.subtitle}>)</Text>
         </View>
         <View style={styles.commitRow}>
           <Text style={styles.subtitle}>every</Text>
@@ -206,9 +205,8 @@ export default function CommitStatement() {
         {renderDescriptionInput()}
       </View>
       <View style={styles.commitRow}>
-        <Text style={styles.subtitle}>(</Text>
+        <Text style={styles.subtitle}>at least</Text>
         {renderGoalButton()}
-        <Text style={styles.subtitle}>)</Text>
       </View>
       <View style={styles.commitRow}>
         <Text style={styles.subtitle}>every</Text>

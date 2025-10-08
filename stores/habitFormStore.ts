@@ -110,7 +110,6 @@ export const useHabitFormStore = create<HabitFormStore>()(
           remindersEnabled: !state.remindersEnabled,
           // clear all reminders if needed
           reminders: !state.remindersEnabled ? [newReminder] : [],
-          initialReminders: !state.remindersEnabled ? [newReminder] : [],
         }));
       },
 
@@ -144,11 +143,13 @@ export const useHabitFormStore = create<HabitFormStore>()(
       },
 
       setReminders(reminders) {
-        set(() => ({
+        console.log("set reminders", reminders);
+        console.log("set reminders length", reminders.length);
+        set({
           reminders,
           initialReminders: reminders,
           remindersEnabled: reminders.length > 0,
-        }));
+        });
       },
 
       // Icon selection actions
@@ -189,9 +190,9 @@ export const useHabitFormStore = create<HabitFormStore>()(
       resetForm() {
         set((state) => ({
           habitForm: state.initialForm,
-          remindersEnabled: false,
-          reminders: [],
-          initialReminders: [],
+          remindersEnabled: state.remindersEnabled,
+          reminders: state.reminders,
+          initialReminders: state.initialReminders,
           selectedIcon: state.initialForm.icon,
           selectedEmoji: state.initialForm.icon,
           selectedColor: state.initialForm.color,

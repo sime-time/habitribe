@@ -82,8 +82,8 @@ export function getProofMethodLabel(
   id: string,
   proofMethods: ProofMethod[] | undefined,
 ) {
-  if (!proofMethods) return "select method";
+  if (!proofMethods) return "select proof method...";
   const proofMethodId = id as Id<"proofMethods">;
   const proofMethod = proofMethods.find((pt) => pt._id === proofMethodId);
-  return proofMethod?.description.toLowerCase() || "select method";
+  return proofMethod?.description.toLowerCase() || "select proof method...";
 }

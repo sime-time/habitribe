@@ -49,9 +49,9 @@ export default function HabitForm() {
   const color = useHabitFormStore((state) => state.habitForm.color);
   const reminders = useHabitFormStore((state) => state.reminders);
   const remindersEnabled = useHabitFormStore((state) => state.remindersEnabled);
+  const initialReminders = useHabitFormStore((state) => state.initialReminders);
 
-  // in "edit" mode the initial form becomes populated
-  // with the current data of the habit being updated
+  // in "edit" mode the initial form becomes populated with the data of the habit being updated
   const setInitialForm = useHabitFormStore((state) => state.setInitialForm);
   const updateForm = useHabitFormStore((state) => state.updateForm);
   const resetForm = useHabitFormStore((state) => state.resetForm);
@@ -61,11 +61,14 @@ export default function HabitForm() {
   const toggleReminders = useHabitFormStore((state) => state.toggleReminders);
   const setReminders = useHabitFormStore((state) => state.setReminders);
 
+  // database mutations
   const createHabit = useMutation(api.exec.create.addHabit);
-  const createReminder = useMutation(api.exec.create.addReminder);
   const updateHabit = useMutation(api.exec.update.editHabit);
+  const createReminder = useMutation(api.exec.create.addReminder);
+  const editReminder = useMutation(api.exec.update.editReminder);
+  const deleteReminder = useMutation(api.exec.delete.deleteReminder);
 
-  // in "create" mode this query will be undefined (skipped)
+  // in "create" mode these queries will be undefined (skipped)
   const currentHabit = useQuery(
     api.exec.read.getHabit,
     isEditMode ? { habitId: id as HabitId } : "skip",
@@ -98,18 +101,18 @@ export default function HabitForm() {
     }
 
     if (isEditMode && currentHabitReminders) {
-      const currentReminderTimes = currentHabitReminders?.map((reminder) => {
+      const reminderStates = currentHabitReminders.map((reminder) => {
         const [hours, minutes] = reminder.time.split(":").map(Number);
         const date = new Date();
         date.setHours(hours, minutes, 0, 0);
-        return date;
+        return {
+          id: reminder._id,
+          time: date,
+        };
       });
-      const currentReminderIds = currentHabitReminders?.map(
-        (reminder) => reminder._id,
-      );
-      setReminders(currentReminderTimes, currentReminderIds);
+      setReminders(reminderStates);
     } else {
-      setReminders([], []);
+      setReminders([]);
     }
     resetForm();
   }, [
@@ -130,7 +133,7 @@ export default function HabitForm() {
 
     if (remindersEnabled) {
       for (const reminder of reminders) {
-        const timeString = reminder.toTimeString().slice(0, 5); // "HH:mm"
+        const timeString = reminder.time.toTimeString().slice(0, 5); // "HH:mm"
         await createReminder({
           habitId,
           time: timeString,
@@ -143,7 +146,6 @@ export default function HabitForm() {
   const updateSubmit = async (id: string) => {
     const habitId = id as HabitId;
     const validHabitForm = HabitSchema.parse(habitForm);
-    console.log("validHabit", validHabitForm);
     await updateHabit({
       id: habitId,
       ...validHabitForm,
@@ -152,13 +154,37 @@ export default function HabitForm() {
 
     if (remindersEnabled) {
       for (const reminder of reminders) {
-        const timeString = reminder.toTimeString().slice(0, 5); // "HH:mm"
-        await createReminder({
-          habitId,
-          time: timeString,
-        });
+        const timeString = reminder.time.toTimeString().slice(0, 5); // "HH:mm"
+
+        if (reminder.id === null) {
+          // null id = NEW reminder to create in database
+          await createReminder({
+            habitId,
+            time: timeString,
+          });
+        } else {
+          // reminder id EXISTS in database, update it
+          await editReminder({
+            id: reminder.id as Id<"reminders">,
+            time: timeString,
+          });
+        }
+      }
+    } // always check for deleted reminders, esp if reminders are disabled
+    // find deleted reminders (in initialReminders but not in current reminders)
+    const reminderIds = reminders.map((r) => r.id);
+    const currentIds = reminderIds.filter((id) => id !== null);
+    const deletedReminders = initialReminders.filter(
+      (initial) => initial.id !== null && !currentIds.includes(initial.id),
+    );
+
+    // delete removed reminders from database
+    for (const deleted of deletedReminders) {
+      if (deleted.id) {
+        await deleteReminder({ id: deleted.id as Id<"reminders"> });
       }
     }
+
     Toast.show({ type: "success", text1: "Habit updated" });
   };
 
@@ -250,10 +276,15 @@ export default function HabitForm() {
                       <Fragment key={index}>
                         <View style={styles.inputContainer}>
                           <DateTimePicker
-                            value={reminder}
-                            onChange={(_event, selectedDate) =>
-                              updateReminder(index, selectedDate)
-                            }
+                            value={reminder.time}
+                            onChange={(_event, selectedDate) => {
+                              if (!selectedDate) return;
+                              const reminderState = {
+                                id: reminder.id,
+                                time: selectedDate,
+                              };
+                              updateReminder(index, reminderState);
+                            }}
                             mode="time"
                             is24Hour={true}
                             textColor={colors.foreground}
