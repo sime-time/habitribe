@@ -105,6 +105,10 @@ export const createHabitStyles = (colors: ColorScheme) => {
       fontSize: text.xl6,
       fontWeight: "bold",
     },
+    unitContainer: {
+      justifyContent: "center",
+      gap: spacing.xs2,
+    },
   });
 
   return styles;

@@ -143,8 +143,6 @@ export const useHabitFormStore = create<HabitFormStore>()(
       },
 
       setReminders(reminders) {
-        console.log("set reminders", reminders);
-        console.log("set reminders length", reminders.length);
         set({
           reminders,
           initialReminders: reminders,

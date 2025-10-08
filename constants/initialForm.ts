@@ -9,7 +9,7 @@ export const initialForm: HabitFormData = {
   icon: "barbell",
   proofMethodId: "",
   goalTarget: 0,
-  goalUnit: "times",
+  goalUnit: "count",
   startDate: new Date().toISOString().split("T")[0], // "YYYY-MM-DD" format
   schedule: {
     period: Period.Daily,

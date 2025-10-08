@@ -38,8 +38,10 @@ export function getGoalLabel(goalTarget: number, goalUnit: string) {
     switch (goalUnit) {
       case "seconds":
         return "0 minutes";
-      default:
+      case "count":
         return "0 times";
+      default:
+        return `0 ${goalUnit || "times"}`;
     }
   }
 
