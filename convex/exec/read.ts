@@ -76,17 +76,11 @@ export const getHabitEntry = query({
 export const getHabitReminders = query({
   args: {
     habitId: v.id("habits"),
-    userId: v.id("users"),
   },
   handler: async (ctx, args) => {
     const reminders = ctx.db
       .query("reminders")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("habitId"), args.habitId),
-          q.eq(q.field("userId"), args.userId),
-        ),
-      )
+      .filter((q) => q.eq(q.field("habitId"), args.habitId))
       .order("desc")
       .collect();
     return reminders;
@@ -100,7 +94,7 @@ export const getUserReminders = query({
   handler: async (ctx, args) => {
     const reminders = ctx.db
       .query("reminders")
-      .filter((q) => q.and(q.eq(q.field("userId"), args.userId)))
+      .filter((q) => q.eq(q.field("userId"), args.userId))
       .order("desc")
       .collect();
     return reminders;

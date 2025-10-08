@@ -45,3 +45,16 @@ export const toggleHabitEntry = mutation({
     });
   },
 });
+
+export const editReminder = mutation({
+  args: { id: v.id("reminders"), time: v.string() },
+  handler: async (ctx, args) => {
+    const reminder = await ctx.db.get(args.id);
+    if (!reminder) {
+      throw new ConvexError("Reminder not found");
+    }
+    await ctx.db.patch(args.id, {
+      time: args.time,
+    });
+  },
+});

@@ -30,8 +30,8 @@ export default function Index() {
   const habits = useQuery(api.exec.read.getUserHabits);
 
   const renderHabitCard = ({ item }: { item: Habit }) => (
-    <View style={styles.card}>
-      <Pressable style={styles.cardStart} onPress={() => openSheet(item)}>
+    <Pressable style={styles.card} onPress={() => openSheet(item)}>
+      <View style={styles.cardStart}>
         <View
           style={[
             styles.cardIconContainer,
@@ -46,8 +46,8 @@ export default function Index() {
             {getGoalLabel(item.goalTarget, item.goalUnit)}
           </Text>
         </View>
-      </Pressable>
-      <View style={styles.cardEnd}>
+      </View>
+      <Pressable style={styles.cardEnd}>
         <View
           style={[
             styles.cardIconContainer,
@@ -60,8 +60,8 @@ export default function Index() {
             color={colors.mutedForeground}
           />
         </View>
-      </View>
-    </View>
+      </Pressable>
+    </Pressable>
   );
 
   return (

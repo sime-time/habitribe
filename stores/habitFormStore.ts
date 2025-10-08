@@ -6,6 +6,11 @@ import { initialForm } from "@/constants/initialForm";
 import { proofMethodDefaults } from "@/constants/proofMethodDefaults";
 import type { HabitFormData } from "@/validation/HabitSchema";
 
+interface ReminderState {
+  id: string | null; // null means not in database yet
+  time: Date; // storing time as Date because that's what the react-native-time-picker outputs
+}
+
 interface HabitFormStore {
   // Core form data
   habitForm: HabitFormData;
@@ -13,7 +18,8 @@ interface HabitFormStore {
 
   // Reminders state
   remindersEnabled: boolean;
-  reminders: Date[];
+  reminders: ReminderState[];
+  initialReminders: ReminderState[]; // to track which reminder ids to delete/keep
 
   // Icon selection state
   selectedIcon: string;
@@ -32,7 +38,8 @@ interface HabitFormStore {
   toggleReminders: () => void;
   addReminder: () => void;
   removeReminder: (index: number) => void;
-  updateReminder: (index: number, time: Date | undefined) => void;
+  updateReminder: (index: number, reminderState: ReminderState) => void;
+  setReminders: (reminders: ReminderState[]) => void;
 
   // Actions for icon selection
   setSelectedIcon: (icon: string) => void;
@@ -53,6 +60,7 @@ export const useHabitFormStore = create<HabitFormStore>()(
       initialForm: initialForm,
       remindersEnabled: false,
       reminders: [],
+      initialReminders: [],
       selectedIcon: "barbell",
       selectedEmoji: "",
       selectedColor: iconColors[0],
@@ -90,20 +98,33 @@ export const useHabitFormStore = create<HabitFormStore>()(
 
       // Reminder actions
       toggleReminders() {
-        const newTime = new Date();
-        newTime.setHours(8, 0, 0, 0); // Default to 8:00 AM
+        const defaultTime = new Date();
+        defaultTime.setHours(8, 0, 0, 0); // 8:00 AM
+
+        const newReminder = {
+          id: null,
+          time: defaultTime,
+        };
+
         set((state) => ({
           remindersEnabled: !state.remindersEnabled,
           // clear all reminders if needed
-          reminders: !state.remindersEnabled ? [newTime] : [],
+          reminders: !state.remindersEnabled ? [newReminder] : [],
+          initialReminders: !state.remindersEnabled ? [newReminder] : [],
         }));
       },
 
       addReminder() {
-        const newTime = new Date();
-        newTime.setHours(8, 0, 0, 0); // Default to 8:00 AM
+        const defaultTime = new Date();
+        defaultTime.setHours(8, 0, 0, 0); // 8:00 AM
+
+        const newReminder = {
+          id: null,
+          time: defaultTime,
+        };
+
         set((state) => ({
-          reminders: [...state.reminders, newTime],
+          reminders: [...state.reminders, newReminder],
         }));
       },
 
@@ -113,12 +134,20 @@ export const useHabitFormStore = create<HabitFormStore>()(
         }));
       },
 
-      updateReminder(index, time) {
+      updateReminder(index, newReminder) {
         set((state) => ({
           reminders: state.reminders.map((reminder, i) =>
-            // if time is defined & the index matches...
-            time && i === index ? time : reminder,
+            // if new reminder is defined & the index matches...
+            i === index ? newReminder : reminder,
           ),
+        }));
+      },
+
+      setReminders(reminders) {
+        set(() => ({
+          reminders,
+          initialReminders: reminders,
+          remindersEnabled: reminders.length > 0,
         }));
       },
 
@@ -162,6 +191,7 @@ export const useHabitFormStore = create<HabitFormStore>()(
           habitForm: state.initialForm,
           remindersEnabled: false,
           reminders: [],
+          initialReminders: [],
           selectedIcon: state.initialForm.icon,
           selectedEmoji: state.initialForm.icon,
           selectedColor: state.initialForm.color,
@@ -178,14 +208,23 @@ export const useHabitFormStore = create<HabitFormStore>()(
         reviver: (key, value) => {
           // Convert ISO date strings back to Date objects for reminders array
           if (key === "reminders" && Array.isArray(value)) {
-            return value.map((item) => new Date(item));
+            // value is the array of reminder states
+            const conversion = value.map((reminder) => ({
+              id: reminder.id,
+              time: new Date(reminder.time), // convert string to Date
+            }));
+            return conversion;
           }
           return value;
         },
         replacer: (key, value) => {
           // Convert Date objects to ISO strings for storage
           if (key === "reminders" && Array.isArray(value)) {
-            return value.map((item) => item.toISOString());
+            const conversion = value.map((reminder) => ({
+              id: reminder.id,
+              time: reminder.time.toISOString(), // convert Date to string
+            }));
+            return conversion;
           }
           return value;
         },

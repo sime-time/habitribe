@@ -59,6 +59,7 @@ export default function HabitForm() {
   const updateReminder = useHabitFormStore((state) => state.updateReminder);
   const removeReminder = useHabitFormStore((state) => state.removeReminder);
   const toggleReminders = useHabitFormStore((state) => state.toggleReminders);
+  const setReminders = useHabitFormStore((state) => state.setReminders);
 
   const createHabit = useMutation(api.exec.create.addHabit);
   const createReminder = useMutation(api.exec.create.addReminder);
@@ -69,12 +70,15 @@ export default function HabitForm() {
     api.exec.read.getHabit,
     isEditMode ? { habitId: id as HabitId } : "skip",
   );
+  const currentHabitReminders = useQuery(
+    api.exec.read.getHabitReminders,
+    isEditMode ? { habitId: id as HabitId } : "skip",
+  );
 
-  // set the initialForm to be the current habit data
+  // set the initialForm & initialReminders to be the current habit data
   // so when a user resets the form, it returns to the original habit data
   useEffect(() => {
     if (isEditMode && currentHabit) {
-      console.log("EDIT MODE");
       setInitialForm({
         name: currentHabit.name,
         description: currentHabit.description || "",
@@ -90,11 +94,32 @@ export default function HabitForm() {
         },
       });
     } else {
-      console.log("CREATE MODE");
       setInitialForm(initialForm);
     }
+
+    if (isEditMode && currentHabitReminders) {
+      const currentReminderTimes = currentHabitReminders?.map((reminder) => {
+        const [hours, minutes] = reminder.time.split(":").map(Number);
+        const date = new Date();
+        date.setHours(hours, minutes, 0, 0);
+        return date;
+      });
+      const currentReminderIds = currentHabitReminders?.map(
+        (reminder) => reminder._id,
+      );
+      setReminders(currentReminderTimes, currentReminderIds);
+    } else {
+      setReminders([], []);
+    }
     resetForm();
-  }, [isEditMode, currentHabit, setInitialForm, resetForm]);
+  }, [
+    isEditMode,
+    currentHabit,
+    currentHabitReminders,
+    setReminders,
+    setInitialForm,
+    resetForm,
+  ]);
 
   const createSubmit = async () => {
     const validHabitForm = HabitSchema.parse(habitForm);
