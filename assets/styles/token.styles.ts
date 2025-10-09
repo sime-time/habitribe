@@ -1,4 +1,4 @@
-const baseFontSize = 18;
+export const baseFontSize = 18;
 
 // to simulate css rem values
 export function rem(value: number) {

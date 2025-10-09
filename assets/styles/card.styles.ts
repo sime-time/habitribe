@@ -8,42 +8,37 @@ export const createCardStyles = (colors: ColorScheme) => {
 
   const styles = StyleSheet.create({
     ...baseStyles,
-    header: {
-      paddingBottom: spacing.lg,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    addIconContainer: {
-      backgroundColor: colors.card,
-      width: 40,
-      height: 40,
-      borderRadius: border.radiusRound,
-      justifyContent: "center",
-      alignItems: "center",
-    },
     card: {
       backgroundColor: colors.card,
       borderRadius: border.radiusLarge,
       padding: spacing.md,
-      flexDirection: "row",
+      flexDirection: "column",
       justifyContent: "space-between",
       marginBottom: spacing.md,
       borderWidth: border.width,
       borderColor: colors.border,
     },
     cardTextContainer: {
+      flexDirection: "column",
       gap: spacing.xs2,
     },
-    cardStart: {
-      flexGrow: 1,
+    cardContainer: {
+      flex: 1,
       flexDirection: "row",
-      gap: spacing.sm,
+      justifyContent: "space-between",
     },
-    cardEnd: {},
+    cardLeft: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.xs,
+    },
+    cardRight: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
     cardIconContainer: {
-      width: 48,
-      height: 48,
+      width: 36,
+      height: 36,
       borderRadius: border.radiusRound,
       alignItems: "center",
       justifyContent: "center",

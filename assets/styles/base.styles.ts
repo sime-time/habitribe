@@ -10,10 +10,24 @@ export const createBaseStyles = (colors: ColorScheme) => {
     },
     scrollView: {
       flex: 1,
-      padding: spacing.lg,
+      paddingHorizontal: spacing.md,
     },
     centered: {
       flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    header: {
+      paddingBottom: spacing.lg,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    addIconContainer: {
+      backgroundColor: colors.card,
+      width: 40,
+      height: 40,
+      borderRadius: border.radiusRound,
       justifyContent: "center",
       alignItems: "center",
     },
@@ -45,6 +59,10 @@ export const createBaseStyles = (colors: ColorScheme) => {
     form: {
       flex: 1,
       gap: spacing.lg,
+    },
+    divider: {
+      height: 1,
+      backgroundColor: colors.border,
     },
     input: {
       ...typography.body,

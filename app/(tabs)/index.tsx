@@ -3,18 +3,27 @@ import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { EllipsisVertical } from "lucide-react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createCardStyles } from "@/assets/styles/card.styles";
-import { spacing } from "@/assets/styles/token.styles";
+import { baseFontSize, border, spacing } from "@/assets/styles/token.styles";
 import IconOrEmoji from "@/components/IconOrEmoji";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSheetStore } from "@/stores/habitSheetStore";
-import { getGoalLabel } from "@/utils/habitFormLabels";
 
 type Habit = Doc<"habits">;
+
+// Sample images for habit card gallery
+const SAMPLE_IMAGES = [
+  require("@/assets/images/icon.png"),
+  require("@/assets/images/react-logo.png"),
+  require("@/assets/images/partial-react-logo.png"),
+  require("@/assets/images/icon.png"),
+  require("@/assets/images/splash-icon.png"),
+];
 
 export default function Index() {
   const { colors } = useTheme();
@@ -31,38 +40,70 @@ export default function Index() {
 
   const renderHabitCard = ({ item }: { item: Habit }) => (
     <Pressable style={styles.card} onPress={() => openSheet(item)}>
-      <View style={styles.cardStart}>
-        <View
-          style={[
-            styles.cardIconContainer,
-            { backgroundColor: `${item.color}30` },
-          ]}
-        >
-          <IconOrEmoji iconName={item.icon} iconColor={item.color} />
-        </View>
-        <View style={styles.cardTextContainer}>
+      <View style={styles.cardContainer}>
+        <View style={styles.cardLeft}>
+          <View
+            style={[
+              styles.cardIconContainer,
+              { backgroundColor: `${item.color}30` },
+            ]}
+          >
+            <IconOrEmoji iconName={item.icon} iconColor={item.color} />
+          </View>
           <Text style={styles.body}>{item.name}</Text>
-          <Text style={styles.muted}>
-            {getGoalLabel(item.goalTarget, item.goalUnit)}
-          </Text>
+        </View>
+
+        <View style={styles.cardRight}>
+          <View style={styles.cardIconContainer}>
+            <EllipsisVertical
+              color={colors.mutedForeground}
+              size={baseFontSize}
+            />
+          </View>
         </View>
       </View>
-      <Pressable style={styles.cardEnd}>
-        <View
-          style={[
-            styles.cardIconContainer,
-            { outlineColor: colors.mutedForeground },
-          ]}
-        >
-          <Ionicons
-            name="camera-outline"
-            size={24}
-            color={colors.mutedForeground}
-          />
-        </View>
+
+      <Pressable
+        style={[
+          styles.cardContainer,
+          {
+            marginVertical: spacing.sm,
+            borderWidth: 1,
+          },
+        ]}
+      >
+        <FlashList
+          data={SAMPLE_IMAGES}
+          renderItem={({ item: image }) => (
+            <Image
+              source={image}
+              style={imageStyles.image}
+              resizeMode="cover"
+            />
+          )}
+          keyExtractor={(_, index) => `image-${index}`}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+        />
       </Pressable>
+
+      <View style={styles.cardTextContainer}>
+        <View style={styles.divider} />
+        <Text style={styles.muted}>{item.description}</Text>
+      </View>
     </Pressable>
   );
+
+  const imageStyles = StyleSheet.create({
+    image: {
+      width: 64,
+      height: 64,
+      borderRadius: border.radiusMedium,
+      borderWidth: border.width,
+      borderColor: colors.border,
+      marginRight: spacing.sm,
+    },
+  });
 
   return (
     <LinearGradient
