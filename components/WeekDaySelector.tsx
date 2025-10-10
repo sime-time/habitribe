@@ -1,7 +1,8 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
-import { createHabitStyles } from "@/assets/styles/habit.styles";
-import { spacing } from "@/assets/styles/tokenOld.styles";
+import { Check } from "lucide-react-native";
+import { Text, type TextStyle, TouchableOpacity, View } from "react-native";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
+import { CHECKMARK_SIZE } from "@/constants/sizes";
 import useTheme from "@/hooks/useTheme";
 
 interface WeeklyDaySelectorProps {
@@ -14,7 +15,7 @@ export default function WeekDaySelector({
   setInterval,
 }: WeeklyDaySelectorProps) {
   const { colors } = useTheme();
-  const styles = createHabitStyles(colors);
+  const c = createColorStyles(colors);
 
   const days = [
     { label: "Su", value: 0 },
@@ -57,37 +58,42 @@ export default function WeekDaySelector({
   };
 
   return (
-    <View style={styles.weekContainer}>
+    <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
       {days.map((day) => {
         const isSelected = selectedDays.includes(day.value);
         return (
-          <View key={day.value} style={styles.dayContainer}>
+          <View
+            key={day.value}
+            style={[s.flex1, s.itemsCenter, s.justifyBetween]}
+          >
             <TouchableOpacity
               style={[
-                styles.dayCheckbox,
+                s.roundedFull,
+                s.justifyCenter,
+                s.itemsCenter,
+                s.border2,
+                isSelected ? c.bgPrimary : c.bgTransparent,
+                isSelected ? c.borderPrimary : c.borderDefault,
                 {
-                  backgroundColor: isSelected ? colors.primary : "transparent",
-                  borderColor: isSelected ? colors.primary : colors.muted,
+                  width: CHECKMARK_SIZE + 12,
+                  height: CHECKMARK_SIZE + 12,
                 },
               ]}
               onPress={() => toggleDay(day.value)}
             >
-              {isSelected ? (
-                <Ionicons
-                  name="checkmark"
-                  size={20}
-                  color={colors.primaryForeground}
-                />
-              ) : null}
+              {isSelected && (
+                <Check size={CHECKMARK_SIZE} color={colors.primaryForeground} />
+              )}
             </TouchableOpacity>
             <Text
-              style={[
-                styles.muted,
-                {
-                  marginTop: spacing.xs,
-                  color: colors.foreground,
-                },
-              ]}
+              style={
+                [
+                  c.textMuted,
+                  s.textBase,
+                  s.mt2,
+                  c.textForeground,
+                ] as TextStyle[]
+              }
             >
               {day.label}
             </Text>

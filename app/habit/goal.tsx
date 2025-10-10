@@ -19,7 +19,7 @@ import { CHECKMARK_SIZE } from "@/constants/sizes";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 
-export default function HabitTarget() {
+export default function HabitGoal() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
@@ -139,11 +139,11 @@ export default function HabitTarget() {
                     s.justifyCenter,
                     s.itemsCenter,
                     s.gap2,
-                    { height: CHECKMARK_SIZE * 1.7 },
+                    s.inputHeight,
                   ]}
                   onPress={toggleShowUnits}
                 >
-                  <Text style={[s.textLg, c.textForeground] as TextStyle[]}>
+                  <Text style={[s.textLg, s.fontSemibold, c.textForeground]}>
                     {goalUnit.toUpperCase()}
                   </Text>
                   <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
@@ -179,7 +179,7 @@ export default function HabitTarget() {
                           s.flexRow,
                           s.justifyBetween,
                           s.itemsCenter,
-                          { height: CHECKMARK_SIZE * 1.7 },
+                          s.inputHeight,
                         ]}
                         onPress={() => {
                           setGoalUnit(item.value);

@@ -80,7 +80,7 @@ export default function HabitIcon() {
             />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search emojis"
+              placeholder="Search icons"
               placeholderTextColor={colors.muted}
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -99,7 +99,7 @@ export default function HabitIcon() {
           </View>
 
           {/* Choose Emoji Section */}
-          <Text style={styles.sectionTitle}>Choose emoji</Text>
+          <Text style={styles.sectionTitle}>Choose icon</Text>
 
           {/* Emoji Grid */}
           <View>

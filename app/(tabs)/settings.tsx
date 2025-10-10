@@ -109,7 +109,7 @@ export default function SettingsScreen() {
     },
     {
       icon: "exit-outline",
-      iconBg: colors.muted,
+      iconBg: colors.primary,
       iconColor: colors.primaryForeground,
       title: "Logout",
       subtitle: "Sign out of your account",
