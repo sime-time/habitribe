@@ -73,51 +73,31 @@ export default function Index() {
           >
             <IconOrEmoji iconName={item.icon} iconColor={item.color} />
           </View>
-          <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
-            {item.name}
-          </Text>
+          <View style={[s.flexCol, s.gap1]}>
+            <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+              {item.name}
+            </Text>
+            <Text style={[s.textSm, c.textMuted]}>{item.description}</Text>
+          </View>
         </View>
 
-        <View style={[s.p2, s.roundedMd]}>
-          <EllipsisVertical color={colors.muted} size={20} />
+        <View>
+          <Image
+            source={SAMPLE_IMAGES[0]}
+            style={
+              [
+                s.rounded,
+                c.borderDefault,
+                s.border1,
+                {
+                  width: 56,
+                  height: 56,
+                },
+              ] as ImageStyle[]
+            }
+            resizeMode="cover"
+          />
         </View>
-      </View>
-
-      {/* Image Gallery */}
-      <View style={s.my2}>
-        <FlashList
-          data={SAMPLE_IMAGES}
-          renderItem={({ item: image }: { item: ImageSourcePropType }) => (
-            <Image
-              source={image}
-              style={
-                [
-                  s.rounded,
-                  s.mr2,
-                  c.borderDefault,
-                  s.border1,
-                  {
-                    width: 64,
-                    height: 64,
-                  },
-                ] as ImageStyle[]
-              }
-              resizeMode="cover"
-            />
-          )}
-          keyExtractor={(_, index) => `image-${index}`}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-
-      {/* Description */}
-      <View style={[s.divider, c.bgMuted]} />
-      <View style={[s.flexRow, s.justifyBetween]}>
-        <Text style={[s.textSm, c.textMuted]}>{item.description}</Text>
-        <Text style={[s.textSm, c.textMuted]}>
-          {getGoalLabel(item.goalTarget, item.goalUnit)}
-        </Text>
       </View>
     </Pressable>
   );

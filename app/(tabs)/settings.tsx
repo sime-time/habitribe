@@ -111,7 +111,7 @@ export default function SettingsScreen() {
     {
       icon: "exit-outline",
       iconBg: colors.muted,
-      iconColor: colors.foreground,
+      iconColor: colors.primaryForeground,
       title: "Logout",
       subtitle: "Sign out of your account",
       onPress: handleSignOut,
@@ -133,7 +133,7 @@ export default function SettingsScreen() {
     {
       icon: "information-circle-outline",
       iconBg: colors.muted,
-      iconColor: colors.foreground,
+      iconColor: colors.primaryForeground,
       title: "About",
       subtitle: "Learn more about the app",
       onPress: () => Alert.alert("Coming Soon", "About page"),
@@ -142,7 +142,7 @@ export default function SettingsScreen() {
     {
       icon: "document-text-outline",
       iconBg: colors.muted,
-      iconColor: colors.foreground,
+      iconColor: colors.primaryForeground,
       title: "Terms & Conditions",
       subtitle: "Read our legal terms",
       onPress: () => Alert.alert("Coming Soon", "Terms & Conditions"),
@@ -151,7 +151,7 @@ export default function SettingsScreen() {
     {
       icon: "shield-checkmark-outline",
       iconBg: colors.muted,
-      iconColor: colors.foreground,
+      iconColor: colors.primaryForeground,
       title: "Privacy Policy",
       subtitle: "Understand our data practices",
       onPress: () => Alert.alert("Coming Soon", "Privacy Policy"),

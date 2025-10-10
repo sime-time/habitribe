@@ -1,6 +1,6 @@
 import { useQuery } from "convex/react";
 import { router } from "expo-router";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { createCommitStyles } from "@/assets/styles/commit.styles";
 import { s } from "@/assets/styles/utility.styles";
@@ -48,18 +48,43 @@ export default function CommitStatement() {
     </TouchableOpacity>
   );
 
-  const renderDescriptionInput = () => (
-    <TouchableOpacity style={styles.commitPill}>
-      <TextInput
-        value={description}
-        autoCapitalize="none"
-        style={[styles.commitText, c.textPrimary]}
-        placeholder="describe habit..."
-        placeholderTextColor={colors.muted}
-        onChangeText={(text) => updateForm("description", text)}
-      />
-    </TouchableOpacity>
-  );
+  const renderDescriptionInput = () => {
+    const handleDescriptionPress = () => {
+      Alert.prompt(
+        "Describe Your Habit",
+        "What specific action, situation, or task would you like to repeat consistently?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Save",
+            onPress: (text: string | undefined) => {
+              if (text !== undefined) {
+                updateForm("description", text);
+              }
+            },
+          },
+        ],
+        "plain-text",
+        description,
+      );
+    };
+
+    return (
+      <TouchableOpacity
+        style={styles.commitPill}
+        onPress={handleDescriptionPress}
+      >
+        <Text
+          style={[styles.commitText, description ? c.textPrimary : c.textMuted]}
+        >
+          {description || "describe habit..."}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   const renderGoalButton = () => (
     <TouchableOpacity

@@ -58,7 +58,7 @@ export default function HabitProof() {
         },
       ]}
     >
-      <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
+      <View style={[s.flexRow, s.itemsCenter, s.gap5]}>
         <View
           style={[
             s.itemsCenter,
