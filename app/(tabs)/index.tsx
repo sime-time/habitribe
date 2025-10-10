@@ -16,7 +16,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
-import IconOrEmoji from "@/components/IconOrEmoji";
+import Emoji from "@/components/Emoji";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
@@ -67,7 +67,7 @@ export default function Index() {
               { backgroundColor: `${item.color}30` },
             ]}
           >
-            <IconOrEmoji iconName={item.icon} iconColor={item.color} />
+            <Emoji iconName={item.icon} iconColor={item.color} />
           </View>
           <View style={[s.flexCol, s.gap1]}>
             <Text style={[s.textLg, s.fontMedium, c.textForeground]}>

@@ -23,7 +23,6 @@ interface HabitFormStore {
 
   // Icon selection state
   selectedIcon: string;
-  selectedEmoji: string;
   selectedColor: string;
 
   // Actions for core form
@@ -43,7 +42,6 @@ interface HabitFormStore {
 
   // Actions for icon selection
   setSelectedIcon: (icon: string) => void;
-  setSelectedEmoji: (emoji: string) => void;
   setSelectedColor: (color: string) => void;
 
   // Form management
@@ -61,8 +59,7 @@ export const useHabitFormStore = create<HabitFormStore>()(
       remindersEnabled: false,
       reminders: [],
       initialReminders: [],
-      selectedIcon: "barbell",
-      selectedEmoji: "",
+      selectedIcon: "💪",
       selectedColor: iconColors[0],
       isDraftSaved: false,
 
@@ -155,17 +152,7 @@ export const useHabitFormStore = create<HabitFormStore>()(
       setSelectedIcon(icon) {
         set((state) => ({
           selectedIcon: icon,
-          selectedEmoji: "", // Clear emoji
           habitForm: { ...state.habitForm, icon },
-          isDraftSaved: true,
-        }));
-      },
-
-      setSelectedEmoji(emoji) {
-        set((state) => ({
-          selectedIcon: "", // Clear icon
-          selectedEmoji: emoji,
-          habitForm: { ...state.habitForm, icon: emoji },
           isDraftSaved: true,
         }));
       },
@@ -191,9 +178,8 @@ export const useHabitFormStore = create<HabitFormStore>()(
           remindersEnabled: state.remindersEnabled,
           reminders: state.reminders,
           initialReminders: state.initialReminders,
-          selectedIcon: state.initialForm.icon,
-          selectedEmoji: state.initialForm.icon,
-          selectedColor: state.initialForm.color,
+          selectedIcon: state.initialForm.icon || "💪",
+          selectedColor: state.initialForm.color || iconColors[0],
           isDraftSaved: false,
         }));
       },

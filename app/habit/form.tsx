@@ -7,7 +7,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { Fragment, useEffect } from "react";
 import {
-  Button,
   ScrollView,
   Switch,
   Text,
@@ -23,7 +22,7 @@ import { createColorStyles } from "@/assets/styles/color.styles";
 import { toastConfig } from "@/assets/styles/toast.config";
 import { s } from "@/assets/styles/utility.styles";
 import CommitStatement from "@/components/CommitStatement";
-import IconOrEmoji from "@/components/IconOrEmoji";
+import Emoji from "@/components/Emoji";
 import { initialForm } from "@/constants/initialForm";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -279,7 +278,20 @@ export default function HabitForm() {
                     Icon
                   </Text>
                   <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
-                    <IconOrEmoji iconName={icon} iconColor={color} />
+                    <View
+                      style={[
+                        s.roundedFull,
+                        s.itemsCenter,
+                        s.justifyCenter,
+                        {
+                          backgroundColor: `${color}30`,
+                          height: 40,
+                          width: 40,
+                        },
+                      ]}
+                    >
+                      <Emoji iconName={icon} iconSize={18} />
+                    </View>
                     <Ionicons
                       name="chevron-forward"
                       size={18}

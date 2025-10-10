@@ -144,6 +144,19 @@ export const s = {
   mr2: { marginRight: spacing[2] } as ViewStyle,
   mr4: { marginRight: spacing[4] } as ViewStyle,
 
+  // Z-Index
+  zBottom: { zIndex: -999 } as ViewStyle,
+  zneg30: { zIndex: -30 } as ViewStyle,
+  zneg20: { zIndex: -20 } as ViewStyle,
+  zneg10: { zIndex: -10 } as ViewStyle,
+  z0: { zIndex: 0 } as ViewStyle,
+  z10: { zIndex: 10 } as ViewStyle,
+  z20: { zIndex: 20 } as ViewStyle,
+  z30: { zIndex: 30 } as ViewStyle,
+  z40: { zIndex: 40 } as ViewStyle,
+  z50: { zIndex: 50 } as ViewStyle,
+  zTop: { zIndex: 999 } as ViewStyle,
+
   // Gap (flexbox gap - requires RN 0.71+)
   gap0: { gap: spacing[0] } as ViewStyle,
   gap1: { gap: spacing[1] } as ViewStyle,

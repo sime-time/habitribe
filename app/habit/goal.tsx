@@ -7,22 +7,21 @@ import {
   ScrollView,
   Text,
   TextInput,
+  type TextStyle,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  CHECKMARK_SIZE,
-  createHabitStyles,
-} from "@/assets/styles/habit.styles";
-import { spacing } from "@/assets/styles/tokenOld.styles";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
 import { units } from "@/constants/goalUnits";
+import { CHECKMARK_SIZE } from "@/constants/sizes";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 
 export default function HabitTarget() {
   const { colors } = useTheme();
-  const styles = createHabitStyles(colors);
+  const c = createColorStyles(colors);
 
   // Habit state
   const updateForm = useHabitFormStore((state) => state.updateForm);
@@ -54,29 +53,57 @@ export default function HabitTarget() {
   };
 
   return (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.form}>
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>
-                TAP TO MANUALLY INPUT A NUMBER
+    <LinearGradient colors={colors.gradients.background} style={s.flex1}>
+      <SafeAreaView style={s.flex1}>
+        <ScrollView style={s.flex1}>
+          <View style={[s.flex1, s.p4]}>
+            <View style={[s.flex1, s.gap2]}>
+              <Text style={[s.textXs, s.ml2, c.textMuted] as TextStyle[]}>
+                TAP THE NUMBER TO TYPE
               </Text>
 
-              <View style={styles.inputGroup}>
-                <View style={styles.countContainer}>
+              <View
+                style={[
+                  s.flex1,
+                  s.px4,
+                  c.bgCard,
+                  s.roundedMd,
+                  s.border1,
+                  c.borderDefault,
+                ]}
+              >
+                <View
+                  style={[
+                    s.flex1,
+                    s.flexRow,
+                    s.justifyEvenly,
+                    s.itemsCenter,
+                    s.my4,
+                  ]}
+                >
                   <TouchableOpacity
-                    style={styles.countButton}
+                    style={[
+                      s.p2,
+                      s.justifyCenter,
+                      s.itemsCenter,
+                      c.bgPrimary,
+                      s.roundedSm,
+                    ]}
                     onPress={decrementGoal}
                   >
                     <Minus color={colors.card} size={CHECKMARK_SIZE} />
                   </TouchableOpacity>
                   <TextInput
                     value={goalTarget ? String(goalTarget) : undefined}
-                    style={styles.countText}
+                    style={
+                      [
+                        s.flex1,
+                        s.textCenter,
+                        c.textForeground,
+                        s.text4xl,
+                        s.fontBold,
+                      ] as TextStyle[]
+                    }
                     placeholder={"0"}
                     placeholderTextColor={colors.muted}
                     keyboardType="numeric"
@@ -90,21 +117,36 @@ export default function HabitTarget() {
                     }}
                   />
                   <TouchableOpacity
-                    style={styles.countButton}
+                    style={[
+                      s.p2,
+                      s.justifyCenter,
+                      s.itemsCenter,
+                      c.bgPrimary,
+                      s.roundedSm,
+                    ]}
                     onPress={incrementGoal}
                   >
                     <Plus color={colors.card} size={CHECKMARK_SIZE} />
                   </TouchableOpacity>
                 </View>
 
-                <View style={styles.inputDivider} />
+                <View style={[s.divider, c.bgMuted]} />
 
                 <TouchableOpacity
-                  style={[styles.inputContainer, styles.unitContainer]}
+                  style={[
+                    s.flex1,
+                    s.flexRow,
+                    s.justifyCenter,
+                    s.itemsCenter,
+                    s.gap2,
+                    { height: CHECKMARK_SIZE * 1.7 },
+                  ]}
                   onPress={toggleShowUnits}
                 >
-                  <Text style={styles.body}>{goalUnit.toUpperCase()}</Text>
-                  <View style={styles.inputIcon}>
+                  <Text style={[s.textLg, c.textForeground] as TextStyle[]}>
+                    {goalUnit.toUpperCase()}
+                  </Text>
+                  <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
                     {showUnits ? (
                       <ChevronUp color={colors.muted} size={CHECKMARK_SIZE} />
                     ) : (
@@ -117,8 +159,14 @@ export default function HabitTarget() {
               {showUnits && (
                 <View
                   style={[
-                    styles.inputGroup,
-                    { marginTop: spacing.xs2, zIndex: 2 },
+                    s.flex1,
+                    s.px4,
+                    c.bgCard,
+                    s.roundedMd,
+                    s.border1,
+                    c.borderDefault,
+                    s.mt2,
+                    s.z10,
                   ]}
                 >
                   <FlashList
@@ -126,14 +174,24 @@ export default function HabitTarget() {
                     keyExtractor={(item) => item.value}
                     renderItem={({ item }) => (
                       <TouchableOpacity
-                        style={styles.inputContainer}
+                        style={[
+                          s.flex1,
+                          s.flexRow,
+                          s.justifyBetween,
+                          s.itemsCenter,
+                          { height: CHECKMARK_SIZE * 1.7 },
+                        ]}
                         onPress={() => {
                           setGoalUnit(item.value);
                           toggleShowUnits();
                         }}
                       >
-                        <Text style={styles.body}>{item.label}</Text>
-                        <View style={styles.inputIcon}>
+                        <Text
+                          style={[s.textLg, c.textForeground] as TextStyle[]}
+                        >
+                          {item.label}
+                        </Text>
+                        <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
                           {item.value === goalUnit ? (
                             <Ionicons
                               name="checkmark"
@@ -145,7 +203,7 @@ export default function HabitTarget() {
                       </TouchableOpacity>
                     )}
                     ItemSeparatorComponent={() => (
-                      <View style={styles.inputDivider} />
+                      <View style={[s.divider, c.bgMuted]} />
                     )}
                   />
                 </View>

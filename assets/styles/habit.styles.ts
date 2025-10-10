@@ -1,9 +1,11 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
+import { CHECKMARK_SIZE } from "@/constants/sizes";
 import { createBaseStyles } from "./base.styles";
 import { border, shadows, spacing, text, typography } from "./tokenOld.styles";
 
-export const CHECKMARK_SIZE = 30;
+// Re-export for backwards compatibility
+export { CHECKMARK_SIZE };
 
 export const createHabitStyles = (colors: ColorScheme) => {
   const baseStyles = createBaseStyles(colors);

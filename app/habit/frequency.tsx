@@ -13,11 +13,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import WeekDaySelector from "@/components/WeekDaySelector";
+import { CHECKMARK_SIZE } from "@/constants/sizes";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 import { Period } from "@/utils/habitFormLabels";
-
-const CHECKMARK_SIZE = 28;
 
 export default function HabitFrequency() {
   const { colors } = useTheme();

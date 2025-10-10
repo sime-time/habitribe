@@ -6,7 +6,7 @@ export const initialForm: HabitFormData = {
   name: "",
   description: "",
   color: iconColors[6],
-  icon: "barbell",
+  icon: "💪",
   proofMethodId: "",
   goalTarget: 0,
   goalUnit: "count",
