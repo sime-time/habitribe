@@ -41,11 +41,7 @@ export default function CommitStatement() {
       onPress={() => router.push("/habit/proof")}
     >
       <Text
-        style={[
-          s.textBase,
-          s.fontMedium,
-          proofMethodId ? c.textPrimary : c.textMuted,
-        ]}
+        style={[styles.commitText, proofMethodId ? c.textPrimary : c.textMuted]}
       >
         {proofMethodLabel}
       </Text>
@@ -57,7 +53,7 @@ export default function CommitStatement() {
       <TextInput
         value={description}
         autoCapitalize="none"
-        style={[s.textBase, s.fontMedium, c.textPrimary]}
+        style={[styles.commitText, c.textPrimary]}
         placeholder="describe habit..."
         placeholderTextColor={colors.muted}
         onChangeText={(text) => updateForm("description", text)}
@@ -72,8 +68,7 @@ export default function CommitStatement() {
     >
       <Text
         style={[
-          s.textBase,
-          s.fontMedium,
+          styles.commitText,
           goalTarget && goalUnit ? c.textPrimary : c.textMuted,
         ]}
       >
@@ -89,8 +84,7 @@ export default function CommitStatement() {
     >
       <Text
         style={[
-          s.textBase,
-          s.fontMedium,
+          styles.commitText,
           goalTarget && goalUnit ? c.textPrimary : c.textMuted,
         ]}
       >
@@ -106,8 +100,7 @@ export default function CommitStatement() {
     >
       <Text
         style={[
-          s.textBase,
-          s.fontMedium,
+          styles.commitText,
           Array.isArray(schedule.interval) && schedule.interval.length === 0
             ? c.textMuted
             : c.textPrimary,

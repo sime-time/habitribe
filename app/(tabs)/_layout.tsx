@@ -31,7 +31,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "Home",
+            title: "Habits",
             tabBarIcon: ({ color, size }) => (
               <ScrollText size={size} color={color} />
             ),

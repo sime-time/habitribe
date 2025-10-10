@@ -65,7 +65,7 @@ export default function Index() {
           <View
             style={[
               s.p3,
-              s.roundedMd,
+              s.roundedLg,
               s.itemsCenter,
               s.justifyCenter,
               { backgroundColor: `${item.color}30` },
@@ -92,7 +92,7 @@ export default function Index() {
               source={image}
               style={
                 [
-                  s.roundedMd,
+                  s.rounded,
                   s.mr2,
                   c.borderDefault,
                   s.border1,
