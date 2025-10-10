@@ -3,13 +3,14 @@ import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import { EllipsisVertical } from "lucide-react-native";
+import { Check } from "lucide-react-native";
 import {
   Image,
   type ImageSourcePropType,
   type ImageStyle,
   Pressable,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,17 +21,12 @@ import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSheetStore } from "@/stores/habitSheetStore";
-import { getGoalLabel } from "@/utils/habitFormLabels";
 
 type Habit = Doc<"habits">;
 
 // Sample images for habit card gallery
 const SAMPLE_IMAGES: ImageSourcePropType[] = [
   require("@/assets/images/icon.png"),
-  require("@/assets/images/react-logo.png"),
-  require("@/assets/images/partial-react-logo.png"),
-  require("@/assets/images/icon.png"),
-  require("@/assets/images/splash-icon.png"),
 ];
 
 export default function Index() {
@@ -59,7 +55,7 @@ export default function Index() {
       ]}
       onPress={() => openSheet(item)}
     >
-      {/* Header: Icon + Name + Menu */}
+      {/* Header: Icon + Name + Description */}
       <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
         <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
           <View
@@ -81,14 +77,15 @@ export default function Index() {
           </View>
         </View>
 
-        <View>
+        {/* Checkbox */}
+        <Pressable style={{ width: 56, height: 56 }}>
           <Image
             source={SAMPLE_IMAGES[0]}
             style={
               [
                 s.rounded,
-                c.borderDefault,
                 s.border1,
+                c.borderDefault,
                 {
                   width: 56,
                   height: 56,
@@ -97,7 +94,37 @@ export default function Index() {
             }
             resizeMode="cover"
           />
-        </View>
+          {/* Overlay + Icon */}
+          <View
+            style={[
+              s.absolute,
+              c.bgSuccess,
+              s.opacity75,
+              s.rounded,
+              {
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              },
+            ]}
+          />
+          <View
+            style={[
+              s.absolute,
+              s.itemsCenter,
+              s.justifyCenter,
+              {
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+              },
+            ]}
+          >
+            <Check size={32} color="white" />
+          </View>
+        </Pressable>
       </View>
     </Pressable>
   );
@@ -105,17 +132,40 @@ export default function Index() {
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1} edges={["top"]}>
-        <View style={[s.flex1, s.px4]}>
-          {/* HEADER */}
-          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb6]}>
-            <View style={s.flex1}>
-              <Text style={[s.text3xl, s.fontBold, c.textForeground]}>
-                Today
-              </Text>
-              <Text style={[s.textSm, c.textMuted]}>{formattedDate}</Text>
+        {/* HEADER */}
+        <View
+          style={[s.px4, s.py8, s.flexRow, s.justifyBetween, s.itemsCenter]}
+        >
+          <View style={s.flex1}>
+            <Text style={[s.text3xl, s.fontBold, c.textForeground]}>Today</Text>
+            <Text style={[s.textSm, c.textMuted]}>{formattedDate}</Text>
+          </View>
+          <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
+            <View>
+              <Ionicons
+                name="notifications-outline"
+                size={24}
+                color={colors.foreground}
+              />
             </View>
+            <Image
+              source={{ uri: "https://i.pravatar.cc/150?img=3" }}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+              }}
+            />
+          </View>
+        </View>
+        <View style={[s.flex1, s.px4]}>
+          {/* HABITS HEADER */}
+          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb6]}>
+            <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
+              Daily Habits
+            </Text>
             <Link href="/habit/form" asChild>
-              <Pressable>
+              <TouchableOpacity>
                 <LinearGradient
                   colors={colors.gradients.primary}
                   style={[
@@ -131,7 +181,7 @@ export default function Index() {
                     color={colors.primaryForeground}
                   />
                 </LinearGradient>
-              </Pressable>
+              </TouchableOpacity>
             </Link>
           </View>
 
@@ -140,6 +190,7 @@ export default function Index() {
             data={habits}
             renderItem={renderHabitCard}
             keyExtractor={(item) => item._id}
+            showsVerticalScrollIndicator={false}
           />
         </View>
       </SafeAreaView>

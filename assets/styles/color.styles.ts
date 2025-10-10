@@ -21,6 +21,7 @@ export const createColorStyles = (colors: ColorScheme) =>
       backgroundColor: colors.secondaryForeground,
     } as ViewStyle,
     bgMuted: { backgroundColor: colors.muted } as ViewStyle,
+    bgTransparent: { backgroundColor: "transparent" } as ViewStyle,
 
     // State backgrounds
     bgSuccess: { backgroundColor: colors.success } as ViewStyle,

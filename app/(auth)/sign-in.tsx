@@ -200,12 +200,16 @@ export default function SignIn() {
                 )}
               </LinearGradient>
             </TouchableOpacity>
-            <Button
-              title="Cancel"
-              color={colors.muted}
+            <TouchableOpacity
+              style={[s.button, c.bgTransparent]}
               onPress={() => setStep("signIn")}
-              disabled={loading}
-            />
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color={colors.muted} />
+              ) : (
+                <Text style={[s.textBase, c.textDestructive]}>Cancel</Text>
+              )}
+            </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>

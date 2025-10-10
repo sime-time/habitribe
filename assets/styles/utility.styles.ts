@@ -265,8 +265,8 @@ export const s = {
   input: {
     borderWidth: 2,
     borderRadius: borderRadius.md,
-    paddingHorizontal: spacing[6],
-    paddingVertical: spacing[4],
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[2],
   },
   inputHeight: {
     height: 51,

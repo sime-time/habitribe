@@ -141,7 +141,7 @@ export default function SignIn() {
   style={[s.button, c.bgForeground]}
 >
   <AntDesign name="apple" size={24} color={colors.background} />
-  <Text style={[s.textBase, s.fontMedium, c.textBackground]}>
+  <Text style={[s.textLg, s.fontMedium, c.textBackground]}>
     Continue with Apple
   </Text>
 </TouchableOpacity>
@@ -176,7 +176,7 @@ export default function SignIn() {
   ]}
 >
   <AntDesign name="google" size={24} color={colors.foreground} />
-  <Text style={[s.textBase, s.fontMedium, c.textForeground]}>
+  <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
     Continue with Google
   </Text>
 </TouchableOpacity>

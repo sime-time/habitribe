@@ -1,15 +1,16 @@
 import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Text, type TextStyle, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createHabitStyles } from "@/assets/styles/habit.styles";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 
 export default function HabitTarget() {
   const { colors } = useTheme();
-  const styles = createHabitStyles(colors);
+  const c = createColorStyles(colors);
 
   // Habit state
   const updateForm = useHabitFormStore((state) => state.updateForm);
@@ -39,56 +40,65 @@ export default function HabitTarget() {
   }, [goalTarget, goalUnit]);
 
   return (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.form}>
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>TARGET</Text>
-              <View style={styles.inputGroup}>
-                {/* Calculate time value in seconds */}
-                <View style={styles.centered}>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Picker
-                      selectedValue={selectedHours}
-                      style={{ flex: 1 }}
-                      onValueChange={(value) => {
-                        setSelectedHours(value);
-                        setGoalTarget(value * 3600 + selectedMinutes * 60);
-                      }}
-                      itemStyle={{
-                        color: colors.foreground,
-                      }}
-                    >
-                      {Array.from({ length: 24 }, (_, i) => (
-                        <Picker.Item key={i} label={`${i} hr`} value={i} />
-                      ))}
-                    </Picker>
+    <LinearGradient colors={colors.gradients.background} style={s.flex1}>
+      <SafeAreaView style={s.flex1}>
+        <View style={[s.flex1, s.p4]}>
+          <View style={[s.flex1, s.gap2]}>
+            <Text style={[s.textXs, s.ml2, c.textMuted] as TextStyle[]}>
+              SELECT AMOUNT OF TIME
+            </Text>
+            <View
+              style={[
+                s.px4,
+                c.bgCard,
+                s.roundedMd,
+                s.border1,
+                c.borderDefault,
+                {
+                  height: 200,
+                },
+              ]}
+            >
+              <View style={[s.flex1, s.itemsCenter, s.justifyCenter]}>
+                <View style={[s.flexRow, s.itemsCenter]}>
+                  <Picker
+                    selectedValue={selectedHours}
+                    style={{ flex: 1 }}
+                    onValueChange={(value) => {
+                      setSelectedHours(value);
+                      setGoalTarget(value * 3600 + selectedMinutes * 60);
+                      setGoalUnit("seconds");
+                    }}
+                    itemStyle={{
+                      color: colors.foreground,
+                    }}
+                  >
+                    {Array.from({ length: 24 }, (_, i) => (
+                      <Picker.Item key={i} label={`${i} hr`} value={i} />
+                    ))}
+                  </Picker>
 
-                    <Picker
-                      selectedValue={selectedMinutes}
-                      style={{ flex: 1 }}
-                      onValueChange={(value) => {
-                        setSelectedMinutes(value);
-                        setGoalTarget(selectedHours * 3600 + value * 60);
-                      }}
-                      itemStyle={{
-                        color: colors.foreground,
-                      }}
-                    >
-                      {Array.from({ length: 60 }, (_, i) => (
-                        <Picker.Item key={i} label={`${i} min`} value={i} />
-                      ))}
-                    </Picker>
-                  </View>
+                  <Picker
+                    selectedValue={selectedMinutes}
+                    style={{ flex: 1 }}
+                    onValueChange={(value) => {
+                      setSelectedMinutes(value);
+                      setGoalTarget(selectedHours * 3600 + value * 60);
+                      setGoalUnit("seconds");
+                    }}
+                    itemStyle={{
+                      color: colors.foreground,
+                    }}
+                  >
+                    {Array.from({ length: 60 }, (_, i) => (
+                      <Picker.Item key={i} label={`${i} min`} value={i} />
+                    ))}
+                  </Picker>
                 </View>
               </View>
             </View>
           </View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </LinearGradient>
   );

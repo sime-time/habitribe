@@ -1,22 +1,27 @@
-import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Check } from "lucide-react-native";
 import {
-  CHECKMARK_SIZE,
-  createHabitStyles,
-} from "@/assets/styles/habit.styles";
+  ScrollView,
+  Text,
+  type TextStyle,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
 import WeekDaySelector from "@/components/WeekDaySelector";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 import { Period } from "@/utils/habitFormLabels";
 
+const CHECKMARK_SIZE = 28;
+
 export default function HabitFrequency() {
   const { colors } = useTheme();
-  const styles = createHabitStyles(colors);
+  const c = createColorStyles(colors);
 
   const updateSchedule = useHabitFormStore((state) => state.updateSchedule);
 
@@ -72,21 +77,37 @@ export default function HabitFrequency() {
   };
 
   return (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.form}>
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>PERIOD</Text>
-              <View style={styles.inputGroup}>
+    <LinearGradient colors={colors.gradients.background} style={s.flex1}>
+      <SafeAreaView style={s.flex1}>
+        <ScrollView style={[s.flex1, s.p4]}>
+          <View style={[s.flex1, s.gap6]}>
+            {/* PERIOD */}
+            <View style={s.flex1}>
+              <Text
+                style={[s.textXs, s.mb2, s.ml2, c.textMuted] as TextStyle[]}
+              >
+                PERIOD
+              </Text>
+              <View
+                style={[
+                  s.px4,
+                  c.bgCard,
+                  s.roundedMd,
+                  s.border1,
+                  c.borderDefault,
+                ]}
+              >
                 <FlashList
                   data={periods}
                   renderItem={({ item }) => (
                     <TouchableOpacity
-                      style={styles.inputContainer}
+                      style={[
+                        s.flex1,
+                        s.flexRow,
+                        s.justifyBetween,
+                        s.itemsCenter,
+                        s.inputHeight,
+                      ]}
                       onPress={() => {
                         // set period and interval simultaneously
                         updateSchedule({
@@ -95,61 +116,78 @@ export default function HabitFrequency() {
                         });
                       }}
                     >
-                      <Text style={styles.body}>{item.title}</Text>
-                      <View style={styles.inputIcon}>
+                      <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+                        {item.title}
+                      </Text>
+                      <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
                         {item.data === period ? (
-                          <Ionicons
-                            name="checkmark"
-                            color={colors.primary}
-                            size={CHECKMARK_SIZE}
-                          />
+                          <Check color={colors.primary} size={CHECKMARK_SIZE} />
                         ) : null}
                       </View>
                     </TouchableOpacity>
                   )}
                   ItemSeparatorComponent={() => (
-                    <View style={styles.inputDivider} />
+                    <View style={[s.divider, c.bgMuted]} />
                   )}
                 />
               </View>
             </View>
 
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>REPEAT</Text>
-              <View style={styles.inputGroup}>
+            {/* REPEAT */}
+            <View style={s.flex1}>
+              <Text
+                style={[s.textXs, s.mb2, s.ml2, c.textMuted] as TextStyle[]}
+              >
+                REPEAT
+              </Text>
+              <View
+                style={[
+                  s.px4,
+                  c.bgCard,
+                  s.roundedMd,
+                  s.border1,
+                  c.borderDefault,
+                ]}
+              >
                 {/* Every week or Every month has separate UI from Every day*/}
                 {period !== Period.Daily ? (
                   <TouchableOpacity
-                    style={styles.inputContainer}
+                    style={[
+                      s.flex1,
+                      s.flexRow,
+                      s.justifyBetween,
+                      s.itemsCenter,
+                      s.inputHeight,
+                    ]}
                     onPress={() => setInterval(1)}
                   >
-                    <Text style={styles.body}>{singleInterval(period)}</Text>
-                    <View style={styles.inputIcon}>
+                    <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+                      {singleInterval(period)}
+                    </Text>
+                    <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
                       {interval === 1 ? (
-                        <Ionicons
-                          name="checkmark"
-                          color={colors.primary}
-                          size={CHECKMARK_SIZE}
-                        />
+                        <Check color={colors.primary} size={CHECKMARK_SIZE} />
                       ) : null}
                     </View>
                   </TouchableOpacity>
                 ) : (
                   <>
                     <TouchableOpacity
-                      style={styles.inputContainer}
+                      style={[
+                        s.flex1,
+                        s.flexRow,
+                        s.justifyBetween,
+                        s.itemsCenter,
+                        s.inputHeight,
+                      ]}
                       onPress={() => setInterval(1)}
                     >
-                      <Text style={styles.body}>
+                      <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
                         {getDayFrequency(interval)}
                       </Text>
-                      <View style={styles.inputIcon}>
+                      <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
                         {Array.isArray(interval) || interval === 1 ? (
-                          <Ionicons
-                            name="checkmark"
-                            color={colors.primary}
-                            size={CHECKMARK_SIZE}
-                          />
+                          <Check color={colors.primary} size={CHECKMARK_SIZE} />
                         ) : null}
                       </View>
                     </TouchableOpacity>
@@ -162,29 +200,59 @@ export default function HabitFrequency() {
                   </>
                 )}
 
-                <View style={styles.inputDivider} />
+                <View style={[s.divider, c.bgMuted]} />
 
                 {/* Custom repeat (Interval >= 2) */}
                 <TouchableOpacity
-                  style={styles.inputContainer}
+                  style={[
+                    s.flex1,
+                    s.flexRow,
+                    s.justifyBetween,
+                    s.itemsCenter,
+                    s.inputHeight,
+                  ]}
                   onPress={() => setInterval(2)}
                 >
-                  <Text style={styles.body}>Custom repeat</Text>
-                  <View style={styles.inputIcon}>
+                  <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+                    Custom repeat
+                  </Text>
+                  <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
                     {!Array.isArray(interval) && interval >= 2 ? (
-                      <Ionicons
-                        name="checkmark"
-                        color={colors.primary}
-                        size={CHECKMARK_SIZE}
-                      />
+                      <Check color={colors.primary} size={CHECKMARK_SIZE} />
                     ) : null}
                   </View>
                 </TouchableOpacity>
 
                 {!Array.isArray(interval) && interval >= 2 ? (
                   <View>
-                    <Text style={styles.pickerTextLeft}>Every</Text>
-                    <Text style={styles.pickerTextRight}>
+                    <Text
+                      style={[
+                        s.textXl,
+                        c.textForeground,
+                        {
+                          position: "absolute",
+                          top: "50%",
+                          marginTop: -11, // Half of fontSize for centering
+                          left: 32,
+                          zIndex: 1,
+                        },
+                      ]}
+                    >
+                      Every
+                    </Text>
+                    <Text
+                      style={[
+                        s.textXl,
+                        c.textForeground,
+                        {
+                          position: "absolute",
+                          top: "50%",
+                          marginTop: -11, // Half of fontSize for centering
+                          right: 32,
+                          zIndex: 1,
+                        },
+                      ]}
+                    >
                       {pickerPeriod(period)}
                     </Text>
                     <Picker

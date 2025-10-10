@@ -48,5 +48,6 @@ export default defineSchema({
     name: v.string(),
     order: v.number(),
     description: v.string(),
+    requirements: v.string(),
   }),
 });

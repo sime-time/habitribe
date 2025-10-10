@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useEffect } from "react";
@@ -11,12 +11,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
-import { createSheetStyles } from "@/assets/styles/sheet.styles";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import { getGoalLabel } from "@/utils/habitFormLabels";
+import {
+  getGoalLabel,
+  getProofMethodRequirements,
+} from "@/utils/habitFormLabels";
 
 type Habit = Doc<"habits">;
 
@@ -27,13 +35,22 @@ interface HabitSheetProps {
 
 export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
   const { colors } = useTheme();
-  const styles = createSheetStyles(colors);
+  const c = createColorStyles(colors);
 
   const deleteHabit = useMutation(api.exec.delete.deleteHabit);
+
+  const proofMethods = useQuery(api.exec.read.getProofMethods);
 
   const slide = useSharedValue(300);
   const backdrop = useSharedValue(0);
   const duration = 250;
+
+  const backdropAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: backdrop.value,
+  }));
+  const slideAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: slide.value }],
+  }));
 
   const slideUp = () => {
     slide.value = withSpring(0, { duration });
@@ -82,13 +99,41 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
   if (!habit) return null;
 
   return (
-    <Animated.View style={[styles.backdrop, { opacity: backdrop }]}>
-      <Pressable onPress={close} style={styles.backdropPressable}>
-        <Pressable style={styles.bottomSheetContainer}>
+    <Animated.View
+      style={[
+        s.absolute,
+        s.flex1,
+        s.wFull,
+        s.hFull,
+        s.justifyEnd,
+        {
+          top: 0,
+          left: 0,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          zIndex: 999,
+        },
+        backdropAnimatedStyle,
+      ]}
+    >
+      <Pressable onPress={close} style={[s.flex1, s.wFull, s.justifyEnd]}>
+        <Pressable style={{ width: "100%", height: "60%" }}>
           <Animated.View
-            style={[styles.bottomSheet, { transform: [{ translateY: slide }] }]}
+            style={[
+              s.wFull,
+              s.hFull,
+              c.bgCard,
+              s.pb6,
+              {
+                borderTopLeftRadius: 24,
+                borderTopRightRadius: 24,
+              },
+              slideAnimatedStyle,
+            ]}
           >
-            <View style={styles.sheetHeading}>
+            {/* HABIT OPTIONS */}
+            <View
+              style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.px4, s.pt4]}
+            >
               <TouchableOpacity onPress={confirmDelete}>
                 <Ionicons
                   name="trash-outline"
@@ -96,30 +141,68 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
                   size={26}
                 />
               </TouchableOpacity>
-              <Button
-                title="Edit"
-                color={colors.primary}
+              <TouchableOpacity
                 onPress={() => {
                   closeSheet();
                   router.navigate(`/habit/form?id=${habit._id}`);
                 }}
-              />
+              >
+                <Text style={[s.textLg, c.textPrimary]}>Edit</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.sheetBody}>
-              <View style={styles.sheetTextContainer}>
-                <Text style={styles.sheetTitle}>{habit.name}</Text>
-                <Text style={styles.sheetText}>
+
+            <View style={[s.flex1, s.px6, s.gap4, s.justifyBetween]}>
+              {/* HEADER */}
+              <View style={s.gap2}>
+                <Text
+                  style={[
+                    s.text3xl,
+                    s.fontSemibold,
+                    s.textCenter,
+                    c.textForeground,
+                  ]}
+                >
+                  {habit.name}
+                </Text>
+                <Text style={[s.textBase, s.textCenter, c.textForeground]}>
+                  {habit.description} at least{" "}
                   {getGoalLabel(habit.goalTarget, habit.goalUnit)}
                 </Text>
+                <Text style={[s.textBase, s.textCenter, c.textMuted]}>
+                  {getProofMethodRequirements(
+                    habit.proofMethodId,
+                    proofMethods,
+                  )}
+                </Text>
               </View>
-              <TouchableOpacity>
-                <LinearGradient
-                  colors={colors.gradients.primary}
-                  style={styles.button}
-                >
-                  <Text style={styles.buttonText}>Complete</Text>
-                </LinearGradient>
-              </TouchableOpacity>
+
+              {/* PROOF */}
+
+              {/* BUTTONS */}
+              <View style={[s.gap4]}>
+                <TouchableOpacity>
+                  <LinearGradient
+                    colors={colors.gradients.primary}
+                    style={s.button}
+                  >
+                    <Text
+                      style={[s.textLg, s.fontMedium, c.textPrimaryForeground]}
+                    >
+                      Use Camera
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity style={[s.button, c.bgSecondary]}>
+                  <Text style={[s.textLg, s.fontMedium, c.textPrimary]}>
+                    Open Photo Library
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[s.button, c.bgTransparent]}>
+                  <Text style={[s.textLg, s.fontMedium, c.textDestructive]}>
+                    Reset
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </Animated.View>
         </Pressable>

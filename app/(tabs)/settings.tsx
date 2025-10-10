@@ -7,7 +7,6 @@ import {
   ScrollView,
   Switch,
   Text,
-  type TextStyle,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -94,7 +93,7 @@ export default function SettingsScreen() {
       iconBg: colors.primary,
       iconColor: colors.primaryForeground,
       title: "Dark Mode",
-      subtitle: "Switch your app color scheme",
+      subtitle: "Switch app color scheme",
       rightElement: "toggle",
       toggleValue: isDarkMode,
       onToggle: toggleDarkMode,
@@ -223,9 +222,9 @@ export default function SettingsScreen() {
       <SafeAreaView style={s.flex1} edges={["top"]}>
         {/* HEADER */}
         <View
-          style={[s.px6, s.py8, s.flexRow, s.justifyBetween, s.itemsCenter]}
+          style={[s.px4, s.py8, s.flexRow, s.justifyBetween, s.itemsCenter]}
         >
-          <Text style={[s.text4xl, s.fontBold, c.textForeground]}>
+          <Text style={[s.text3xl, s.fontBold, c.textForeground]}>
             Settings
           </Text>
           <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
@@ -239,7 +238,7 @@ export default function SettingsScreen() {
               />
             </TouchableOpacity>
             <Image
-              source={{ uri: "https://i.pravatar.cc/150?img=1" }}
+              source={{ uri: "https://i.pravatar.cc/150?img=3" }}
               style={{
                 width: 40,
                 height: 40,

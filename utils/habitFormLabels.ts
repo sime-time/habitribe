@@ -89,3 +89,13 @@ export function getProofMethodLabel(
   const proofMethod = proofMethods.find((pt) => pt._id === proofMethodId);
   return proofMethod?.description.toLowerCase() || "select proof method...";
 }
+
+export function getProofMethodRequirements(
+  id: string,
+  proofMethods: ProofMethod[] | undefined,
+) {
+  if (!proofMethods) return "Requires Method of Proof";
+  const proofMethodId = id as Id<"proofMethods">;
+  const proofMethod = proofMethods.find((pt) => pt._id === proofMethodId);
+  return proofMethod?.requirements || "Requires Method of Proof";
+}

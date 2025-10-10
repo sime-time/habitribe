@@ -3,12 +3,11 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Plus } from "lucide-react-native";
 import { Fragment, useEffect } from "react";
 import {
   Button,
-  Pressable,
   ScrollView,
   Switch,
   Text,
@@ -408,12 +407,12 @@ export default function HabitForm() {
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
-
-            <Button
-              title="Reset Habit"
+            <TouchableOpacity
+              style={[s.button, c.bgTransparent]}
               onPress={resetForm}
-              color={colors.destructive}
-            />
+            >
+              <Text style={[s.textLg, c.textDestructive]}>Reset Habit</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>
