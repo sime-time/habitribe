@@ -6,7 +6,6 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Button,
-  ScrollView,
   StatusBar,
   Text,
   TextInput,
@@ -16,13 +15,14 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { ZodError } from "zod";
-import { createAuthStyles } from "@/assets/styles/auth.styles";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
 import useTheme from "@/hooks/useTheme";
 import { EmailSchema } from "@/validation/EmailSchema";
 
 export default function SignIn() {
   const { colors } = useTheme();
-  const styles = createAuthStyles(colors);
+  const c = createColorStyles(colors);
 
   const { signIn } = useAuthActions();
 
@@ -88,73 +88,72 @@ export default function SignIn() {
   };
 
   return step === "signIn" ? (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={styles.container}
-    >
+    <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <StatusBar barStyle={colors.statusBarStyle} />
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Welcome to Habitribe!</Text>
-          <Text style={styles.subtitle}>
+      <SafeAreaView style={[s.flex1, s.px4]}>
+        <View style={[s.pt8, s.pb6, s.gap4, s.itemsCenter]}>
+          <Text style={[c.textForeground, s.textCenter, s.text3xl, s.fontBold]}>
+            Welcome to Habitribe!
+          </Text>
+          <Text style={[c.textMuted, s.textLg, s.fontMedium]}>
             Sign in or create an account to continue
           </Text>
         </View>
 
-        <View style={styles.form}>
+        <View style={[s.flex1, s.gap6]}>
           {/* OAUTH PROVIDERS */}
-          <View style={styles.authContainer}>
+          <View style={[s.gap4]}>
             <TouchableOpacity
               disabled={loading}
-              style={[styles.button, styles.appleButton]}
+              style={[s.button, c.bgForeground]}
             >
               <AntDesign name="apple" size={24} color={colors.background} />
-              <Text style={[styles.buttonText, { color: colors.background }]}>
+              <Text style={[s.textBase, c.textBackground]}>
                 Continue with Apple
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               disabled={loading}
-              style={[styles.button, styles.googleButton]}
+              style={[s.button, c.bgCard, s.border2, c.borderDefault]}
             >
               <AntDesign name="google" size={24} color={colors.foreground} />
-              <Text style={[styles.buttonText, { color: colors.foreground }]}>
+              <Text style={[s.textBase, c.textForeground]}>
                 Continue with Google
               </Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.dividerContainer}>
-            <View style={styles.divider} />
-            <Text style={styles.muted}>or</Text>
-            <View style={styles.divider} />
+          <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
+            <View style={[s.divider, s.flex1, c.bgMuted, s.opacity50]} />
+            <Text style={[s.textSm, c.textMuted]}>or</Text>
+            <View style={[s.divider, s.flex1, c.bgMuted, s.opacity50]} />
           </View>
 
           {/* EMAIL OTP */}
-          <View style={styles.authContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor={colors.mutedForeground}
-              onChangeText={setEmail}
-              value={email}
-              inputMode="email"
-              autoCapitalize="none"
-            />
-
+          <View style={s.gap4}>
+            <View style={[s.input, c.borderDefault]}>
+              <TextInput
+                style={c.textForeground}
+                placeholder="Email"
+                placeholderTextColor={colors.muted}
+                onChangeText={setEmail}
+                value={email}
+                inputMode="email"
+                autoCapitalize="none"
+              />
+            </View>
             <TouchableOpacity onPress={handleSignIn} disabled={loading}>
               <LinearGradient
                 colors={colors.gradients.primary}
-                style={styles.button}
+                style={s.button}
               >
                 {loading ? (
-                  <ActivityIndicator
-                    size="small"
-                    color={colors.mutedForeground}
-                  />
+                  <ActivityIndicator size="small" color={colors.muted} />
                 ) : (
-                  <Text style={styles.buttonText}>Continue with Email</Text>
+                  <Text style={[s.textBase, c.textPrimaryForeground]}>
+                    Continue with Email
+                  </Text>
                 )}
               </LinearGradient>
             </TouchableOpacity>
@@ -163,45 +162,47 @@ export default function SignIn() {
       </SafeAreaView>
     </LinearGradient>
   ) : (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={styles.container}
-    >
+    <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <StatusBar barStyle={colors.statusBarStyle} />
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Verify your Email</Text>
-          <Text style={styles.subtitle}>We have sent a code to {email}</Text>
+      <SafeAreaView style={[s.flex1, s.px6]}>
+        <View style={[s.pt8, s.pb6, s.gap2, s.itemsCenter]}>
+          <Text style={[c.textForeground, s.textCenter, s.text3xl, s.fontBold]}>
+            Verify your Email
+          </Text>
+          <Text style={[c.textMuted, s.textLg, s.fontMedium, s.textCenter]}>
+            We have sent a code to {email}
+          </Text>
         </View>
 
-        <View style={styles.form}>
-          {/* VERIFY OTP */}
-          <View style={styles.authContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Code"
-              placeholderTextColor={colors.mutedForeground}
-              onChangeText={setCode}
-              value={code}
-            />
+        {/* VERIFY OTP */}
+        <View style={[s.flex1, s.gap6]}>
+          <View style={[s.gap4]}>
+            <View style={[s.input, c.borderDefault]}>
+              <TextInput
+                style={c.textForeground}
+                placeholder="Code"
+                placeholderTextColor={colors.muted}
+                onChangeText={setCode}
+                value={code}
+              />
+            </View>
             <TouchableOpacity onPress={handleVerifyCode} disabled={loading}>
               <LinearGradient
                 colors={colors.gradients.primary}
-                style={styles.button}
+                style={s.button}
               >
                 {loading ? (
-                  <ActivityIndicator
-                    size="small"
-                    color={colors.mutedForeground}
-                  />
+                  <ActivityIndicator size="small" color={colors.muted} />
                 ) : (
-                  <Text style={styles.buttonText}>Submit</Text>
+                  <Text style={[c.textPrimaryForeground, s.textBase]}>
+                    Submit
+                  </Text>
                 )}
               </LinearGradient>
             </TouchableOpacity>
             <Button
               title="Cancel"
-              color={colors.mutedForeground}
+              color={colors.muted}
               onPress={() => setStep("signIn")}
               disabled={loading}
             />

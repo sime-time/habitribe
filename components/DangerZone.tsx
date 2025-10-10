@@ -47,11 +47,7 @@ export default function DangerZone() {
           </View>
           <Text style={styles.actionTextDanger}>Sign Out</Text>
         </View>
-        <Ionicons
-          name="chevron-forward"
-          size={18}
-          color={colors.mutedForeground}
-        />
+        <Ionicons name="chevron-forward" size={18} color={colors.muted} />
       </TouchableOpacity>
     </View>
   );

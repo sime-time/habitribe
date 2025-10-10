@@ -15,7 +15,7 @@ import {
   CHECKMARK_SIZE,
   createHabitStyles,
 } from "@/assets/styles/habit.styles";
-import { spacing } from "@/assets/styles/token.styles";
+import { spacing } from "@/assets/styles/tokenOld.styles";
 import { units } from "@/constants/goalUnits";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
@@ -78,7 +78,7 @@ export default function HabitTarget() {
                     value={goalTarget ? String(goalTarget) : undefined}
                     style={styles.countText}
                     placeholder={"0"}
-                    placeholderTextColor={colors.mutedForeground}
+                    placeholderTextColor={colors.muted}
                     keyboardType="numeric"
                     onChangeText={(text) => {
                       // Only allow whole numbers
@@ -106,15 +106,9 @@ export default function HabitTarget() {
                   <Text style={styles.body}>{goalUnit.toUpperCase()}</Text>
                   <View style={styles.inputIcon}>
                     {showUnits ? (
-                      <ChevronUp
-                        color={colors.mutedForeground}
-                        size={CHECKMARK_SIZE}
-                      />
+                      <ChevronUp color={colors.muted} size={CHECKMARK_SIZE} />
                     ) : (
-                      <ChevronDown
-                        color={colors.mutedForeground}
-                        size={CHECKMARK_SIZE}
-                      />
+                      <ChevronDown color={colors.muted} size={CHECKMARK_SIZE} />
                     )}
                   </View>
                 </TouchableOpacity>

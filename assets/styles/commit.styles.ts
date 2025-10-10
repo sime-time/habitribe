@@ -1,38 +1,39 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
-import { createBaseStyles } from "./base.styles";
-import { border, spacing } from "./token.styles";
+import { borderRadius, fontSize, fontWeight, spacing } from "./token.styles";
 
 export const createCommitStyles = (colors: ColorScheme) => {
-  const baseStyles = createBaseStyles(colors);
-
   const styles = StyleSheet.create({
-    ...baseStyles,
     commitContainer: {
       flex: 1,
-      gap: spacing.sm,
-      paddingVertical: spacing.md,
-      paddingLeft: spacing.lg,
-      paddingRight: spacing.xs,
+      gap: spacing[2],
+      paddingVertical: spacing[4],
+      paddingLeft: spacing[4],
+      paddingRight: spacing[1],
       backgroundColor: colors.card,
-      borderRadius: border.radiusMedium,
-      borderWidth: border.width,
+      borderRadius: borderRadius.md,
+      borderWidth: 1,
       borderColor: colors.border,
     },
     commitRow: {
       flexDirection: "row",
       alignItems: "center",
-      gap: spacing.md,
+      gap: spacing[4],
       flexWrap: "wrap",
     },
     commitPill: {
       backgroundColor: "transparent",
-      borderWidth: border.width,
+      borderWidth: 2,
       borderColor: colors.primary,
-      borderRadius: border.radiusRound,
-      paddingVertical: spacing.xs,
-      paddingHorizontal: spacing.sm,
+      borderRadius: borderRadius.full,
+      paddingVertical: spacing[2],
+      paddingHorizontal: spacing[4],
       flexShrink: 1,
+    },
+    commitText: {
+      fontSize: fontSize.xl,
+      fontWeight: fontWeight.medium,
+      color: colors.muted,
     },
   });
 

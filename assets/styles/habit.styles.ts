@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
 import { createBaseStyles } from "./base.styles";
-import { border, shadows, spacing, text, typography } from "./token.styles";
+import { border, shadows, spacing, text, typography } from "./tokenOld.styles";
 
 export const CHECKMARK_SIZE = 30;
 
@@ -14,7 +14,7 @@ export const createHabitStyles = (colors: ColorScheme) => {
       backgroundColor: colors.background,
     },
     inputLabel: {
-      color: colors.mutedForeground,
+      color: colors.muted,
       letterSpacing: 0.5,
       fontSize: text.xs,
       marginBottom: spacing.xs,

@@ -4,7 +4,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Camera, FilePenLine, Info, Timer, Video } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createCardStyles } from "@/assets/styles/card.styles";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
@@ -14,7 +15,7 @@ type ProofMethod = Doc<"proofMethods">;
 
 export default function HabitProof() {
   const { colors } = useTheme();
-  const styles = createCardStyles(colors);
+  const c = createColorStyles(colors);
 
   const proofId = useHabitFormStore((state) => state.habitForm.proofMethodId);
   const updateProofMethod = useHabitFormStore(
@@ -42,7 +43,14 @@ export default function HabitProof() {
     <Pressable
       onPress={() => updateProofMethod(item._id, item.name)}
       style={[
-        styles.card,
+        s.p5,
+        s.roundedLg,
+        s.justifyBetween,
+        s.itemsCenter,
+        s.mb4,
+        s.border2,
+        s.flex1,
+        s.flexRow,
         {
           borderColor: item._id === proofId ? colors.primary : colors.border,
           backgroundColor:
@@ -50,27 +58,41 @@ export default function HabitProof() {
         },
       ]}
     >
-      <View style={styles.cardStart}>
-        <View style={styles.cardIconContainer}>{renderIcon(item.name)}</View>
-        <View style={styles.cardTextContainer}>
-          <Text style={styles.body}>{item.name}</Text>
-          <Text style={styles.muted}>{item.description}</Text>
+      <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
+        <View
+          style={[
+            s.itemsCenter,
+            s.justifyCenter,
+            s.roundedFull,
+            { width: 36, height: 36 },
+          ]}
+        >
+          {renderIcon(item.name)}
+        </View>
+        <View style={[s.flexCol, s.gap1]}>
+          <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+            {item.name}
+          </Text>
+          <Text style={[s.textBase, c.textMuted]}>{item.description}</Text>
         </View>
       </View>
-      <Pressable onPress={() => null} style={styles.cardEnd}>
-        <View style={styles.cardIconContainer}>
-          <Info size={26} color={colors.mutedForeground} />
-        </View>
+      <Pressable
+        onPress={() => null}
+        style={[
+          s.itemsCenter,
+          s.justifyCenter,
+          s.roundedFull,
+          { width: 36, height: 36 },
+        ]}
+      >
+        <Info size={26} color={colors.muted} />
       </Pressable>
     </Pressable>
   );
 
   return (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.scrollView}>
+    <LinearGradient colors={colors.gradients.background} style={s.flex1}>
+      <SafeAreaView style={[s.flex1, s.p4]}>
         <FlashList
           data={proofMethods}
           renderItem={renderProofMethod}

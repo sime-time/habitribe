@@ -1,7 +1,9 @@
 import { useQuery } from "convex/react";
 import { router } from "expo-router";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { createColorStyles } from "@/assets/styles/color.styles";
 import { createCommitStyles } from "@/assets/styles/commit.styles";
+import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
@@ -14,6 +16,8 @@ import {
 export default function CommitStatement() {
   const { colors } = useTheme();
   const styles = createCommitStyles(colors);
+  const c = createColorStyles(colors);
+
   const description = useHabitFormStore((state) => state.habitForm.description);
   const schedule = useHabitFormStore((state) => state.habitForm.schedule);
   const proofMethodId = useHabitFormStore(
@@ -38,10 +42,9 @@ export default function CommitStatement() {
     >
       <Text
         style={[
-          styles.body,
-          {
-            color: proofMethodId ? colors.primary : colors.mutedForeground,
-          },
+          s.textBase,
+          s.fontMedium,
+          proofMethodId ? c.textPrimary : c.textMuted,
         ]}
       >
         {proofMethodLabel}
@@ -54,9 +57,9 @@ export default function CommitStatement() {
       <TextInput
         value={description}
         autoCapitalize="none"
-        style={styles.primaryText}
+        style={[s.textBase, s.fontMedium, c.textPrimary]}
         placeholder="describe habit..."
-        placeholderTextColor={colors.mutedForeground}
+        placeholderTextColor={colors.muted}
         onChangeText={(text) => updateForm("description", text)}
       />
     </TouchableOpacity>
@@ -69,11 +72,9 @@ export default function CommitStatement() {
     >
       <Text
         style={[
-          styles.body,
-          {
-            color:
-              goalTarget && goalUnit ? colors.primary : colors.mutedForeground,
-          },
+          s.textBase,
+          s.fontMedium,
+          goalTarget && goalUnit ? c.textPrimary : c.textMuted,
         ]}
       >
         {getGoalLabel(goalTarget, goalUnit)}
@@ -88,11 +89,9 @@ export default function CommitStatement() {
     >
       <Text
         style={[
-          styles.body,
-          {
-            color:
-              goalTarget && goalUnit ? colors.primary : colors.mutedForeground,
-          },
+          s.textBase,
+          s.fontMedium,
+          goalTarget && goalUnit ? c.textPrimary : c.textMuted,
         ]}
       >
         {getGoalLabel(goalTarget, goalUnit)}
@@ -107,13 +106,11 @@ export default function CommitStatement() {
     >
       <Text
         style={[
-          styles.body,
-          {
-            color:
-              Array.isArray(schedule.interval) && schedule.interval.length === 0
-                ? colors.mutedForeground
-                : colors.primary,
-          },
+          s.textBase,
+          s.fontMedium,
+          Array.isArray(schedule.interval) && schedule.interval.length === 0
+            ? c.textMuted
+            : c.textPrimary,
         ]}
       >
         {getFrequencyLabel(schedule.period, schedule.interval)}
@@ -126,19 +123,19 @@ export default function CommitStatement() {
     return (
       <View style={styles.commitContainer}>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>I'll</Text>
+          <Text style={styles.commitText}>I'll</Text>
           {renderProofMethodButton()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>of</Text>
+          <Text style={styles.commitText}>of</Text>
           {renderDescriptionInput()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>at least</Text>
+          <Text style={styles.commitText}>at least</Text>
           {renderGoalButton()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>every</Text>
+          <Text style={styles.commitText}>every</Text>
           {renderFrequencyButton()}
         </View>
       </View>
@@ -150,19 +147,19 @@ export default function CommitStatement() {
     return (
       <View style={styles.commitContainer}>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>I'll</Text>
+          <Text style={styles.commitText}>I'll</Text>
           {renderProofMethodButton()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>of</Text>
+          <Text style={styles.commitText}>of</Text>
           {renderDescriptionInput()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>for</Text>
+          <Text style={styles.commitText}>for</Text>
           {renderTimeButton()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>every</Text>
+          <Text style={styles.commitText}>every</Text>
           {renderFrequencyButton()}
         </View>
       </View>
@@ -174,19 +171,19 @@ export default function CommitStatement() {
     return (
       <View style={styles.commitContainer}>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>I'll</Text>
+          <Text style={styles.commitText}>I'll</Text>
           {renderProofMethodButton()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>for</Text>
+          <Text style={styles.commitText}>for</Text>
           {renderTimeButton()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>to</Text>
+          <Text style={styles.commitText}>to</Text>
           {renderDescriptionInput()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.subtitle}>every</Text>
+          <Text style={styles.commitText}>every</Text>
           {renderFrequencyButton()}
         </View>
       </View>
@@ -197,19 +194,19 @@ export default function CommitStatement() {
   return (
     <View style={styles.commitContainer}>
       <View style={styles.commitRow}>
-        <Text style={styles.subtitle}>I'll</Text>
+        <Text style={styles.commitText}>I'll</Text>
         {renderProofMethodButton()}
       </View>
       <View style={styles.commitRow}>
-        <Text style={styles.subtitle}>that I'll</Text>
+        <Text style={styles.commitText}>that I'll</Text>
         {renderDescriptionInput()}
       </View>
       <View style={styles.commitRow}>
-        <Text style={styles.subtitle}>at least</Text>
+        <Text style={styles.commitText}>at least</Text>
         {renderGoalButton()}
       </View>
       <View style={styles.commitRow}>
-        <Text style={styles.subtitle}>every</Text>
+        <Text style={styles.commitText}>every</Text>
         {renderFrequencyButton()}
       </View>
     </View>

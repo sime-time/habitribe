@@ -1,7 +1,5 @@
-import { Feather } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Cog, ScrollText } from "lucide-react-native";
-import { border } from "@/assets/styles/token.styles";
 import HabitSheet from "@/components/HabitSheet";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSheetStore } from "@/stores/habitSheetStore";
@@ -15,7 +13,7 @@ export default function TabsLayout() {
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: colors.primary,
-          tabBarInactiveTintColor: colors.mutedForeground,
+          tabBarInactiveTintColor: colors.muted,
           tabBarStyle: {
             backgroundColor: colors.card,
             borderTopWidth: 1,

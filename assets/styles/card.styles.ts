@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
 import { createBaseStyles } from "./base.styles";
-import { border, spacing } from "./token.styles";
+import { border, spacing } from "./tokenOld.styles";
 
 export const createCardStyles = (colors: ColorScheme) => {
   const baseStyles = createBaseStyles(colors);
@@ -17,6 +17,7 @@ export const createCardStyles = (colors: ColorScheme) => {
       marginBottom: spacing.md,
       borderWidth: border.width,
       borderColor: colors.border,
+      flex: 1,
     },
     cardTextContainer: {
       flexDirection: "column",
@@ -27,12 +28,12 @@ export const createCardStyles = (colors: ColorScheme) => {
       flexDirection: "row",
       justifyContent: "space-between",
     },
-    cardLeft: {
+    cardStart: {
       flexDirection: "row",
       alignItems: "center",
       gap: spacing.xs,
     },
-    cardRight: {
+    cardEnd: {
       flexDirection: "row",
       alignItems: "center",
     },

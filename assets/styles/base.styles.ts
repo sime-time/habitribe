@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
-import { border, spacing, typography } from "./token.styles";
+import { border, spacing, typography } from "./tokenOld.styles";
 
 export const createBaseStyles = (colors: ColorScheme) => {
   const styles = StyleSheet.create({
@@ -48,7 +48,7 @@ export const createBaseStyles = (colors: ColorScheme) => {
     },
     muted: {
       ...typography.muted,
-      color: colors.mutedForeground,
+      color: colors.muted,
     },
     primaryText: {
       ...typography.body,

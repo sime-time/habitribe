@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "react-native";
-import { baseFontSize } from "@/assets/styles/token.styles";
 
 interface IconOrEmojiProps {
   iconName: string | undefined;
@@ -8,7 +7,7 @@ interface IconOrEmojiProps {
 }
 
 export default function IconOrEmoji({ iconName, iconColor }: IconOrEmojiProps) {
-  const iconSize = baseFontSize;
+  const iconSize = 24;
 
   // Check if string contains emoji/non-ASCII characters
   // biome-ignore lint/suspicious/noControlCharactersInRegex: Regex Emoji Test

@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
 import { createBaseStyles } from "./base.styles";
-import { border, spacing, text } from "./token.styles";
+import { border, spacing, text } from "./tokenOld.styles";
 
 export const createIconStyles = (colors: ColorScheme) => {
   const baseStyles = createBaseStyles(colors);
@@ -81,7 +81,7 @@ export const createIconStyles = (colors: ColorScheme) => {
     tabText: {
       fontSize: text.sm,
       fontWeight: "500",
-      color: colors.mutedForeground,
+      color: colors.muted,
     },
     activeTabText: {
       color: colors.background,

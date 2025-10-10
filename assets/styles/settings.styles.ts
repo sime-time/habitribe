@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
-import { shadows } from "./token.styles";
+import { shadows } from "./tokenOld.styles";
 
 export const createSettingsStyles = (colors: ColorScheme) => {
   const styles = StyleSheet.create({
@@ -45,7 +45,6 @@ export const createSettingsStyles = (colors: ColorScheme) => {
       backgroundColor: colors.card,
       borderRadius: 20,
       padding: 24,
-      ...shadows.md,
     },
     sectionTitle: {
       fontSize: 20,
@@ -92,7 +91,7 @@ export const createSettingsStyles = (colors: ColorScheme) => {
       fontSize: 14,
       fontWeight: "600",
       marginTop: 2,
-      color: colors.mutedForeground,
+      color: colors.muted,
     },
     settingItem: {
       flexDirection: "row",

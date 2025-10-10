@@ -4,22 +4,25 @@ import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router, useLocalSearchParams } from "expo-router";
+import { Plus } from "lucide-react-native";
 import { Fragment, useEffect } from "react";
 import {
   Button,
+  Pressable,
   ScrollView,
   Switch,
   Text,
   TextInput,
+  type TextStyle,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { ZodError } from "zod";
-import { createHabitStyles } from "@/assets/styles/habit.styles";
+import { createColorStyles } from "@/assets/styles/color.styles";
 import { toastConfig } from "@/assets/styles/toast.config";
-import { text } from "@/assets/styles/token.styles";
+import { s } from "@/assets/styles/utility.styles";
 import CommitStatement from "@/components/CommitStatement";
 import IconOrEmoji from "@/components/IconOrEmoji";
 import { initialForm } from "@/constants/initialForm";
@@ -34,7 +37,7 @@ type HabitId = Id<"habits">;
 
 export default function HabitForm() {
   const { colors, isDarkMode } = useTheme();
-  const styles = createHabitStyles(colors);
+  const c = createColorStyles(colors);
 
   // functionality is determined by a query parameter for a habit id.
   // "edit" mode when id is defined,
@@ -210,51 +213,97 @@ export default function HabitForm() {
   };
 
   return (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.form}>
+    <LinearGradient colors={colors.gradients.background} style={s.flex1}>
+      <SafeAreaView style={s.flex1}>
+        <ScrollView style={[s.flex1, s.p4]}>
+          <View style={[s.flex1, s.gap6]}>
             {/* DETAILS */}
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>DETAILS</Text>
-              <View style={styles.inputGroup}>
+            <View style={s.flex1}>
+              <Text
+                style={[s.textXs, s.mb2, s.ml2, c.textMuted] as TextStyle[]}
+              >
+                DETAILS
+              </Text>
+              <View
+                style={[
+                  s.px4,
+                  c.bgCard,
+                  s.roundedMd,
+                  s.border1,
+                  c.borderDefault,
+                ]}
+              >
                 {/* NAME */}
-                <View style={styles.inputContainer}>
-                  <Text style={styles.body}>Name</Text>
+                <View
+                  style={[
+                    s.flex1,
+                    s.flexRow,
+                    s.justifyBetween,
+                    s.itemsCenter,
+                    s.inputHeight,
+                  ]}
+                >
+                  <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+                    Name
+                  </Text>
                   <TextInput
                     value={name}
-                    style={[styles.body, { flex: 1, textAlign: "right" }]}
+                    style={
+                      [
+                        s.textLg,
+                        s.fontMedium,
+                        c.textForeground,
+                        s.flex1,
+                        s.textRight,
+                      ] as TextStyle[]
+                    }
                     placeholder="E.g., Exercise"
-                    placeholderTextColor={colors.mutedForeground}
+                    placeholderTextColor={colors.muted}
                     onChangeText={(text) => updateForm("name", text)}
                   />
                 </View>
 
-                <View style={styles.inputDivider} />
+                <View style={[s.divider, c.bgMuted]} />
 
                 {/* ICON */}
-                <Link href="/habit/icon" asChild>
-                  <TouchableOpacity style={styles.inputContainer}>
-                    <Text style={styles.body}>Icon</Text>
-                    <View style={styles.inputIcon}>
-                      <IconOrEmoji iconName={icon} iconColor={color} />
-                      <Ionicons
-                        name="chevron-forward"
-                        size={text.base}
-                        color={colors.mutedForeground}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </Link>
+                <TouchableOpacity
+                  style={[
+                    s.wFull,
+                    s.flexRow,
+                    s.justifyBetween,
+                    s.itemsCenter,
+                    s.inputHeight,
+                  ]}
+                  onPress={() => router.push("/habit/icon")}
+                >
+                  <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+                    Icon
+                  </Text>
+                  <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
+                    <IconOrEmoji iconName={icon} iconColor={color} />
+                    <Ionicons
+                      name="chevron-forward"
+                      size={18}
+                      color={colors.muted}
+                    />
+                  </View>
+                </TouchableOpacity>
 
-                <View style={styles.inputDivider} />
+                <View style={[s.divider, c.bgMuted]} />
 
                 {/* REMINDERS */}
-                <View style={styles.inputContainer}>
-                  <Text style={styles.body}>Reminders</Text>
+                <View
+                  style={[
+                    s.flex1,
+                    s.flexRow,
+                    s.justifyBetween,
+                    s.itemsCenter,
+                    s.inputHeight,
+                  ]}
+                >
+                  <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+                    Reminders
+                  </Text>
                   <View>
                     <Switch
                       value={remindersEnabled}
@@ -271,10 +320,19 @@ export default function HabitForm() {
 
                 {remindersEnabled && (
                   <>
-                    <View style={styles.inputDivider} />
+                    <View style={[s.divider, c.bgMuted]} />
+
                     {reminders.map((reminder, index) => (
                       <Fragment key={index}>
-                        <View style={styles.inputContainer}>
+                        <View
+                          style={[
+                            s.flex1,
+                            s.flexRow,
+                            s.justifyBetween,
+                            s.itemsCenter,
+                            s.inputHeight,
+                          ]}
+                        >
                           <DateTimePicker
                             value={reminder.time}
                             onChange={(_event, selectedDate) => {
@@ -293,32 +351,34 @@ export default function HabitForm() {
                           />
 
                           <TouchableOpacity
-                            style={styles.inputIcon}
+                            style={[s.flexRow, s.itemsCenter, s.gap2]}
                             onPress={() => removeReminder(index)}
                           >
                             <Ionicons
                               name="trash-outline"
-                              size={text.base}
+                              size={18}
                               color={colors.destructive}
                             />
                           </TouchableOpacity>
                         </View>
 
-                        <View style={styles.inputDivider} />
+                        <View style={[s.divider, c.bgMuted]} />
                       </Fragment>
                     ))}
 
                     <TouchableOpacity
-                      style={styles.inputContainer}
+                      style={[
+                        s.flex1,
+                        s.flexRow,
+                        s.justifyBetween,
+                        s.itemsCenter,
+                        s.inputHeight,
+                      ]}
                       onPress={addReminder}
                     >
-                      <View style={styles.inputIcon}>
-                        <Ionicons
-                          name="add"
-                          size={text.base}
-                          color={colors.primary}
-                        />
-                        <Text style={[styles.body, { color: colors.primary }]}>
+                      <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
+                        <Plus size={18} color={colors.primary} />
+                        <Text style={[s.textLg, s.fontMedium, c.textPrimary]}>
                           Add reminder
                         </Text>
                       </View>
@@ -329,17 +389,21 @@ export default function HabitForm() {
             </View>
 
             {/* COMMITMENT */}
-            <View style={styles.container}>
-              <Text style={styles.inputLabel}>COMMITMENT</Text>
+            <View style={s.flex1}>
+              <Text
+                style={[s.textXs, s.mb2, s.ml2, c.textMuted] as TextStyle[]}
+              >
+                COMMITMENT
+              </Text>
               <CommitStatement />
             </View>
 
             <TouchableOpacity onPress={handleSubmit}>
               <LinearGradient
                 colors={colors.gradients.primary}
-                style={styles.button}
+                style={s.button}
               >
-                <Text style={styles.buttonText}>
+                <Text style={[s.textLg, s.fontMedium, c.textPrimaryForeground]}>
                   {isEditMode ? "Update Habit" : "Add Habit"}
                 </Text>
               </LinearGradient>

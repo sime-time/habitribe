@@ -4,20 +4,28 @@ import { useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import { EllipsisVertical } from "lucide-react-native";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  type ImageSourcePropType,
+  type ImageStyle,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createCardStyles } from "@/assets/styles/card.styles";
-import { baseFontSize, border, spacing } from "@/assets/styles/token.styles";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
 import IconOrEmoji from "@/components/IconOrEmoji";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSheetStore } from "@/stores/habitSheetStore";
+import { getGoalLabel } from "@/utils/habitFormLabels";
 
 type Habit = Doc<"habits">;
 
 // Sample images for habit card gallery
-const SAMPLE_IMAGES = [
+const SAMPLE_IMAGES: ImageSourcePropType[] = [
   require("@/assets/images/icon.png"),
   require("@/assets/images/react-logo.png"),
   require("@/assets/images/partial-react-logo.png"),
@@ -27,7 +35,7 @@ const SAMPLE_IMAGES = [
 
 export default function Index() {
   const { colors } = useTheme();
-  const styles = createCardStyles(colors);
+  const c = createColorStyles(colors);
   const openSheet = useHabitSheetStore((state) => state.openSheet);
 
   const today = new Date();
@@ -39,94 +47,107 @@ export default function Index() {
   const habits = useQuery(api.exec.read.getUserHabits);
 
   const renderHabitCard = ({ item }: { item: Habit }) => (
-    <Pressable style={styles.card} onPress={() => openSheet(item)}>
-      <View style={styles.cardContainer}>
-        <View style={styles.cardLeft}>
+    <Pressable
+      style={[
+        s.mb4,
+        s.p4,
+        s.gap3,
+        s.roundedLg,
+        c.bgCard,
+        c.borderDefault,
+        s.border1,
+      ]}
+      onPress={() => openSheet(item)}
+    >
+      {/* Header: Icon + Name + Menu */}
+      <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
+        <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
           <View
             style={[
-              styles.cardIconContainer,
+              s.p3,
+              s.roundedMd,
+              s.itemsCenter,
+              s.justifyCenter,
               { backgroundColor: `${item.color}30` },
             ]}
           >
             <IconOrEmoji iconName={item.icon} iconColor={item.color} />
           </View>
-          <Text style={styles.body}>{item.name}</Text>
+          <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+            {item.name}
+          </Text>
         </View>
 
-        <View style={styles.cardRight}>
-          <View style={styles.cardIconContainer}>
-            <EllipsisVertical
-              color={colors.mutedForeground}
-              size={baseFontSize}
-            />
-          </View>
+        <View style={[s.p2, s.roundedMd]}>
+          <EllipsisVertical color={colors.muted} size={20} />
         </View>
       </View>
 
-      <Pressable
-        style={[
-          styles.cardContainer,
-          {
-            marginVertical: spacing.sm,
-            borderWidth: 1,
-          },
-        ]}
-      >
+      {/* Image Gallery */}
+      <View style={s.my2}>
         <FlashList
           data={SAMPLE_IMAGES}
-          renderItem={({ item: image }) => (
+          renderItem={({ item: image }: { item: ImageSourcePropType }) => (
             <Image
               source={image}
-              style={imageStyles.image}
+              style={
+                [
+                  s.roundedMd,
+                  s.mr2,
+                  c.borderDefault,
+                  s.border1,
+                  {
+                    width: 64,
+                    height: 64,
+                  },
+                ] as ImageStyle[]
+              }
               resizeMode="cover"
             />
           )}
           keyExtractor={(_, index) => `image-${index}`}
-          horizontal
+          horizontal={true}
           showsHorizontalScrollIndicator={false}
         />
-      </Pressable>
+      </View>
 
-      <View style={styles.cardTextContainer}>
-        <View style={styles.divider} />
-        <Text style={styles.muted}>{item.description}</Text>
+      {/* Description */}
+      <View style={[s.divider, c.bgMuted]} />
+      <View style={[s.flexRow, s.justifyBetween]}>
+        <Text style={[s.textSm, c.textMuted]}>{item.description}</Text>
+        <Text style={[s.textSm, c.textMuted]}>
+          {getGoalLabel(item.goalTarget, item.goalUnit)}
+        </Text>
       </View>
     </Pressable>
   );
 
-  const imageStyles = StyleSheet.create({
-    image: {
-      width: 64,
-      height: 64,
-      borderRadius: border.radiusMedium,
-      borderWidth: border.width,
-      borderColor: colors.border,
-      marginRight: spacing.sm,
-    },
-  });
-
   return (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.container}>
-        <View style={styles.scrollView}>
+    <LinearGradient colors={colors.gradients.background} style={s.flex1}>
+      <SafeAreaView style={s.flex1} edges={["top"]}>
+        <View style={[s.flex1, s.px4]}>
           {/* HEADER */}
-          <View style={styles.header}>
-            <View style={styles.container}>
-              <Text style={styles.title}>Today</Text>
-              <Text style={styles.muted}>{formattedDate}</Text>
+          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb6]}>
+            <View style={s.flex1}>
+              <Text style={[s.text3xl, s.fontBold, c.textForeground]}>
+                Today
+              </Text>
+              <Text style={[s.textSm, c.textMuted]}>{formattedDate}</Text>
             </View>
             <Link href="/habit/form" asChild>
               <Pressable>
                 <LinearGradient
                   colors={colors.gradients.primary}
-                  style={styles.addIconContainer}
+                  style={[
+                    s.roundedFull,
+                    s.itemsCenter,
+                    s.justifyCenter,
+                    { width: 40, height: 40 },
+                  ]}
                 >
                   <Ionicons
                     name="add"
-                    size={spacing.lg}
+                    size={24}
                     color={colors.primaryForeground}
                   />
                 </LinearGradient>

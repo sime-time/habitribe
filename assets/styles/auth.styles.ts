@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
 import { createBaseStyles } from "./base.styles";
-import { border, spacing, typography } from "./token.styles";
+import { border, spacing, typography } from "./tokenOld.styles";
 
 export const createAuthStyles = (colors: ColorScheme) => {
   const baseStyles = createBaseStyles(colors);
@@ -26,7 +26,7 @@ export const createAuthStyles = (colors: ColorScheme) => {
     },
     subtitle: {
       ...typography.muted,
-      color: colors.mutedForeground,
+      color: colors.muted,
       textAlign: "center",
     },
     appleButton: {

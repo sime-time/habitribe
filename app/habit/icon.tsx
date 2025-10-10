@@ -105,13 +105,13 @@ export default function HabitIcon() {
             <Ionicons
               name="search"
               size={20}
-              color={colors.mutedForeground}
+              color={colors.muted}
               style={styles.searchIcon}
             />
             <TextInput
               style={styles.searchInput}
               placeholder="Search icons"
-              placeholderTextColor={colors.mutedForeground}
+              placeholderTextColor={colors.muted}
               value={searchQuery}
               onChangeText={setSearchQuery}
             />

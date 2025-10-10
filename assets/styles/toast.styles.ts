@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import type { ColorScheme } from "@/constants/colors";
-import { border, shadows, spacing } from "./token.styles";
+import { border, spacing } from "./tokenOld.styles";
 
 export const createToastStyles = (colors: ColorScheme) => {
   const styles = StyleSheet.create({
@@ -12,7 +12,6 @@ export const createToastStyles = (colors: ColorScheme) => {
       borderWidth: border.width,
       flexDirection: "row",
       alignItems: "center",
-      ...shadows.md,
       backgroundColor: colors.card,
     },
     base: {
@@ -56,7 +55,7 @@ export const createToastStyles = (colors: ColorScheme) => {
     },
     message: {
       fontSize: 14,
-      color: colors.mutedForeground,
+      color: colors.muted,
     },
     closeButton: {
       marginLeft: 12,

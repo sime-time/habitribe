@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 import { createHabitStyles } from "@/assets/styles/habit.styles";
-import { spacing } from "@/assets/styles/token.styles";
+import { spacing } from "@/assets/styles/tokenOld.styles";
 import useTheme from "@/hooks/useTheme";
 
 interface WeeklyDaySelectorProps {
@@ -67,9 +67,7 @@ export default function WeekDaySelector({
                 styles.dayCheckbox,
                 {
                   backgroundColor: isSelected ? colors.primary : "transparent",
-                  borderColor: isSelected
-                    ? colors.primary
-                    : colors.mutedForeground,
+                  borderColor: isSelected ? colors.primary : colors.muted,
                 },
               ]}
               onPress={() => toggleDay(day.value)}

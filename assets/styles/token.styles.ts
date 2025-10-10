@@ -1,121 +1,43 @@
-export const baseFontSize = 18;
-
-// to simulate css rem values
-export function rem(value: number) {
-  return value * baseFontSize;
-}
-
 export const spacing = {
-  xs2: rem(0.25),
-  xs: rem(0.5),
-  sm: rem(0.75),
-  md: rem(1),
-  lg: rem(1.5),
-  xl: rem(2),
-  xl2: rem(2.5),
-  xl3: rem(3),
+  0: 0,
+  1: 4, // 0.25rem * 16
+  2: 8, // 0.5rem * 16
+  3: 12, // 0.75rem * 16
+  4: 16, // 1rem * 16
+  5: 20, // 1.25rem * 16
+  6: 24,
+  8: 32,
+  10: 40,
+  12: 48,
+  16: 64,
+  20: 80,
+  24: 96,
 } as const;
 
-export const text = {
-  xs: rem(0.75),
-  sm: rem(0.875),
-  base: rem(1),
-  lg: rem(1.125),
-  xl: rem(1.25),
-  xl2: rem(1.6),
-  xl3: rem(1.75),
-  xl4: rem(1.875),
-  xl5: rem(2),
-  xl6: rem(2.25),
+export const borderRadius = {
+  none: 0,
+  sm: 4,
+  DEFAULT: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  full: 999,
 } as const;
 
-export const typography = {
-  title: {
-    fontFamily: "Archivo",
-    fontSize: text.xl2,
-    fontWeight: "700" as "700",
-    letterSpacing: -0.5,
-  },
-  subtitle: {
-    fontFamily: "Inter",
-    fontSize: text.xl,
-    fontWeight: "500" as "500",
-  },
-  body: {
-    fontFamily: "Inter",
-    fontSize: baseFontSize,
-    fontWeight: "500" as "500",
-  },
-  muted: {
-    fontFamily: "Inter",
-    fontSize: text.sm,
-  },
-};
+export const fontSize = {
+  xs: 12,
+  sm: 14,
+  base: 16,
+  lg: 18,
+  xl: 20,
+  "2xl": 24,
+  "3xl": 30,
+  "4xl": 36,
+} as const;
 
-export const border = {
-  width: 1.5,
-  radiusSmall: 8,
-  radiusMedium: 12,
-  radiusLarge: 16,
-  radiusXL: 18,
-  radiusRound: 50,
-};
-
-export const shadows = {
-  xs2: {
-    shadowColor: "hsl(0, 0%, 0%)",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 1,
-  },
-  xs: {
-    shadowColor: "hsl(0, 0%, 0%)",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 1,
-  },
-  sm: {
-    shadowColor: "hsl(0, 0%, 0%)",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  default: {
-    shadowColor: "hsl(0, 0%, 0%)",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  md: {
-    shadowColor: "hsl(0, 0%, 0%)",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  lg: {
-    shadowColor: "hsl(0, 0%, 0%)",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 4,
-  },
-  xl: {
-    shadowColor: "hsl(0, 0%, 0%)",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  xl2: {
-    shadowColor: "hsl(0, 0%, 0%)",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-};
+export const fontWeight = {
+  normal: "400",
+  medium: "500",
+  semibold: "600",
+  bold: "700",
+} as const;
