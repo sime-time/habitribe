@@ -2,58 +2,107 @@
 // Edit the style and layout of toast components
 
 import { Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import type { BaseToastProps } from "react-native-toast-message";
-import type { ColorScheme } from "@/constants/colors";
+import Toast from "react-native-toast-message";
 import useTheme from "@/hooks/useTheme";
-import { createToastStyles } from "./toast.styles";
+import { createColorStyles } from "./color.styles";
+import { s } from "./utility.styles";
 
-// Define a mapping from toast type to icon and color
-const toastTypeDetails = (colors: ColorScheme) => ({
-  success: {
-    icon: "checkmark-circle" as const,
-    iconColor: "#fff",
-    iconContainerStyle: createToastStyles(colors).successIcon,
-    containerStyle: createToastStyles(colors).success,
-  },
-  error: {
-    icon: "alert-circle" as const,
-    iconColor: "#fff",
-    iconContainerStyle: createToastStyles(colors).errorIcon,
-    containerStyle: createToastStyles(colors).error,
-  },
-  warning: {
-    icon: "warning" as const,
-    iconColor: "#fff",
-    iconContainerStyle: createToastStyles(colors).warningIcon,
-    containerStyle: createToastStyles(colors).warning,
-  },
-});
+type ToastType = "success" | "error" | "warning";
 
 const CustomToast = ({
   text1,
   text2,
   type,
-  onPress,
-}: BaseToastProps & { type: "success" | "error" | "warning" }) => {
+}: BaseToastProps & { type: ToastType }) => {
   const { colors } = useTheme();
-  const styles = createToastStyles(colors);
-  const details = toastTypeDetails(colors)[type];
+  const c = createColorStyles(colors);
+
+  // Define toast type details with utility-first approach
+  const toastDetails = {
+    success: {
+      icon: "checkmark-circle" as const,
+      iconColor: colors.success,
+      backgroundColor: `${colors.success}15`,
+      borderColor: colors.success,
+    },
+    error: {
+      icon: "warning-outline" as const,
+      iconColor: colors.destructive,
+      backgroundColor: `${colors.destructive}15`,
+      borderColor: colors.destructive,
+    },
+    warning: {
+      icon: "warning" as const,
+      iconColor: colors.warning,
+      backgroundColor: `${colors.warning}15`,
+      borderColor: colors.warning,
+    },
+  };
+
+  const details = toastDetails[type];
 
   return (
-    <TouchableOpacity
-      style={[styles.toastContainer, details.containerStyle]}
-      onPress={onPress}
-      activeOpacity={0.9}
+    <View
+      style={[
+        s.flexRow,
+        s.itemsCenter,
+        s.p4,
+        s.gap3,
+        s.roundedLg,
+        s.border2,
+        c.bgCard,
+        s.wFull,
+        {
+          borderColor: details.borderColor,
+        },
+        { maxWidth: 400, minWidth: 280 },
+      ]}
     >
-      <View style={[styles.iconContainer, details.iconContainerStyle]}>
+      {/* Icon Container */}
+      <View
+        style={[
+          s.itemsCenter,
+          s.justifyCenter,
+          s.roundedFull,
+          { width: 40, height: 40, backgroundColor: `${details.iconColor}20` },
+        ]}
+      >
         <Ionicons name={details.icon} size={24} color={details.iconColor} />
       </View>
-      <View style={styles.textContainer}>
-        {text1 && <Text style={styles.title}>{text1}</Text>}
-        {text2 && <Text style={styles.message}>{text2}</Text>}
+
+      {/* Text Container */}
+      <View style={[s.flex1, s.gap1]}>
+        {text1 && (
+          <Text
+            style={[s.textBase, s.fontSemibold, { color: details.iconColor }]}
+          >
+            {text1}
+          </Text>
+        )}
+        {text2 && (
+          <Text style={[s.textSm, c.textMuted]} numberOfLines={2}>
+            {text2}
+          </Text>
+        )}
       </View>
-    </TouchableOpacity>
+
+      {/* Close Button */}
+      <Pressable
+        onPress={() => Toast.hide()}
+        style={[
+          s.itemsCenter,
+          s.justifyCenter,
+          s.roundedFull,
+          s.p2,
+          { backgroundColor: `${colors.foreground}10` },
+        ]}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      >
+        <Ionicons name="close" size={20} color={colors.muted} />
+      </Pressable>
+    </View>
   );
 };
 

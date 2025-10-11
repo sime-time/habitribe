@@ -1,3 +1,5 @@
+// This screen is not being used right now
+// The default goal is always "1 count"
 import { Picker } from "@react-native-picker/picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";

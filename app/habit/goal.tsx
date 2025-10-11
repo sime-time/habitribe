@@ -1,3 +1,5 @@
+// This screen is not being used right now
+// The default goal is always "1 count"
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";

@@ -221,6 +221,13 @@ export const s = {
   borderR1: { borderRightWidth: 1 } as ViewStyle,
   borderR2: { borderRightWidth: 2 } as ViewStyle,
 
+  // Outline Width
+  outline0: { outlineWidth: 0 } as ViewStyle,
+  outline1: { outlineWidth: 1 } as ViewStyle,
+  outline2: { outlineWidth: 2 } as ViewStyle,
+  outline3: { outlineWidth: 3 } as ViewStyle,
+  outline4: { outlineWidth: 4 } as ViewStyle,
+
   // Text Size
   textXs: { fontSize: fontSize.xs } as TextStyle,
   textSm: { fontSize: fontSize.sm } as TextStyle,
@@ -278,8 +285,8 @@ export const s = {
   input: {
     borderWidth: 2,
     borderRadius: borderRadius.md,
-    paddingHorizontal: spacing[3],
-    paddingVertical: spacing[2],
+    paddingVertical: spacing[4],
+    paddingHorizontal: spacing[6],
   },
   inputHeight: {
     height: 51,

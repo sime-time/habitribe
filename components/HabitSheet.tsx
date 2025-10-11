@@ -2,12 +2,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { Camera, Images } from "lucide-react-native";
 import { useEffect } from "react";
 import {
   Alert,
-  Button,
+  Image,
+  type ImageStyle,
   Pressable,
+  ScrollView,
   Text,
+  type TextStyle,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -116,13 +120,12 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
       ]}
     >
       <Pressable onPress={close} style={[s.flex1, s.wFull, s.justifyEnd]}>
-        <Pressable style={{ width: "100%", height: "60%" }}>
+        <Pressable style={{ width: "100%", height: "70%" }}>
           <Animated.View
             style={[
               s.wFull,
               s.hFull,
               c.bgCard,
-              s.pb6,
               {
                 borderTopLeftRadius: 24,
                 borderTopRightRadius: 24,
@@ -151,7 +154,7 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
               </TouchableOpacity>
             </View>
 
-            <View style={[s.flex1, s.px6, s.gap4, s.justifyBetween]}>
+            <ScrollView style={[s.flex1, s.px6, s.gap4]}>
               {/* HEADER */}
               <View style={s.gap2}>
                 <Text
@@ -165,8 +168,7 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
                   {habit.name}
                 </Text>
                 <Text style={[s.textBase, s.textCenter, c.textForeground]}>
-                  {habit.description} at least{" "}
-                  {getGoalLabel(habit.goalTarget, habit.goalUnit)}
+                  {habit.description}
                 </Text>
                 <Text style={[s.textBase, s.textCenter, c.textMuted]}>
                   {getProofMethodRequirements(
@@ -177,6 +179,29 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
               </View>
 
               {/* PROOF */}
+              <View style={[s.itemsCenter, s.justifyCenter, s.py4]}>
+                <View
+                  style={[
+                    s.roundedMd,
+                    s.overflowHidden,
+                    s.border4,
+                    c.borderSuccess,
+                    {
+                      width: "80%",
+                      maxHeight: 300,
+                    },
+                  ]}
+                >
+                  <Image
+                    source={{ uri: "https://i.pravatar.cc/150?img=3" }}
+                    style={[s.wFull, s.hFull] as ImageStyle[]}
+                    resizeMode="cover"
+                  />
+                </View>
+                <Text style={[s.textSm, s.mt3, c.textMuted] as TextStyle[]}>
+                  Today's Proof
+                </Text>
+              </View>
 
               {/* BUTTONS */}
               <View style={[s.gap4]}>
@@ -185,6 +210,7 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
                     colors={colors.gradients.primary}
                     style={s.button}
                   >
+                    <Camera color={colors.primaryForeground} size={20} />
                     <Text
                       style={[s.textLg, s.fontMedium, c.textPrimaryForeground]}
                     >
@@ -193,17 +219,13 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
                   </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity style={[s.button, c.bgSecondary]}>
+                  <Images color={colors.primary} size={20} />
                   <Text style={[s.textLg, s.fontMedium, c.textPrimary]}>
                     Open Photo Library
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[s.button, c.bgTransparent]}>
-                  <Text style={[s.textLg, s.fontMedium, c.textDestructive]}>
-                    Reset
-                  </Text>
-                </TouchableOpacity>
               </View>
-            </View>
+            </ScrollView>
           </Animated.View>
         </Pressable>
       </Pressable>

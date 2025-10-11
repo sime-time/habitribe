@@ -6,7 +6,6 @@ import { Link } from "expo-router";
 import { Check } from "lucide-react-native";
 import {
   Image,
-  type ImageSourcePropType,
   type ImageStyle,
   Pressable,
   Text,
@@ -23,11 +22,6 @@ import useTheme from "@/hooks/useTheme";
 import { useHabitSheetStore } from "@/stores/habitSheetStore";
 
 type Habit = Doc<"habits">;
-
-// Sample images for habit card gallery
-const SAMPLE_IMAGES: ImageSourcePropType[] = [
-  require("@/assets/images/icon.png"),
-];
 
 export default function Index() {
   const { colors } = useTheme();
@@ -80,7 +74,7 @@ export default function Index() {
         {/* Checkbox */}
         <Pressable style={{ width: 56, height: 56 }}>
           <Image
-            source={SAMPLE_IMAGES[0]}
+            source={require("@/assets/images/icon.png")}
             style={
               [
                 s.rounded,

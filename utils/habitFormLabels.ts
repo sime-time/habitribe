@@ -80,7 +80,7 @@ export function getGoalLabel(goalTarget: number, goalUnit: string) {
 }
 
 type ProofMethod = Doc<"proofMethods">;
-export function getProofMethodLabel(
+export function getProofMethodDescription(
   id: string,
   proofMethods: ProofMethod[] | undefined,
 ) {

@@ -77,16 +77,16 @@ export const darkColors: ColorScheme = {
 
 // Icon colors for habit customization
 export const iconColors = [
-  "#ff5716", // red-orange
-  "#ff9f0a", // orange
-  "#ffd60a", // yellow
-  "#2fd159", // green
-  "#63d2ff", // light blue
+  "#787bff", // purple (primary)
   "#0a84ff", // blue
-  "#787bff", // purple
-  "#be5af2", // magenta
+  "#63d2ff", // light blue
+  "#1de9b6", // mint teal
+  "#2fd159", // green
+  "#ffd60a", // yellow
+  "#ff9f0a", // orange
+  "#ff3b30", // red
   "#ff375e", // hot pink
+  "#be5af2", // magenta
   "#ac8e68", // brown
   "#8f8e94", // gray
-  "#ffffff", // white
 ] as const;

@@ -5,7 +5,7 @@ import { iconColors } from "./colors";
 export const initialForm: HabitFormData = {
   name: "",
   description: "",
-  color: iconColors[6],
+  color: iconColors[0],
   icon: "💪",
   proofMethodId: "",
   goalTarget: 0,

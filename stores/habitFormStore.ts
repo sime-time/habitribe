@@ -3,7 +3,6 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { iconColors } from "@/constants/colors";
 import { initialForm } from "@/constants/initialForm";
-import { proofMethodDefaults } from "@/constants/proofMethodDefaults";
 import type { HabitFormData } from "@/validation/HabitSchema";
 
 interface ReminderState {
@@ -79,8 +78,12 @@ export const useHabitFormStore = create<HabitFormStore>()(
       },
 
       updateProofMethod(proofMethodId, proofMethodName) {
-        const defaults =
-          proofMethodDefaults[proofMethodName] || proofMethodDefaults.default;
+        // Validate proof method name
+        if (!["Camera", "No Proof"].includes(proofMethodName)) {
+          console.warn(`Invalid proof method: ${proofMethodName}`);
+          return;
+        }
+        const defaults = { goalUnit: "count", goalTarget: 1 };
 
         set((state) => ({
           habitForm: {

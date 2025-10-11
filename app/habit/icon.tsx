@@ -1,10 +1,18 @@
 import { Ionicons } from "@expo/vector-icons";
-import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  type TextStyle,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createIconStyles } from "@/assets/styles/icon.styles";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
 import { iconColors } from "@/constants/colors";
 import { emojiData } from "@/constants/emojis";
 import useTheme from "@/hooks/useTheme";
@@ -12,7 +20,7 @@ import { useHabitFormStore } from "@/stores/habitFormStore";
 
 export default function HabitIcon() {
   const { colors } = useTheme();
-  const styles = createIconStyles(colors);
+  const c = createColorStyles(colors);
 
   // UI state
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -33,83 +41,131 @@ export default function HabitIcon() {
     );
   });
 
-  // biome-ignore lint/suspicious/noExplicitAny: Flashlist item = any
-  const renderColor = ({ item: color }: any) => (
-    <Pressable
-      key={color}
-      style={[
-        styles.colorSwatch,
-        { backgroundColor: `${color}30` },
-        selectedColor === color && styles.selectedColorSwatch,
-      ]}
-      onPress={() => setSelectedColor(color)}
-    >
-      <View style={[styles.colorSwatchInner, { backgroundColor: color }]} />
-    </Pressable>
-  );
-
-  // biome-ignore lint/suspicious/noExplicitAny: Flashlist item = any
-  const renderEmoji = ({ item, index }: any) => (
-    <Pressable
-      key={index}
-      style={[
-        styles.iconContainer,
-        { backgroundColor: `${selectedColor}30` },
-        selectedIcon === item.emoji && styles.selectedIconContainer,
-      ]}
-      onPress={() => setSelectedIcon(item.emoji)}
-    >
-      <Text style={styles.emoji}>{item.emoji}</Text>
-    </Pressable>
-  );
-
   return (
-    <LinearGradient
-      colors={colors.gradients.background}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView}>
+    <LinearGradient colors={colors.gradients.background} style={s.flex1}>
+      <SafeAreaView style={s.flex1}>
+        <ScrollView style={[s.flex1, s.px6]} contentContainerStyle={s.pb8}>
+          {/* Preview Section */}
+          <View style={[s.itemsCenter, s.py6]}>
+            <View
+              style={[
+                s.roundedFull,
+                s.itemsCenter,
+                s.justifyCenter,
+                {
+                  backgroundColor: `${selectedColor}30`,
+                  height: 120,
+                  width: 120,
+                },
+              ]}
+            >
+              <Text style={{ fontSize: 64 }}>{selectedIcon}</Text>
+            </View>
+          </View>
+
           {/* Search Bar */}
-          <View style={styles.searchContainer}>
-            <Ionicons
-              name="search"
-              size={20}
-              color={colors.muted}
-              style={styles.searchIcon}
-            />
+          <View
+            style={[
+              s.flexRow,
+              s.itemsCenter,
+              s.px4,
+              s.py3,
+              s.gap3,
+              s.roundedLg,
+              s.mb6,
+              c.bgCard,
+              c.borderDefault,
+              s.border1,
+            ]}
+          >
+            <Ionicons name="search" size={20} color={colors.muted} />
             <TextInput
-              style={styles.searchInput}
-              placeholder="Search icons"
+              style={[s.flex1, s.textBase, c.textForeground] as TextStyle[]}
+              placeholder="Search icons..."
               placeholderTextColor={colors.muted}
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
+            {searchQuery.length > 0 && (
+              <Pressable onPress={() => setSearchQuery("")}>
+                <Ionicons name="close-circle" size={20} color={colors.muted} />
+              </Pressable>
+            )}
           </View>
 
-          {/* Choose Color Section */}
-          <Text style={styles.sectionTitle}>Choose color</Text>
-          <View style={styles.colorGrid}>
-            <FlashList
-              data={iconColors}
-              renderItem={renderColor}
-              keyExtractor={(item) => item}
-              numColumns={6}
-            />
-          </View>
+          {/* Color Selection */}
+          <FlatList
+            data={iconColors}
+            scrollEnabled={false}
+            numColumns={6}
+            columnWrapperStyle={s.gap4}
+            contentContainerStyle={[s.gap3, s.p1, s.itemsCenter]}
+            keyExtractor={(item) => item}
+            renderItem={({ item: color }) => (
+              <Pressable
+                onPress={() => setSelectedColor(color)}
+                style={[
+                  s.itemsCenter,
+                  s.justifyCenter,
+                  s.roundedFull,
+                  { backgroundColor: `${color}20`, height: 48, width: 48 },
+                  selectedColor === color && [c.outlinePrimary, s.outline3],
+                ]}
+              >
+                <View
+                  style={[
+                    s.roundedFull,
+                    {
+                      width: 32,
+                      height: 32,
+                      backgroundColor: color,
+                    },
+                  ]}
+                />
+              </Pressable>
+            )}
+          />
 
-          {/* Choose Emoji Section */}
-          <Text style={styles.sectionTitle}>Choose icon</Text>
+          {/* Icon Selection */}
+          <View style={[s.divider, c.bgForeground, s.my6]} />
 
-          {/* Emoji Grid */}
-          <View>
-            <FlashList
+          {filteredEmojis.length === 0 ? (
+            <View style={[s.itemsCenter, s.py8, s.gap2]}>
+              <Text style={[s.textLg, c.textMuted]}>No icons found</Text>
+              <Text style={[s.textSm, c.textMuted]}>
+                Try a different search term
+              </Text>
+            </View>
+          ) : (
+            <FlatList
               data={filteredEmojis}
-              renderItem={renderEmoji}
+              scrollEnabled={false}
               numColumns={6}
+              columnWrapperStyle={s.gap2}
+              contentContainerStyle={[s.gap2, s.p1]}
               keyExtractor={(item) => item.emoji}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => setSelectedIcon(item.emoji)}
+                  style={[
+                    s.flex1,
+                    s.itemsCenter,
+                    s.justifyCenter,
+                    s.p2,
+                    s.roundedMd,
+                    { backgroundColor: `${selectedColor}10` },
+                    selectedIcon === item.emoji && [
+                      { backgroundColor: `${selectedColor}30` },
+                      c.outlinePrimary,
+                      s.outline2,
+                    ],
+                  ]}
+                >
+                  <Text style={{ fontSize: 32 }}>{item.emoji}</Text>
+                </Pressable>
+              )}
             />
-          </View>
+          )}
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>

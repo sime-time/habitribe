@@ -1,7 +1,7 @@
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
-import { Camera, FilePenLine, Info, Timer, Video } from "lucide-react-native";
+import { Camera, FilePenLine, Info } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
@@ -29,10 +29,6 @@ export default function HabitProof() {
     switch (name) {
       case "Camera":
         return <Camera color={colors.primary} size={iconSize} />;
-      case "Time-lapse":
-        return <Video color={colors.primary} size={iconSize} />;
-      case "Focus Timer":
-        return <Timer color={colors.primary} size={iconSize} />;
       default:
         return <FilePenLine color={colors.primary} size={iconSize} />;
     }

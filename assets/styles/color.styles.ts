@@ -51,6 +51,15 @@ export const createColorStyles = (colors: ColorScheme) =>
     borderSuccess: { borderColor: colors.success } as ViewStyle,
     borderWarning: { borderColor: colors.warning } as ViewStyle,
     borderDestructive: { borderColor: colors.destructive } as ViewStyle,
+
+    // Outline colors
+    outlineDefault: { outlineColor: colors.border } as ViewStyle,
+    outlinePrimary: { outlineColor: colors.primary } as ViewStyle,
+    outlineSecondary: { outlineColor: colors.secondary } as ViewStyle,
+    outlineMuted: { outlineColor: colors.muted } as ViewStyle,
+    outlineSuccess: { outlineColor: colors.success } as ViewStyle,
+    outlineWarning: { outlineColor: colors.warning } as ViewStyle,
+    outlineDestructive: { outlineColor: colors.destructive } as ViewStyle,
   }) as const;
 
 /**

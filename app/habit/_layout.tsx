@@ -71,6 +71,15 @@ export default function CreateHabitLayout() {
           headerLeft: () => renderReturnButton("Back"),
         }}
       />
+      <Stack.Screen
+        name="description"
+        options={{
+          headerTitle: "Describe Habit",
+          headerTitleStyle: combine(s.fontMedium, s.textLg, c.textForeground),
+          headerStyle: combine(c.bgBackground),
+          headerLeft: () => renderReturnButton("Back"),
+        }}
+      />
     </Stack>
   );
 }
