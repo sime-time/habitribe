@@ -3,10 +3,11 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useMutation, useQuery } from "convex/react";
 import { ConvexError } from "convex/values";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { Plus } from "lucide-react-native";
-import { Fragment, useEffect } from "react";
+import { Fragment, useCallback, useEffect, useLayoutEffect } from "react";
 import {
+  Alert,
   ScrollView,
   Switch,
   Text,
@@ -42,6 +43,7 @@ export default function HabitForm() {
   // "create" mode when id is undefined
   const { id } = useLocalSearchParams<{ id?: string }>();
   const isEditMode = id !== undefined;
+  const navigation = useNavigation();
 
   // Habit state
   const habitForm = useHabitFormStore((state) => state.habitForm);
@@ -68,6 +70,7 @@ export default function HabitForm() {
   const createReminder = useMutation(api.exec.create.addReminder);
   const editReminder = useMutation(api.exec.update.editReminder);
   const deleteReminder = useMutation(api.exec.delete.deleteReminder);
+  const deleteHabit = useMutation(api.exec.delete.deleteHabit);
 
   // in "create" mode these queries will be undefined (skipped)
   const currentHabit = useQuery(
@@ -124,6 +127,53 @@ export default function HabitForm() {
     setInitialForm,
     resetForm,
   ]);
+
+  // useCallback memoizes the function, so it's only recreated when its dependencies (id, deleteHabit) change.
+  // This makes it safe to use in the useLayoutEffect dependency array.
+  const handleDelete = useCallback(async () => {
+    Alert.alert(
+      "Delete Habit",
+      "This will remove all habit progress and reminders.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteHabit({ id: id as HabitId });
+              Toast.show({
+                type: "success",
+                text1: "Habit deleted successfully",
+              });
+              router.dismissTo("/(tabs)");
+            } catch (err) {
+              console.error(err);
+              Toast.show({ type: "error", text1: "Failed to delete habit" });
+            }
+          },
+        },
+      ],
+    );
+  }, [id, deleteHabit]);
+
+  // override header buttons if in edit mode
+  useLayoutEffect(() => {
+    if (isEditMode) {
+      navigation.setOptions({
+        headerTitle: name,
+        headerRight: () => (
+          <TouchableOpacity onPress={handleDelete}>
+            <Ionicons
+              name="trash-outline"
+              color={colors.destructive}
+              size={24}
+            />
+          </TouchableOpacity>
+        ),
+      });
+    }
+  }, [isEditMode, navigation, colors, name, handleDelete]);
 
   const createSubmit = async () => {
     const validHabitForm = HabitSchema.parse(habitForm);
@@ -213,10 +263,10 @@ export default function HabitForm() {
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1}>
-        <ScrollView style={[s.flex1, s.p4]}>
+        <ScrollView style={s.p4} contentContainerStyle={s.flexGrow}>
           <View style={[s.flex1, s.gap6]}>
             {/* DETAILS */}
-            <View style={s.flex1}>
+            <View>
               <Text
                 style={[s.textXs, s.mb2, s.ml2, c.textMuted] as TextStyle[]}
               >
@@ -367,7 +417,7 @@ export default function HabitForm() {
                           >
                             <Ionicons
                               name="trash-outline"
-                              size={18}
+                              size={20}
                               color={colors.destructive}
                             />
                           </TouchableOpacity>
@@ -400,7 +450,7 @@ export default function HabitForm() {
             </View>
 
             {/* COMMITMENT */}
-            <View style={s.flex1}>
+            <View>
               <Text
                 style={[s.textXs, s.mb2, s.ml2, c.textMuted] as TextStyle[]}
               >
@@ -409,22 +459,26 @@ export default function HabitForm() {
               <CommitStatement />
             </View>
 
-            <TouchableOpacity onPress={handleSubmit}>
-              <LinearGradient
-                colors={colors.gradients.primary}
-                style={s.button}
+            <View style={[s.gap1, s.flex1, s.justifyEnd]}>
+              <TouchableOpacity onPress={handleSubmit}>
+                <LinearGradient
+                  colors={colors.gradients.primary}
+                  style={s.button}
+                >
+                  <Text
+                    style={[s.textLg, s.fontMedium, c.textPrimaryForeground]}
+                  >
+                    {isEditMode ? "Update Habit" : "Add Habit"}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.button, c.bgTransparent]}
+                onPress={resetForm}
               >
-                <Text style={[s.textLg, s.fontMedium, c.textPrimaryForeground]}>
-                  {isEditMode ? "Update Habit" : "Add Habit"}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[s.button, c.bgTransparent]}
-              onPress={resetForm}
-            >
-              <Text style={[s.textLg, c.textDestructive]}>Reset Habit</Text>
-            </TouchableOpacity>
+                <Text style={[s.textLg, c.textDestructive]}>Reset Habit</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>

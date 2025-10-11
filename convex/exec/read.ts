@@ -36,10 +36,11 @@ export const getUserHabitEntries = query({
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
-    const entries = ctx.db
+    const entries = await ctx.db
       .query("habitEntries")
       .filter((q) => q.eq(q.field("userId"), args.userId))
-      .order("desc");
+      .order("desc")
+      .collect();
     return entries;
   },
 });
@@ -60,7 +61,7 @@ export const getHabitEntry = query({
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
-    const habit = ctx.db
+    const habit = await ctx.db
       .query("habitEntries")
       .filter((q) =>
         q.and(
@@ -78,7 +79,7 @@ export const getHabitReminders = query({
     habitId: v.id("habits"),
   },
   handler: async (ctx, args) => {
-    const reminders = ctx.db
+    const reminders = await ctx.db
       .query("reminders")
       .filter((q) => q.eq(q.field("habitId"), args.habitId))
       .order("desc")
@@ -92,7 +93,7 @@ export const getUserReminders = query({
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
-    const reminders = ctx.db
+    const reminders = await ctx.db
       .query("reminders")
       .filter((q) => q.eq(q.field("userId"), args.userId))
       .order("desc")
@@ -103,7 +104,7 @@ export const getUserReminders = query({
 
 export const getProofMethods = query({
   handler: async (ctx) => {
-    const proofMethods = ctx.db.query("proofMethods").collect();
+    const proofMethods = await ctx.db.query("proofMethods").collect();
     return proofMethods;
   },
 });

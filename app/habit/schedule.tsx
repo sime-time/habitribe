@@ -1,6 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { Check } from "lucide-react-native";
 import {
   ScrollView,
@@ -85,12 +86,12 @@ export default function HabitSchedule() {
       <SafeAreaView style={s.flex1}>
         <ScrollView style={[s.flex1, s.p4]}>
           <View style={[s.flex1, s.gap6]}>
-            {/* PERIOD */}
+            {/* FREQUENCY */}
             <View style={s.flex1}>
               <Text
                 style={[s.textXs, s.mb2, s.ml2, c.textMuted] as TextStyle[]}
               >
-                PERIOD
+                FREQUENCY
               </Text>
               <View
                 style={[
@@ -247,6 +248,17 @@ export default function HabitSchedule() {
                 ) : null}
               </View>
             </View>
+
+            <TouchableOpacity style={s.mt2} onPress={() => router.back()}>
+              <LinearGradient
+                colors={colors.gradients.primary}
+                style={s.button}
+              >
+                <Text style={[s.textLg, s.fontMedium, c.textPrimaryForeground]}>
+                  Done
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>

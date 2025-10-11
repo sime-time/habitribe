@@ -22,11 +22,11 @@ export function getScheduleLabel(
 
   switch (frequency) {
     case Frequency.Daily:
-      return pattern === 1 ? "every day" : `${pattern} times per day`;
+      return pattern === 1 ? "every day" : `${pattern} times a day`;
     case Frequency.Weekly:
-      return pattern === 1 ? "every week" : `${pattern} times per week`;
+      return pattern === 1 ? "every week" : `${pattern} times a week`;
     case Frequency.Monthly:
-      return pattern === 1 ? "every month" : `${pattern} times per month`;
+      return pattern === 1 ? "every month" : `${pattern} times a month`;
     default:
       return "every day";
   }

@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { Text, TouchableOpacity } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
@@ -20,7 +21,7 @@ export default function CreateHabitLayout() {
       <Stack.Screen
         name="form"
         options={{
-          headerTitle: "Habit",
+          headerTitle: "New Habit",
           headerTitleStyle: combine(s.fontMedium, s.textLg, c.textForeground),
           headerStyle: combine(c.bgBackground),
           headerLeft: () => renderReturnButton("Cancel"),

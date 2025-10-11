@@ -1,13 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
-import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Check } from "lucide-react-native";
+import { useMemo } from "react";
 import {
   Image,
   type ImageStyle,
   Pressable,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -19,14 +20,12 @@ import Emoji from "@/components/Emoji";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import { useHabitSheetStore } from "@/stores/habitSheetStore";
 
 type Habit = Doc<"habits">;
 
 export default function Index() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
-  const openSheet = useHabitSheetStore((state) => state.openSheet);
 
   const today = new Date();
   const formattedDate = today.toLocaleDateString("en-US", {
@@ -35,6 +34,18 @@ export default function Index() {
   });
 
   const habits = useQuery(api.exec.read.getUserHabits);
+
+  // useMemo to avoid re-filtering on every render
+  const { dailyHabits, weeklyHabits, monthlyHabits } = useMemo(() => {
+    if (!habits)
+      return { dailyHabits: [], weeklyHabits: [], monthlyHabits: [] };
+
+    return {
+      dailyHabits: habits.filter((h) => h.schedule.frequency === "daily"),
+      weeklyHabits: habits.filter((h) => h.schedule.frequency === "weekly"),
+      monthlyHabits: habits.filter((h) => h.schedule.frequency === "monthly"),
+    };
+  }, [habits]);
 
   const renderHabitCard = ({ item }: { item: Habit }) => (
     <Pressable
@@ -47,7 +58,7 @@ export default function Index() {
         c.borderDefault,
         s.border1,
       ]}
-      onPress={() => openSheet(item)}
+      onPress={() => router.navigate(`/habit/form?id=${item._id}`)}
     >
       {/* Header: Icon + Name + Description */}
       <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
@@ -127,9 +138,7 @@ export default function Index() {
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1} edges={["top"]}>
         {/* HEADER */}
-        <View
-          style={[s.px4, s.py8, s.flexRow, s.justifyBetween, s.itemsCenter]}
-        >
+        <View style={[s.p4, s.pt8, s.flexRow, s.justifyBetween, s.itemsCenter]}>
           <View style={s.flex1}>
             <Text style={[s.text3xl, s.fontBold, c.textForeground]}>Today</Text>
             <Text style={[s.textSm, c.textMuted]}>{formattedDate}</Text>
@@ -142,22 +151,8 @@ export default function Index() {
                 color={colors.foreground}
               />
             </View>
-            <Image
-              source={{ uri: "https://i.pravatar.cc/150?img=3" }}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-              }}
-            />
-          </View>
-        </View>
-        <View style={[s.flex1, s.px4]}>
-          {/* HABITS HEADER */}
-          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb6]}>
-            <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-              Daily Habits
-            </Text>
+
+            {/* ADD HABIT BUTTON */}
             <Link href="/habit/form" asChild>
               <TouchableOpacity>
                 <LinearGradient
@@ -178,15 +173,52 @@ export default function Index() {
               </TouchableOpacity>
             </Link>
           </View>
-
-          {/* HABIT LIST */}
-          <FlashList
-            data={habits}
-            renderItem={renderHabitCard}
-            keyExtractor={(item) => item._id}
-            showsVerticalScrollIndicator={false}
-          />
         </View>
+
+        {/* HABIT LIST */}
+        <ScrollView style={[s.flex1, s.px4]}>
+          {dailyHabits.length > 0 && (
+            <>
+              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb6]}>
+                <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
+                  Daily Habits
+                </Text>
+              </View>
+
+              {dailyHabits.map((item) => (
+                <View key={item._id}>{renderHabitCard({ item })}</View>
+              ))}
+            </>
+          )}
+
+          {weeklyHabits.length > 0 && (
+            <>
+              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.py6]}>
+                <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
+                  Weekly Habits
+                </Text>
+              </View>
+
+              {weeklyHabits.map((item) => (
+                <View key={item._id}>{renderHabitCard({ item })}</View>
+              ))}
+            </>
+          )}
+
+          {monthlyHabits.length > 0 && (
+            <>
+              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.py6]}>
+                <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
+                  Monthly Habits
+                </Text>
+              </View>
+
+              {monthlyHabits.map((item) => (
+                <View key={item._id}>{renderHabitCard({ item })}</View>
+              ))}
+            </>
+          )}
+        </ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );

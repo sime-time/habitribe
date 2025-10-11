@@ -221,9 +221,7 @@ export default function SettingsScreen() {
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1} edges={["top"]}>
         {/* HEADER */}
-        <View
-          style={[s.px4, s.py8, s.flexRow, s.justifyBetween, s.itemsCenter]}
-        >
+        <View style={[s.p4, s.pt8, s.flexRow, s.justifyBetween, s.itemsCenter]}>
           <Text style={[s.text3xl, s.fontBold, c.textForeground]}>
             Settings
           </Text>

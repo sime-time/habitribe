@@ -1,8 +1,9 @@
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { Camera, FilePenLine, Info } from "lucide-react-native";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
@@ -45,7 +46,6 @@ export default function HabitProof() {
         s.itemsCenter,
         s.mb4,
         s.border2,
-        s.flex1,
         s.flexRow,
         {
           borderColor: item._id === proofId ? colors.primary : colors.border,
@@ -93,6 +93,18 @@ export default function HabitProof() {
           data={proofMethods}
           renderItem={renderProofMethod}
           keyExtractor={(item) => item._id}
+          ListFooterComponent={
+            <TouchableOpacity style={s.mt2} onPress={() => router.back()}>
+              <LinearGradient
+                colors={colors.gradients.primary}
+                style={s.button}
+              >
+                <Text style={[s.textLg, s.fontMedium, c.textPrimaryForeground]}>
+                  Done
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          }
         />
       </SafeAreaView>
     </LinearGradient>

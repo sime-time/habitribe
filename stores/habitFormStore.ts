@@ -128,9 +128,15 @@ export const useHabitFormStore = create<HabitFormStore>()(
       },
 
       removeReminder(index) {
-        set((state) => ({
-          reminders: state.reminders.filter((_, i) => i !== index),
-        }));
+        set((state) => {
+          const currentReminders = state.reminders.filter(
+            (_, i) => i !== index,
+          );
+          return {
+            remindersEnabled: currentReminders.length > 0,
+            reminders: currentReminders,
+          };
+        });
       },
 
       updateReminder(index, newReminder) {
@@ -178,8 +184,8 @@ export const useHabitFormStore = create<HabitFormStore>()(
       resetForm() {
         set((state) => ({
           habitForm: state.initialForm,
-          remindersEnabled: state.remindersEnabled,
-          reminders: state.reminders,
+          remindersEnabled: state.initialReminders.length > 0,
+          reminders: state.initialReminders,
           initialReminders: state.initialReminders,
           selectedIcon: state.initialForm.icon || "💪",
           selectedColor: state.initialForm.color || iconColors[0],

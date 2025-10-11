@@ -1,6 +1,13 @@
 import { useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
-import { Text, TextInput, type TextStyle, View } from "react-native";
+import { router } from "expo-router";
+import {
+  Text,
+  TextInput,
+  type TextStyle,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
@@ -70,7 +77,7 @@ export default function HabitDescription() {
                 s.roundedMd,
                 s.border1,
                 c.borderDefault,
-                { minHeight: 150 },
+                { minHeight: 120 },
               ]}
             >
               <TextInput
@@ -109,6 +116,17 @@ export default function HabitDescription() {
                 </Text>
               </Text>
             </View>
+
+            <TouchableOpacity style={s.mt2} onPress={() => router.back()}>
+              <LinearGradient
+                colors={colors.gradients.primary}
+                style={s.button}
+              >
+                <Text style={[s.textLg, s.fontMedium, c.textPrimaryForeground]}>
+                  Done
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>
