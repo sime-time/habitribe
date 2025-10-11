@@ -36,9 +36,9 @@ export default function CreateHabitLayout() {
         }}
       />
       <Stack.Screen
-        name="frequency"
+        name="schedule"
         options={{
-          headerTitle: "Set Frequency",
+          headerTitle: "Set Schedule",
           headerTitleStyle: combine(s.fontMedium, s.textLg, c.textForeground),
           headerStyle: combine(c.bgBackground),
           headerLeft: () => renderReturnButton("Back"),

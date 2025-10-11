@@ -14,12 +14,12 @@ export const editHabit = mutation({
     startDate: v.optional(v.string()), // "YYYY-MM-DD"
     schedule: v.optional(
       v.object({
-        period: v.union(
+        frequency: v.union(
           v.literal("daily"),
           v.literal("weekly"),
           v.literal("monthly"),
         ),
-        interval: v.union(
+        pattern: v.union(
           v.number(), // every N days/weeks/months
           v.array(v.number()), // 0=Sunday, 1=Monday, etc.
         ),

@@ -1,5 +1,6 @@
 import { useQuery } from "convex/react";
 import { router } from "expo-router";
+import { Clock } from "lucide-react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { createCommitStyles } from "@/assets/styles/commit.styles";
@@ -7,8 +8,8 @@ import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 import {
-  getFrequencyLabel,
   getProofMethodDescription,
+  getScheduleLabel,
 } from "@/utils/habitFormLabels";
 
 export default function CommitStatement() {
@@ -63,17 +64,17 @@ export default function CommitStatement() {
   const renderFrequencyButton = () => (
     <TouchableOpacity
       style={styles.commitPill}
-      onPress={() => router.push("/habit/frequency")}
+      onPress={() => router.push("/habit/schedule")}
     >
       <Text
         style={[
           styles.commitText,
-          Array.isArray(schedule.interval) && schedule.interval.length === 0
+          Array.isArray(schedule.pattern) && schedule.pattern.length === 0
             ? c.textMuted
             : c.textPrimary,
         ]}
       >
-        {getFrequencyLabel(schedule.period, schedule.interval)}
+        {getScheduleLabel(schedule.frequency, schedule.pattern)}
       </Text>
     </TouchableOpacity>
   );
@@ -91,7 +92,7 @@ export default function CommitStatement() {
           {renderDescriptionInput()}
         </View>
         <View style={styles.commitRow}>
-          <Text style={styles.commitText}>every</Text>
+          <Clock color={colors.muted} size={18} />
           {renderFrequencyButton()}
         </View>
       </View>
@@ -110,7 +111,7 @@ export default function CommitStatement() {
         {renderDescriptionInput()}
       </View>
       <View style={styles.commitRow}>
-        <Text style={styles.commitText}>every</Text>
+        <Clock color={colors.muted} size={18} />
         {renderFrequencyButton()}
       </View>
     </View>

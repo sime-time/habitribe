@@ -16,62 +16,67 @@ import WeekDaySelector from "@/components/WeekDaySelector";
 import { CHECKMARK_SIZE } from "@/constants/sizes";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
-import { Period } from "@/utils/habitFormLabels";
+import { Frequency } from "@/utils/habitFormLabels";
 
-export default function HabitFrequency() {
+export default function HabitSchedule() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
+  const PATTERN_RANGE = [2, 3, 4, 5, 6, 7, 8, 9];
+
   const updateSchedule = useHabitFormStore((state) => state.updateSchedule);
 
-  const period = useHabitFormStore((state) => state.habitForm.schedule.period);
-  const interval = useHabitFormStore(
-    (state) => state.habitForm.schedule.interval,
+  const frequency = useHabitFormStore(
+    (state) => state.habitForm.schedule.frequency,
   );
-  const setInterval = (newInterval: number | number[]) =>
+  const pattern = useHabitFormStore(
+    (state) => state.habitForm.schedule.pattern,
+  );
+
+  const setPattern = (newPattern: number | number[]) =>
     updateSchedule({
-      period,
-      interval: newInterval,
+      frequency,
+      pattern: newPattern,
     });
 
-  const periods = [
-    { title: "Daily goal", data: Period.Daily },
-    { title: "Weekly goal", data: Period.Weekly },
-    { title: "Monthly goal", data: Period.Monthly },
+  const frequencies = [
+    { title: "Daily goal", data: Frequency.Daily },
+    { title: "Weekly goal", data: Frequency.Weekly },
+    { title: "Monthly goal", data: Frequency.Monthly },
   ];
 
-  const singleInterval = (period: Period) => {
-    switch (period) {
-      case Period.Daily:
+  const singlePattern = (frequency: Frequency) => {
+    switch (frequency) {
+      case Frequency.Daily:
         return "Every day";
-      case Period.Weekly:
+      case Frequency.Weekly:
         return "Every week";
-      case Period.Monthly:
+      case Frequency.Monthly:
         return "Every month";
       default:
         return null;
     }
   };
 
-  const getDayFrequency = (interval: number | number[]) => {
-    switch (interval) {
+  const repeatingPattern = (frequency: Frequency) => {
+    switch (frequency) {
+      case Frequency.Daily:
+        return "Amount per day";
+      case Frequency.Weekly:
+        return "Amount per week";
+      case Frequency.Monthly:
+        return "Amount per month";
+      default:
+        return null;
+    }
+  };
+
+  const getDayPattern = (pattern: number | number[]) => {
+    switch (pattern) {
       case 1:
         return "Every day";
       default:
         return "Select days";
-    }
-  };
-
-  const pickerPeriod = (period: Period) => {
-    switch (period) {
-      case Period.Daily:
-        return "days";
-      case Period.Weekly:
-        return "weeks";
-      case Period.Monthly:
-        return "months";
-      default:
-        return null;
     }
   };
 
@@ -97,7 +102,7 @@ export default function HabitFrequency() {
                 ]}
               >
                 <FlashList
-                  data={periods}
+                  data={frequencies}
                   renderItem={({ item }) => (
                     <TouchableOpacity
                       style={[
@@ -108,10 +113,10 @@ export default function HabitFrequency() {
                         s.inputHeight,
                       ]}
                       onPress={() => {
-                        // set period and interval simultaneously
+                        // set frequency and pattern simultaneously
                         updateSchedule({
-                          period: item.data,
-                          interval: 1,
+                          frequency: item.data,
+                          pattern: 1,
                         });
                       }}
                     >
@@ -119,7 +124,7 @@ export default function HabitFrequency() {
                         {item.title}
                       </Text>
                       <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
-                        {item.data === period ? (
+                        {item.data === frequency ? (
                           <Check color={colors.primary} size={CHECKMARK_SIZE} />
                         ) : null}
                       </View>
@@ -149,7 +154,7 @@ export default function HabitFrequency() {
                 ]}
               >
                 {/* Every week or Every month has separate UI from Every day*/}
-                {period !== Period.Daily ? (
+                {frequency !== Frequency.Daily ? (
                   <TouchableOpacity
                     style={[
                       s.flex1,
@@ -158,13 +163,13 @@ export default function HabitFrequency() {
                       s.itemsCenter,
                       s.inputHeight,
                     ]}
-                    onPress={() => setInterval(1)}
+                    onPress={() => setPattern(1)}
                   >
                     <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
-                      {singleInterval(period)}
+                      {singlePattern(frequency)}
                     </Text>
                     <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
-                      {interval === 1 ? (
+                      {pattern === 1 ? (
                         <Check color={colors.primary} size={CHECKMARK_SIZE} />
                       ) : null}
                     </View>
@@ -179,21 +184,21 @@ export default function HabitFrequency() {
                         s.itemsCenter,
                         s.inputHeight,
                       ]}
-                      onPress={() => setInterval(1)}
+                      onPress={() => setPattern(1)}
                     >
                       <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
-                        {getDayFrequency(interval)}
+                        {getDayPattern(pattern)}
                       </Text>
                       <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
-                        {Array.isArray(interval) || interval === 1 ? (
+                        {Array.isArray(pattern) || pattern === 1 ? (
                           <Check color={colors.primary} size={CHECKMARK_SIZE} />
                         ) : null}
                       </View>
                     </TouchableOpacity>
-                    {Array.isArray(interval) || interval === 1 ? (
+                    {Array.isArray(pattern) || pattern === 1 ? (
                       <WeekDaySelector
-                        interval={interval}
-                        setInterval={setInterval}
+                        pattern={pattern}
+                        setPattern={setPattern}
                       />
                     ) : null}
                   </>
@@ -201,7 +206,7 @@ export default function HabitFrequency() {
 
                 <View style={[s.divider, c.bgMuted]} />
 
-                {/* Custom repeat (Interval >= 2) */}
+                {/* Custom repeat (Pattern >= 2) */}
                 <TouchableOpacity
                   style={[
                     s.flex1,
@@ -210,65 +215,35 @@ export default function HabitFrequency() {
                     s.itemsCenter,
                     s.inputHeight,
                   ]}
-                  onPress={() => setInterval(2)}
+                  onPress={() => setPattern(2)}
                 >
                   <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
-                    Custom repeat
+                    {repeatingPattern(frequency)}
                   </Text>
                   <View style={[s.flexRow, s.itemsCenter, s.gap2]}>
-                    {!Array.isArray(interval) && interval >= 2 ? (
+                    {!Array.isArray(pattern) && pattern >= 2 ? (
                       <Check color={colors.primary} size={CHECKMARK_SIZE} />
                     ) : null}
                   </View>
                 </TouchableOpacity>
 
-                {!Array.isArray(interval) && interval >= 2 ? (
-                  <View>
-                    <Text
-                      style={[
-                        s.textXl,
-                        c.textForeground,
-                        {
-                          position: "absolute",
-                          top: "50%",
-                          marginTop: -11, // Half of fontSize for centering
-                          left: 32,
-                          zIndex: 1,
-                        },
-                      ]}
-                    >
-                      Every
-                    </Text>
-                    <Text
-                      style={[
-                        s.textXl,
-                        c.textForeground,
-                        {
-                          position: "absolute",
-                          top: "50%",
-                          marginTop: -11, // Half of fontSize for centering
-                          right: 32,
-                          zIndex: 1,
-                        },
-                      ]}
-                    >
-                      {pickerPeriod(period)}
-                    </Text>
-                    <Picker
-                      selectedValue={interval}
-                      onValueChange={(itemValue) => setInterval(itemValue)}
-                      itemStyle={{
-                        fontSize: 28,
-                        color: colors.foreground,
-                      }}
-                    >
-                      <Picker.Item label="2" value={2} />
-                      <Picker.Item label="3" value={3} />
-                      <Picker.Item label="4" value={4} />
-                      <Picker.Item label="5" value={5} />
-                      <Picker.Item label="6" value={6} />
-                    </Picker>
-                  </View>
+                {!Array.isArray(pattern) && pattern >= 2 ? (
+                  <Picker
+                    selectedValue={pattern}
+                    onValueChange={(itemValue) => setPattern(itemValue)}
+                    itemStyle={{
+                      fontSize: 28,
+                      color: colors.foreground,
+                    }}
+                  >
+                    {PATTERN_RANGE.map((value) => (
+                      <Picker.Item
+                        key={value}
+                        label={String(value)}
+                        value={value}
+                      />
+                    ))}
+                  </Picker>
                 ) : null}
               </View>
             </View>

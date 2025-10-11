@@ -1,35 +1,34 @@
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 
-export enum Period {
+export enum Frequency {
   Daily = "daily",
   Weekly = "weekly",
   Monthly = "monthly",
 }
-export function getFrequencyLabel(
-  period: Period,
-  interval: number | number[],
+export function getScheduleLabel(
+  frequency: Frequency,
+  pattern: number | number[],
 ): string {
   // Handle days of week (array format)
-  if (Array.isArray(interval)) {
-    if (interval.length === 0) return "set frequency...";
+  if (Array.isArray(pattern)) {
+    if (pattern.length === 0) return "set pattern...";
 
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const sortedInterval = [...interval].sort((a, b) => a - b);
-    const selectedDays = sortedInterval.map((day) => dayNames[day]).join(", ");
+    const sortedPattern = [...pattern].sort((a, b) => a - b);
+    const selectedDays = sortedPattern.map((day) => dayNames[day]).join(", ");
 
     return selectedDays;
   }
 
-  // Handle numeric intervals
-  switch (period) {
-    case Period.Daily:
-      return interval === 1 ? "day" : `${interval} days`;
-    case Period.Weekly:
-      return interval === 1 ? "week" : `${interval} weeks`;
-    case Period.Monthly:
-      return interval === 1 ? "month" : `${interval} months`;
+  switch (frequency) {
+    case Frequency.Daily:
+      return pattern === 1 ? "every day" : `${pattern} times per day`;
+    case Frequency.Weekly:
+      return pattern === 1 ? "every week" : `${pattern} times per week`;
+    case Frequency.Monthly:
+      return pattern === 1 ? "every month" : `${pattern} times per month`;
     default:
-      return "day";
+      return "every day";
   }
 }
 

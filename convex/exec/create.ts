@@ -13,12 +13,12 @@ export const addHabit = mutation({
     goalUnit: v.string(),
     startDate: v.string(), // "YYYY-MM-DD"
     schedule: v.object({
-      period: v.union(
+      frequency: v.union(
         v.literal("daily"),
         v.literal("weekly"),
         v.literal("monthly"),
       ),
-      interval: v.union(
+      pattern: v.union(
         v.number(), // every N days/weeks/months
         v.array(v.number()), // 0=Sunday, 1=Monday, etc.
       ),

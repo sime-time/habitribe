@@ -28,7 +28,7 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
-import type { Period } from "@/utils/habitFormLabels";
+import type { Frequency } from "@/utils/habitFormLabels";
 import { HabitSchema } from "@/validation/HabitSchema";
 
 type HabitId = Id<"habits">;
@@ -93,8 +93,8 @@ export default function HabitForm() {
         goalUnit: currentHabit.goalUnit,
         startDate: currentHabit.startDate,
         schedule: {
-          period: currentHabit.schedule.period as Period,
-          interval: currentHabit.schedule.interval,
+          frequency: currentHabit.schedule.frequency as Frequency,
+          pattern: currentHabit.schedule.pattern,
         },
       });
     } else {

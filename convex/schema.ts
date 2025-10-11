@@ -17,13 +17,13 @@ export default defineSchema({
     goalUnit: v.string(), // e.g., time (in seconds)
     startDate: v.string(), // "YYYY-MM-DD" format
     schedule: v.object({
-      period: v.union(
+      frequency: v.union(
         v.literal("daily"),
         v.literal("weekly"),
         v.literal("monthly"),
       ),
-      interval: v.union(
-        v.number(), // every N days/weeks/months
+      pattern: v.union(
+        v.number(), // X times per day/week/month
         v.array(v.number()), // 0=Sunday, 1=Monday, etc.
       ),
     }),

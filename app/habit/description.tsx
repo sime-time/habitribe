@@ -29,16 +29,16 @@ export default function HabitDescription() {
       proofMethods,
     );
     switch (proofMethodDescription) {
-      case "self-verify":
-        return {
-          label: "I'll self-verify that I'll",
-          placeholder: "E.g., go to the gym, read for 30 minutes, meditate...",
-        };
-      default:
+      case "send a photo":
         return {
           label: "I'll send a photo of",
           placeholder:
             "E.g., myself at the gym, the book I'm reading, my feet with shoes on...",
+        };
+      default:
+        return {
+          label: "I'll self-verify that I'll",
+          placeholder: "E.g., go to the gym, read for 30 minutes, meditate...",
         };
     }
   };

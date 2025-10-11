@@ -25,10 +25,7 @@ import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import {
-  getGoalLabel,
-  getProofMethodRequirements,
-} from "@/utils/habitFormLabels";
+import { getProofMethodRequirements } from "@/utils/habitFormLabels";
 
 type Habit = Doc<"habits">;
 

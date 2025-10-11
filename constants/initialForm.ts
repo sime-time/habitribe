@@ -1,4 +1,4 @@
-import { Period } from "@/utils/habitFormLabels";
+import { Frequency } from "@/utils/habitFormLabels";
 import type { HabitFormData } from "@/validation/HabitSchema";
 import { iconColors } from "./colors";
 
@@ -8,11 +8,11 @@ export const initialForm: HabitFormData = {
   color: iconColors[0],
   icon: "💪",
   proofMethodId: "",
-  goalTarget: 0,
+  goalTarget: 1,
   goalUnit: "count",
   startDate: new Date().toISOString().split("T")[0], // "YYYY-MM-DD" format
   schedule: {
-    period: Period.Daily,
-    interval: 1,
+    frequency: Frequency.Daily,
+    pattern: 1,
   },
 };

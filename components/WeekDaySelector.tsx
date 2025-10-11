@@ -6,13 +6,13 @@ import { CHECKMARK_SIZE } from "@/constants/sizes";
 import useTheme from "@/hooks/useTheme";
 
 interface WeeklyDaySelectorProps {
-  interval: number | number[];
-  setInterval: (interval: number | number[]) => void;
+  pattern: number | number[];
+  setPattern: (pattern: number | number[]) => void;
 }
 
 export default function WeekDaySelector({
-  interval,
-  setInterval,
+  pattern,
+  setPattern,
 }: WeeklyDaySelectorProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
@@ -27,33 +27,33 @@ export default function WeekDaySelector({
     { label: "Sa", value: 6 },
   ];
 
-  const selectedDays = Array.isArray(interval)
-    ? interval
-    : interval === 1
+  const selectedDays = Array.isArray(pattern)
+    ? pattern
+    : pattern === 1
       ? [0, 1, 2, 3, 4, 5, 6]
       : [];
 
   const toggleDay = (dayValue: number) => {
     // console.log("WeekDaySelector: toggleDay called with", dayValue);
-    // console.log("WeekDaySelector: current interval", interval);
+    // console.log("WeekDaySelector: current pattern", pattern);
     // console.log("WeekDaySelector: selectedDays", selectedDays);
 
-    // if (!Array.isArray(interval)) {
-    //   console.error("WeekDaySelector: interval is not an array, returning");
+    // if (!Array.isArray(pattern)) {
+    //   console.error("WeekDaySelector: pattern is not an array, returning");
     //   return;
     // }
 
-    const newInterval = selectedDays.includes(dayValue)
+    const newPattern = selectedDays.includes(dayValue)
       ? selectedDays.filter((day) => day !== dayValue)
       : [...selectedDays, dayValue];
 
-    // console.log("WeekDaySelector: Setting interval to", newInterval);
+    // console.log("WeekDaySelector: Setting pattern to", newPattern);
 
-    // If all 7 days are selected, switch to "every day" (interval = 1)
-    if (newInterval.length === 7) {
-      setInterval(1);
+    // If all 7 days are selected, switch to "every day" (pattern = 1)
+    if (newPattern.length === 7) {
+      setPattern(1);
     } else {
-      setInterval(newInterval);
+      setPattern(newPattern);
     }
   };
 
