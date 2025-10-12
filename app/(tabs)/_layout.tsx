@@ -1,9 +1,15 @@
-import { Tabs } from "expo-router";
-import { Cog, ScrollText } from "lucide-react-native";
+import { Redirect, Tabs } from "expo-router";
+import { Camera, Cog, ListCheck } from "lucide-react-native";
+import { useFirstTimeOpen } from "@/hooks/useFirstTimeOpen";
 import useTheme from "@/hooks/useTheme";
 
 export default function TabsLayout() {
   const { colors } = useTheme();
+
+  const { isFirstTime, isLoading } = useFirstTimeOpen();
+  if (isLoading) return null;
+  if (isFirstTime) return <Redirect href={"/onboarding"} />;
+
   return (
     <Tabs
       screenOptions={{
@@ -28,8 +34,15 @@ export default function TabsLayout() {
         options={{
           title: "Habits",
           tabBarIcon: ({ color, size }) => (
-            <ScrollText size={size} color={color} />
+            <ListCheck size={size} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="camera"
+        options={{
+          title: "Camera",
+          tabBarIcon: ({ color, size }) => <Camera size={size} color={color} />,
         }}
       />
       <Tabs.Screen

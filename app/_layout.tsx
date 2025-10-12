@@ -56,6 +56,14 @@ function InitialLayout() {
           gestureDirection: "vertical",
         }}
       />
+      <Stack.Screen
+        name="onboarding"
+        options={{
+          presentation: "fullScreenModal",
+          headerShown: false,
+          animation: "fade",
+        }}
+      />
     </Stack>
   );
 }

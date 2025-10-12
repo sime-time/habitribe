@@ -83,7 +83,10 @@ export default function Index() {
         </View>
 
         {/* Checkbox */}
-        <Pressable style={{ width: 56, height: 56 }}>
+        <Pressable
+          style={{ width: 56, height: 56 }}
+          onPress={() => router.push("/camera")}
+        >
           <Image
             source={require("@/assets/images/icon.png")}
             style={
