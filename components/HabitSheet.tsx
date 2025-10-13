@@ -1,47 +1,87 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useMutation, useQuery } from "convex/react";
-import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import { Camera, Images } from "lucide-react-native";
+import { FlashList } from "@shopify/flash-list";
+import { useQuery } from "convex/react";
 import { useEffect } from "react";
-import {
-  Alert,
-  Image,
-  type ImageStyle,
-  Pressable,
-  ScrollView,
-  Text,
-  type TextStyle,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import { createColorStyles } from "@/assets/styles/color.styles";
+import { borderRadius } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import { getProofMethodRequirements } from "@/utils/habitFormLabels";
+import { useHabitSheetStore } from "@/stores/habitSheetStore";
+import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
+import Emoji from "./Emoji";
 
 type Habit = Doc<"habits">;
 
 interface HabitSheetProps {
-  habit: Habit | null;
   closeSheet: () => void;
 }
-
-export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
+export default function HabitSheet({ closeSheet }: HabitSheetProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
-  const deleteHabit = useMutation(api.exec.delete.deleteHabit);
+  const habits = useQuery(api.exec.read.getUserHabits);
+  const habitSelected = useHabitSheetStore((state) => state.habitSelected);
+  const selectHabit = useHabitSheetStore((state) => state.selectHabit);
 
-  const proofMethods = useQuery(api.exec.read.getProofMethods);
+  const renderHabitOption = ({ item }: { item: Habit }) => (
+    <Pressable
+      style={[
+        s.flexRow,
+        s.roundedLg,
+        s.mb3,
+        s.m1,
+        s.gap4,
+        s.p4,
+        s.itemsCenter,
+        item._id === habitSelected?._id ? c.bgForeground : c.bgCard,
+        // item._id === habitSelected?._id ? s.outline2 : s.outline1,
+        // item._id === habitSelected?._id ? c.outlinePrimary : c.outlineDefault,
+      ]}
+      onPress={() => selectHabit(item)}
+    >
+      <View
+        style={[
+          s.p2,
+          s.roundedLg,
+          s.itemsCenter,
+          s.justifyCenter,
+          { backgroundColor: `${item.color}30` },
+        ]}
+      >
+        <Emoji iconName={item.icon} iconColor={item.color} iconSize={18} />
+      </View>
+      <View style={[s.gap1]}>
+        <Text
+          style={[
+            s.textBase,
+            c.textForeground,
+            item._id === habitSelected?._id
+              ? c.textBackground
+              : c.textForeground,
+            item._id === habitSelected?._id ? s.fontMedium : s.fontNormal,
+          ]}
+        >
+          {item.name}
+        </Text>
+        <Text style={[s.textXs, c.textMuted]}>
+          {item.description}{" "}
+          {getScheduleLabel(
+            item.schedule.frequency as Frequency,
+            item.schedule.pattern,
+          ).toLowerCase()}
+        </Text>
+      </View>
+    </Pressable>
+  );
 
+  // Bottom Sheet Slide Animation
   const slide = useSharedValue(300);
   const backdrop = useSharedValue(0);
   const duration = 250;
@@ -73,156 +113,55 @@ export default function HabitSheet({ habit, closeSheet }: HabitSheetProps) {
     }, duration);
   };
 
-  const confirmDelete = () => {
-    if (!habit) return null;
-    Alert.alert(
-      "Delete Habit",
-      "This will remove all habit progress and history.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              deleteHabit({ id: habit._id });
-              close();
-            } catch (error) {
-              console.error("Failed to delete habit", error);
-              Alert.alert("Error", "Failed to delete habit");
-            }
-          },
-        },
-      ],
-    );
-  };
-
-  if (!habit) return null;
-
   return (
     <Animated.View
       style={[
-        s.absolute,
         s.flex1,
         s.wFull,
         s.hFull,
         s.justifyEnd,
+        s.zTop,
         {
+          position: "absolute",
           top: 0,
           left: 0,
           backgroundColor: "rgba(0,0,0,0.5)",
-          zIndex: 999,
         },
         backdropAnimatedStyle,
       ]}
     >
       <Pressable onPress={close} style={[s.flex1, s.wFull, s.justifyEnd]}>
-        <Pressable style={{ width: "100%", height: "70%" }}>
+        <Pressable style={{ width: "100%", height: "50%" }}>
           <Animated.View
             style={[
               s.wFull,
               s.hFull,
-              c.bgCard,
               {
-                borderTopLeftRadius: 24,
-                borderTopRightRadius: 24,
+                borderTopLeftRadius: borderRadius.xl,
+                borderTopRightRadius: borderRadius.xl,
+                backgroundColor: colors.gradients.background[1],
               },
               slideAnimatedStyle,
             ]}
           >
-            {/* HABIT OPTIONS */}
-            <View
-              style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.px4, s.pt4]}
-            >
-              <TouchableOpacity onPress={confirmDelete}>
-                <Ionicons
-                  name="trash-outline"
-                  color={colors.destructive}
-                  size={26}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  closeSheet();
-                  router.navigate(`/habit/form?id=${habit._id}`);
-                }}
+            <View style={[s.flex1, s.p6, s.gap6]}>
+              <Text
+                style={[
+                  s.textCenter,
+                  s.textLg,
+                  c.textForeground,
+                  s.fontSemibold,
+                ]}
               >
-                <Text style={[s.textLg, c.textPrimary]}>Edit</Text>
-              </TouchableOpacity>
+                Select your Habit
+              </Text>
+
+              <FlashList
+                data={habits}
+                renderItem={renderHabitOption}
+                keyExtractor={(item) => item._id}
+              />
             </View>
-
-            <ScrollView style={[s.flex1, s.px6, s.gap4]}>
-              {/* HEADER */}
-              <View style={s.gap2}>
-                <Text
-                  style={[
-                    s.text3xl,
-                    s.fontSemibold,
-                    s.textCenter,
-                    c.textForeground,
-                  ]}
-                >
-                  {habit.name}
-                </Text>
-                <Text style={[s.textBase, s.textCenter, c.textForeground]}>
-                  {habit.description}
-                </Text>
-                <Text style={[s.textBase, s.textCenter, c.textMuted]}>
-                  {getProofMethodRequirements(
-                    habit.proofMethodId,
-                    proofMethods,
-                  )}
-                </Text>
-              </View>
-
-              {/* PROOF */}
-              <View style={[s.itemsCenter, s.justifyCenter, s.py4]}>
-                <View
-                  style={[
-                    s.roundedMd,
-                    s.overflowHidden,
-                    s.border4,
-                    c.borderSuccess,
-                    {
-                      width: "80%",
-                      maxHeight: 300,
-                    },
-                  ]}
-                >
-                  <Image
-                    source={{ uri: "https://i.pravatar.cc/150?img=3" }}
-                    style={[s.wFull, s.hFull] as ImageStyle[]}
-                    resizeMode="cover"
-                  />
-                </View>
-                <Text style={[s.textSm, s.mt3, c.textMuted] as TextStyle[]}>
-                  Today's Proof
-                </Text>
-              </View>
-
-              {/* BUTTONS */}
-              <View style={[s.gap4]}>
-                <TouchableOpacity>
-                  <LinearGradient
-                    colors={colors.gradients.primary}
-                    style={s.button}
-                  >
-                    <Camera color={colors.primaryForeground} size={20} />
-                    <Text
-                      style={[s.textLg, s.fontMedium, c.textPrimaryForeground]}
-                    >
-                      Use Camera
-                    </Text>
-                  </LinearGradient>
-                </TouchableOpacity>
-                <TouchableOpacity style={[s.button, c.bgSecondary]}>
-                  <Images color={colors.primary} size={20} />
-                  <Text style={[s.textLg, s.fontMedium, c.textPrimary]}>
-                    Open Photo Library
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
           </Animated.View>
         </Pressable>
       </Pressable>

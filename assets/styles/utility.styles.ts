@@ -72,6 +72,7 @@ export const s = {
   pt2: { paddingTop: spacing[2] } as ViewStyle,
   pt3: { paddingTop: spacing[3] } as ViewStyle,
   pt4: { paddingTop: spacing[4] } as ViewStyle,
+  pt5: { paddingTop: spacing[5] } as ViewStyle,
   pt6: { paddingTop: spacing[6] } as ViewStyle,
   pt8: { paddingTop: spacing[8] } as ViewStyle,
 
@@ -80,6 +81,7 @@ export const s = {
   pb2: { paddingBottom: spacing[2] } as ViewStyle,
   pb3: { paddingBottom: spacing[3] } as ViewStyle,
   pb4: { paddingBottom: spacing[4] } as ViewStyle,
+  pb5: { paddingBottom: spacing[5] } as ViewStyle,
   pb6: { paddingBottom: spacing[6] } as ViewStyle,
   pb8: { paddingBottom: spacing[8] } as ViewStyle,
 
@@ -88,14 +90,18 @@ export const s = {
   pl2: { paddingLeft: spacing[2] } as ViewStyle,
   pl3: { paddingLeft: spacing[3] } as ViewStyle,
   pl4: { paddingLeft: spacing[4] } as ViewStyle,
+  pl5: { paddingLeft: spacing[5] } as ViewStyle,
   pl6: { paddingLeft: spacing[6] } as ViewStyle,
+  pl8: { paddingLeft: spacing[8] } as ViewStyle,
 
   // Padding Right
   pr1: { paddingRight: spacing[1] } as ViewStyle,
   pr2: { paddingRight: spacing[2] } as ViewStyle,
   pr3: { paddingRight: spacing[3] } as ViewStyle,
   pr4: { paddingRight: spacing[4] } as ViewStyle,
+  pr5: { paddingRight: spacing[5] } as ViewStyle,
   pr6: { paddingRight: spacing[6] } as ViewStyle,
+  pr8: { paddingRight: spacing[8] } as ViewStyle,
 
   // Margin
   m0: { margin: spacing[0] } as ViewStyle,
@@ -103,26 +109,34 @@ export const s = {
   m2: { margin: spacing[2] } as ViewStyle,
   m3: { margin: spacing[3] } as ViewStyle,
   m4: { margin: spacing[4] } as ViewStyle,
+  m5: { margin: spacing[5] } as ViewStyle,
   m6: { margin: spacing[6] } as ViewStyle,
   m8: { margin: spacing[8] } as ViewStyle,
 
   // Margin Horizontal
   mx1: { marginHorizontal: spacing[1] } as ViewStyle,
   mx2: { marginHorizontal: spacing[2] } as ViewStyle,
+  mx3: { marginHorizontal: spacing[3] } as ViewStyle,
   mx4: { marginHorizontal: spacing[4] } as ViewStyle,
+  mx5: { marginHorizontal: spacing[5] } as ViewStyle,
   mx6: { marginHorizontal: spacing[6] } as ViewStyle,
+  mx8: { marginHorizontal: spacing[8] } as ViewStyle,
 
   // Margin Vertical
   my1: { marginVertical: spacing[1] } as ViewStyle,
   my2: { marginVertical: spacing[2] } as ViewStyle,
+  my3: { marginVertical: spacing[3] } as ViewStyle,
   my4: { marginVertical: spacing[4] } as ViewStyle,
+  my5: { marginVertical: spacing[5] } as ViewStyle,
   my6: { marginVertical: spacing[6] } as ViewStyle,
+  my8: { marginVertical: spacing[8] } as ViewStyle,
 
   // Margin Top
   mt1: { marginTop: spacing[1] } as ViewStyle,
   mt2: { marginTop: spacing[2] } as ViewStyle,
   mt3: { marginTop: spacing[3] } as ViewStyle,
   mt4: { marginTop: spacing[4] } as ViewStyle,
+  mt5: { marginTop: spacing[5] } as ViewStyle,
   mt6: { marginTop: spacing[6] } as ViewStyle,
   mt8: { marginTop: spacing[8] } as ViewStyle,
 
@@ -131,18 +145,27 @@ export const s = {
   mb2: { marginBottom: spacing[2] } as ViewStyle,
   mb3: { marginBottom: spacing[3] } as ViewStyle,
   mb4: { marginBottom: spacing[4] } as ViewStyle,
+  mb5: { marginBottom: spacing[5] } as ViewStyle,
   mb6: { marginBottom: spacing[6] } as ViewStyle,
   mb8: { marginBottom: spacing[8] } as ViewStyle,
 
   // Margin Left
   ml1: { marginLeft: spacing[1] } as ViewStyle,
   ml2: { marginLeft: spacing[2] } as ViewStyle,
+  ml3: { marginLeft: spacing[3] } as ViewStyle,
   ml4: { marginLeft: spacing[4] } as ViewStyle,
+  ml5: { marginLeft: spacing[5] } as ViewStyle,
+  ml6: { marginLeft: spacing[6] } as ViewStyle,
+  ml8: { marginLeft: spacing[8] } as ViewStyle,
 
   // Margin Right
   mr1: { marginRight: spacing[1] } as ViewStyle,
   mr2: { marginRight: spacing[2] } as ViewStyle,
+  mr3: { marginRight: spacing[3] } as ViewStyle,
   mr4: { marginRight: spacing[4] } as ViewStyle,
+  mr5: { marginRight: spacing[5] } as ViewStyle,
+  mr6: { marginRight: spacing[6] } as ViewStyle,
+  mr8: { marginRight: spacing[8] } as ViewStyle,
 
   // Z-Index
   zBottom: { zIndex: -999 } as ViewStyle,
@@ -239,6 +262,8 @@ export const s = {
   text4xl: { fontSize: fontSize["4xl"] } as TextStyle,
 
   // Font Weight
+  fontThin: { fontWeight: fontWeight.thin } as TextStyle,
+  fontLight: { fontWeight: fontWeight.light } as TextStyle,
   fontNormal: { fontWeight: fontWeight.normal } as TextStyle,
   fontMedium: { fontWeight: fontWeight.medium } as TextStyle,
   fontSemibold: { fontWeight: fontWeight.semibold } as TextStyle,
@@ -263,6 +288,7 @@ export const s = {
 
   // Opacity
   opacity0: { opacity: 0 } as ViewStyle,
+  opacity25: { opacity: 0.25 } as ViewStyle,
   opacity50: { opacity: 0.5 } as ViewStyle,
   opacity75: { opacity: 0.75 } as ViewStyle,
   opacity100: { opacity: 1 } as ViewStyle,

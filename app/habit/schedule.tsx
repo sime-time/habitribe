@@ -23,7 +23,8 @@ export default function HabitSchedule() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
-  const PATTERN_RANGE = [2, 3, 4, 5, 6, 7, 8, 9];
+  // array from 2 to 31
+  const PATTERN_RANGE = Array.from({ length: 30 }, (_, i) => i + 2);
 
   const updateSchedule = useHabitFormStore((state) => state.updateSchedule);
 

@@ -1,53 +1,66 @@
-import { type CameraType, CameraView } from "expo-camera";
-import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  type CameraMode,
+  type CameraType,
+  CameraView,
+  type FlashMode,
+} from "expo-camera";
+import { useRef, useState } from "react";
+import { StatusBar, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { spacing } from "@/assets/styles/token.styles";
+import { s } from "@/assets/styles/utility.styles";
+import CameraMainRow from "@/components/CameraMainRow";
+import CameraSelectRow from "@/components/CameraSelectRow";
+import CameraTools from "@/components/CameraTools";
+import useTheme from "@/hooks/useTheme";
 
-export default function Camera() {
-  const [facing, setFacing] = useState<CameraType>("back");
-
-  function toggleCameraFacing() {
-    setFacing((current) => (current === "back" ? "front" : "back"));
-  }
+export default function CameraScreen() {
+  const { colors } = useTheme();
+  const cameraRef = useRef<CameraView>(null);
+  const [cameraMode, setCameraMode] = useState<CameraMode>("picture");
+  const [cameraZoom, setCameraZoom] = useState<number>(0);
+  const [cameraFlash, setCameraFlash] = useState<FlashMode>("off");
+  const [cameraFacing, setCameraFacing] = useState<CameraType>("back");
 
   return (
-    <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-          <Text style={styles.text}>Flip Camera</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <SafeAreaView
+      style={[s.flex1, { backgroundColor: colors.gradients.background[0] }]}
+      edges={["top"]}
+    >
+      <StatusBar barStyle={colors.statusBarStyle} />
+      <CameraView
+        ref={cameraRef}
+        mode={cameraMode}
+        zoom={cameraZoom}
+        flash={cameraFlash}
+        facing={cameraFacing}
+        style={s.flex1}
+      >
+        <CameraTools
+          cameraZoom={cameraZoom}
+          cameraFlash={cameraFlash}
+          setCameraZoom={setCameraZoom}
+          setCameraFlash={setCameraFlash}
+        />
+        <View
+          style={[
+            s.wFull,
+            s.gap4,
+            {
+              position: "absolute",
+              bottom: spacing[6],
+            },
+          ]}
+        >
+          <CameraSelectRow />
+          <CameraMainRow
+            handleTakePicture={() => {}}
+            cameraMode={cameraMode}
+            setCameraFacing={setCameraFacing}
+            isRecording={false}
+          />
+        </View>
+      </CameraView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  message: {
-    textAlign: "center",
-    paddingBottom: 10,
-  },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    position: "absolute",
-    bottom: 64,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    width: "100%",
-    paddingHorizontal: 64,
-  },
-  button: {
-    flex: 1,
-    alignItems: "center",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
-  },
-});

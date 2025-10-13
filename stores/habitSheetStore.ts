@@ -4,23 +4,33 @@ import type { Doc } from "@/convex/_generated/dataModel";
 type Habit = Doc<"habits">;
 
 interface HabitSheetStore {
-  habit: Habit | null;
+  habitSelected: Habit | null;
   isOpen: boolean;
-  openSheet: (selectedHabit: Habit) => void;
+  openSheet: () => void;
   closeSheet: () => void;
+  selectHabit: (habit: Habit) => void;
+  resetHabit: () => void;
 }
 
 export const useHabitSheetStore = create<HabitSheetStore>((set) => ({
-  habit: null,
+  habitSelected: null,
   isOpen: false,
-  openSheet: (selectedHabit: Habit) =>
+  openSheet: () =>
     set({
       isOpen: true,
-      habit: selectedHabit,
     }),
   closeSheet: () =>
     set({
       isOpen: false,
-      habit: null,
     }),
+  selectHabit: (habit: Habit) => {
+    set({
+      habitSelected: habit,
+    });
+  },
+  resetHabit: () => {
+    set({
+      habitSelected: null,
+    });
+  },
 }));

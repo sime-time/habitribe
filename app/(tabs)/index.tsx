@@ -20,6 +20,7 @@ import Emoji from "@/components/Emoji";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
+import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
 
 type Habit = Doc<"habits">;
 
@@ -50,7 +51,7 @@ export default function Index() {
   const renderHabitCard = ({ item }: { item: Habit }) => (
     <Pressable
       style={[
-        s.mb4,
+        s.mb5,
         s.p4,
         s.gap3,
         s.roundedLg,
@@ -78,7 +79,12 @@ export default function Index() {
             <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
               {item.name}
             </Text>
-            <Text style={[s.textSm, c.textMuted]}>{item.description}</Text>
+            <Text style={[s.textSm, c.textMuted]}>
+              {getScheduleLabel(
+                item.schedule.frequency as Frequency,
+                item.schedule.pattern,
+              )}
+            </Text>
           </View>
         </View>
 
@@ -182,7 +188,7 @@ export default function Index() {
         <ScrollView style={[s.flex1, s.px4]}>
           {dailyHabits.length > 0 && (
             <>
-              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb6]}>
+              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
                 <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
                   Daily Habits
                 </Text>
@@ -196,7 +202,7 @@ export default function Index() {
 
           {weeklyHabits.length > 0 && (
             <>
-              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.py6]}>
+              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
                 <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
                   Weekly Habits
                 </Text>
@@ -210,7 +216,7 @@ export default function Index() {
 
           {monthlyHabits.length > 0 && (
             <>
-              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.py6]}>
+              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
                 <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
                   Monthly Habits
                 </Text>

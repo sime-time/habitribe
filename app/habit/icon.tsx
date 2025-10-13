@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   type TextStyle,
+  useWindowDimensions,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,6 +22,12 @@ import { useHabitFormStore } from "@/stores/habitFormStore";
 export default function HabitIcon() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
+  const { width } = useWindowDimensions();
+
+  // Calculate dynamic emoji size based on screen width
+  // 6 columns with gaps, so divide by ~7 to account for spacing
+  const emojiSize = Math.floor(width / 13);
+  console.log("emojisize", emojiSize);
 
   // UI state
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -44,7 +51,7 @@ export default function HabitIcon() {
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1}>
-        <ScrollView style={[s.flex1, s.px6]} contentContainerStyle={s.pb8}>
+        <ScrollView style={[s.flex1, s.px4]} contentContainerStyle={s.pb8}>
           {/* Preview Section */}
           <View style={[s.itemsCenter, s.py6]}>
             <View
@@ -71,7 +78,7 @@ export default function HabitIcon() {
               s.px4,
               s.py3,
               s.gap3,
-              s.roundedLg,
+              s.roundedMd,
               s.mb6,
               c.bgCard,
               c.borderDefault,
@@ -98,8 +105,8 @@ export default function HabitIcon() {
             data={iconColors}
             scrollEnabled={false}
             numColumns={6}
-            columnWrapperStyle={s.gap4}
-            contentContainerStyle={[s.gap3, s.p1, s.itemsCenter]}
+            columnWrapperStyle={s.justifyBetween}
+            contentContainerStyle={[s.gap3, s.p1]}
             keyExtractor={(item) => item}
             renderItem={({ item: color }) => (
               <Pressable
@@ -116,8 +123,8 @@ export default function HabitIcon() {
                   style={[
                     s.roundedFull,
                     {
-                      width: 32,
-                      height: 32,
+                      width: emojiSize,
+                      height: emojiSize,
                       backgroundColor: color,
                     },
                   ]}
@@ -151,7 +158,7 @@ export default function HabitIcon() {
                     s.flex1,
                     s.itemsCenter,
                     s.justifyCenter,
-                    s.p2,
+                    s.p1,
                     s.roundedMd,
                     { backgroundColor: `${selectedColor}10` },
                     selectedIcon === item.emoji && [
@@ -161,7 +168,7 @@ export default function HabitIcon() {
                     ],
                   ]}
                 >
-                  <Text style={{ fontSize: 32 }}>{item.emoji}</Text>
+                  <Text style={{ fontSize: emojiSize }}>{item.emoji}</Text>
                 </Pressable>
               )}
             />

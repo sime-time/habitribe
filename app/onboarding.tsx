@@ -1,13 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  type CameraType,
-  useCameraPermissions,
-  useMicrophonePermissions,
-} from "expo-camera";
+import { useCameraPermissions, useMicrophonePermissions } from "expo-camera";
 import { usePermissions } from "expo-media-library";
 import { router } from "expo-router";
 import { Camera } from "lucide-react-native";
-import { Alert, Button, StyleSheet, Text, View } from "react-native";
+import { Alert, Button, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { s } from "@/assets/styles/utility.styles";
 

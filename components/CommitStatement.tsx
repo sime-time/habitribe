@@ -74,7 +74,7 @@ export default function CommitStatement() {
             : c.textPrimary,
         ]}
       >
-        {getScheduleLabel(schedule.frequency, schedule.pattern)}
+        {getScheduleLabel(schedule.frequency, schedule.pattern).toLowerCase()}
       </Text>
     </TouchableOpacity>
   );
