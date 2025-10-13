@@ -1,8 +1,11 @@
-import type { CameraType, FlashMode } from "expo-camera";
-import { Text, View } from "react-native";
+import type { FlashMode } from "expo-camera";
+import { useEffect } from "react";
+import { View } from "react-native";
 import { spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import IconButton from "./IconButton";
+
+const ZOOM_VALUE = 0.2;
 
 interface CameraToolsProps {
   cameraZoom: number;
@@ -17,6 +20,10 @@ export default function CameraTools({
   setCameraZoom,
   setCameraFlash,
 }: CameraToolsProps) {
+  useEffect(() => {
+    console.log("zoom", cameraZoom);
+  }, [cameraZoom]);
+
   return (
     <View
       style={[
@@ -36,10 +43,11 @@ export default function CameraTools({
       />
       <IconButton
         onPress={() => {
-          // increment zoom
-          if (cameraZoom < 1) {
-            setCameraZoom((prev) => prev + 0.25);
-          }
+          // increment zoom and avoid floating point imprecision
+          setCameraZoom((prev) => {
+            const newZoom = prev + ZOOM_VALUE;
+            return Math.max(0, Math.min(1, newZoom));
+          });
         }}
         iosName={"plus.magnifyingglass"}
         androidName="add"
@@ -47,10 +55,11 @@ export default function CameraTools({
       />
       <IconButton
         onPress={() => {
-          // decrement zoom
-          if (cameraZoom > 0) {
-            setCameraZoom((prev) => prev - 0.25);
-          }
+          // decrement zoom and avoid floating point imprecision
+          setCameraZoom((prev) => {
+            const newZoom = prev - ZOOM_VALUE;
+            return Math.max(0, Math.min(1, newZoom));
+          });
         }}
         iosName={"minus.magnifyingglass"}
         androidName="remove"

@@ -1,7 +1,7 @@
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "convex/react";
 import { useEffect } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -41,8 +41,11 @@ export default function HabitSheet({ closeSheet }: HabitSheetProps) {
         s.p4,
         s.itemsCenter,
         item._id === habitSelected?._id ? c.bgForeground : c.bgCard,
-        // item._id === habitSelected?._id ? s.outline2 : s.outline1,
-        // item._id === habitSelected?._id ? c.outlinePrimary : c.outlineDefault,
+        s.outline1,
+        c.outlineDefault,
+        item._id === habitSelected?._id
+          ? c.outlineForeground
+          : c.outlineDefault,
       ]}
       onPress={() => selectHabit(item)}
     >

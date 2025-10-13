@@ -34,10 +34,16 @@ export default function CameraSelectRow() {
             },
           ]}
         >
-          <Text style={[s.textSm, s.fontMedium, { color: "white" }]}>
+          <Text
+            style={[
+              s.textSm,
+              s.fontMedium,
+              { color: habitSelected?.color || "white" },
+            ]}
+          >
             {habitSelected ? habitSelected.name : "Select Habit"}
           </Text>
-          <ChevronDown color={"white"} size={20} />
+          <ChevronDown color={habitSelected?.color || "white"} size={20} />
         </TouchableOpacity>
       </View>
     </View>
