@@ -1,24 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
-import type { CameraMode } from "expo-camera";
 import { SymbolView } from "expo-symbols";
 import useTheme from "@/hooks/useTheme";
+import { useCameraSettings } from "@/stores/cameraSettingsStore";
 
 const SIZE = 90;
 
-interface CameraRecordIconProps {
-  cameraMode: CameraMode;
-  isRecording: boolean;
-}
-
-export default function CameraRecordIcon({
-  cameraMode,
-  isRecording,
-}: CameraRecordIconProps) {
+export default function CameraRecordIcon() {
   const { colors } = useTheme();
+  const mode = useCameraSettings((state) => state.mode);
+  const isRecording = useCameraSettings((state) => state.isRecording);
+
   return (
     <SymbolView
       name={
-        cameraMode === "picture"
+        mode === "picture"
           ? "circle"
           : isRecording
             ? "record.circle"
@@ -36,7 +31,7 @@ export default function CameraRecordIcon({
       fallback={
         <Ionicons
           name={
-            cameraMode === "picture"
+            mode === "picture"
               ? "radio-button-on"
               : isRecording
                 ? "recording"

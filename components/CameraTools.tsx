@@ -1,28 +1,16 @@
-import type { FlashMode } from "expo-camera";
-import { useEffect } from "react";
 import { View } from "react-native";
 import { spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
+import { useCameraSettings } from "@/stores/cameraSettingsStore";
 import IconButton from "./IconButton";
 
 const ZOOM_VALUE = 0.2;
 
-interface CameraToolsProps {
-  cameraZoom: number;
-  cameraFlash: FlashMode;
-  setCameraZoom: React.Dispatch<React.SetStateAction<number>>;
-  setCameraFlash: React.Dispatch<React.SetStateAction<FlashMode>>;
-}
-
-export default function CameraTools({
-  cameraZoom,
-  cameraFlash,
-  setCameraZoom,
-  setCameraFlash,
-}: CameraToolsProps) {
-  useEffect(() => {
-    console.log("zoom", cameraZoom);
-  }, [cameraZoom]);
+export default function CameraTools() {
+  const zoom = useCameraSettings((state) => state.zoom);
+  const flash = useCameraSettings((state) => state.flash);
+  const setZoom = useCameraSettings((state) => state.setZoom);
+  const setFlash = useCameraSettings((state) => state.setFlash);
 
   return (
     <View
@@ -33,37 +21,32 @@ export default function CameraTools({
       ]}
     >
       <IconButton
-        onPress={() =>
-          setCameraFlash((current) => (current === "on" ? "off" : "on"))
-        }
-        iosName={cameraFlash === "on" ? "bolt" : "bolt.slash"}
-        androidName={
-          cameraFlash === "on" ? "flash-outline" : "flash-off-outline"
-        }
+        onPress={() => {
+          const newFlash = flash === "on" ? "off" : "on";
+          setFlash(newFlash);
+        }}
+        iosName={flash === "on" ? "bolt" : "bolt.slash"}
+        androidName={flash === "on" ? "flash-outline" : "flash-off-outline"}
       />
       <IconButton
         onPress={() => {
           // increment zoom and avoid floating point imprecision
-          setCameraZoom((prev) => {
-            const newZoom = prev + ZOOM_VALUE;
-            return Math.max(0, Math.min(1, newZoom));
-          });
+          const newZoom = zoom + ZOOM_VALUE;
+          setZoom(Math.max(0, Math.min(1, newZoom)));
         }}
         iosName={"plus.magnifyingglass"}
         androidName="add"
-        containerStyle={cameraZoom >= 1 ? s.opacity25 : null}
+        containerStyle={zoom >= 1 ? s.opacity25 : null}
       />
       <IconButton
         onPress={() => {
           // decrement zoom and avoid floating point imprecision
-          setCameraZoom((prev) => {
-            const newZoom = prev - ZOOM_VALUE;
-            return Math.max(0, Math.min(1, newZoom));
-          });
+          const newZoom = zoom - ZOOM_VALUE;
+          setZoom(Math.max(0, Math.min(1, newZoom)));
         }}
         iosName={"minus.magnifyingglass"}
         androidName="remove"
-        containerStyle={cameraZoom <= 0 ? s.opacity25 : null}
+        containerStyle={zoom <= 0 ? s.opacity25 : null}
       />
     </View>
   );

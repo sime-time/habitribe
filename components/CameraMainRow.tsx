@@ -1,23 +1,20 @@
-import type { CameraMode, CameraType } from "expo-camera";
 import { Link } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
 import { s } from "@/assets/styles/utility.styles";
 import CameraRecordIcon from "@/components/CameraRecordIcon";
+import { useCameraSettings } from "@/stores/cameraSettingsStore";
 import IconButton from "./IconButton";
 
 interface CameraMainRowProps {
-  cameraMode: CameraMode;
-  isRecording: boolean;
-  setCameraFacing: React.Dispatch<React.SetStateAction<CameraType>>;
   handleTakePicture: () => void;
 }
 
 export default function CameraMainRow({
-  cameraMode,
-  isRecording,
-  setCameraFacing,
   handleTakePicture,
 }: CameraMainRowProps) {
+  const facing = useCameraSettings((state) => state.facing);
+  const setFacing = useCameraSettings((state) => state.setFacing);
+
   return (
     <View style={[s.wFull, s.flexRow, s.itemsCenter, s.justifyAround]}>
       <Link asChild href={"/media-library"}>
@@ -28,12 +25,13 @@ export default function CameraMainRow({
         />
       </Link>
       <TouchableOpacity onPress={handleTakePicture}>
-        <CameraRecordIcon cameraMode={cameraMode} isRecording={isRecording} />
+        <CameraRecordIcon />
       </TouchableOpacity>
       <IconButton
-        onPress={() =>
-          setCameraFacing((current) => (current === "back" ? "front" : "back"))
-        }
+        onPress={() => {
+          const newFacing = facing === "back" ? "front" : "back";
+          setFacing(newFacing);
+        }}
         iosName={"arrow.2.circlepath"}
         androidName="camera-reverse-outline"
       />
