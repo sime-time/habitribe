@@ -13,8 +13,6 @@ export const HabitSchema = z.object({
       (val) => /^[a-zA-Z][a-zA-Z0-9_]*$/.test(val),
       "Invalid proof type ID format",
     ),
-  goalTarget: z.number().min(1, "You must have a goal target"),
-  goalUnit: z.string().min(1, "Goal unit is required"),
   startDate: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),

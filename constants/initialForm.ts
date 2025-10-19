@@ -8,8 +8,6 @@ export const initialForm: HabitFormData = {
   color: iconColors[0],
   icon: "💪",
   proofMethodId: "",
-  goalTarget: 1,
-  goalUnit: "count",
   startDate: new Date().toISOString().split("T")[0], // "YYYY-MM-DD" format
   schedule: {
     frequency: Frequency.Daily,

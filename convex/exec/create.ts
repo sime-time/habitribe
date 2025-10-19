@@ -10,8 +10,6 @@ export const addHabit = mutation({
     description: v.optional(v.string()),
     color: v.optional(v.string()),
     proofMethodId: v.id("proofMethods"),
-    goalTarget: v.number(),
-    goalUnit: v.string(),
     startDate: v.string(), // "YYYY-MM-DD"
     schedule: v.object({
       frequency: v.union(

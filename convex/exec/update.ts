@@ -9,8 +9,6 @@ export const editHabit = mutation({
     description: v.optional(v.string()),
     color: v.optional(v.string()),
     proofMethodId: v.optional(v.id("proofMethods")),
-    goalTarget: v.optional(v.number()),
-    goalUnit: v.optional(v.string()),
     startDate: v.optional(v.string()), // "YYYY-MM-DD"
     schedule: v.optional(
       v.object({

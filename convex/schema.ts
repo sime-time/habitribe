@@ -13,8 +13,6 @@ export default defineSchema({
     icon: v.optional(v.string()),
     color: v.optional(v.string()),
     proofMethodId: v.id("proofMethods"),
-    goalTarget: v.number(),
-    goalUnit: v.string(),
     startDate: v.string(), // "YYYY-MM-DD" format
     schedule: v.object({
       frequency: v.union(
