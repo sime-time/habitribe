@@ -1,9 +1,4 @@
-import {
-  type CameraMode,
-  type CameraType,
-  CameraView,
-  type FlashMode,
-} from "expo-camera";
+import { CameraView } from "expo-camera";
 import { useRef, useState } from "react";
 import { StatusBar, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,6 +7,7 @@ import { s } from "@/assets/styles/utility.styles";
 import CameraMainRow from "@/components/CameraMainRow";
 import CameraSelectRow from "@/components/CameraSelectRow";
 import CameraTools from "@/components/CameraTools";
+import PictureView from "@/components/PictureView";
 import useTheme from "@/hooks/useTheme";
 import { useCameraSettings } from "@/stores/cameraSettingsStore";
 
@@ -23,6 +19,15 @@ export default function CameraScreen() {
   const mode = useCameraSettings((state) => state.mode);
   const flash = useCameraSettings((state) => state.flash);
   const facing = useCameraSettings((state) => state.facing);
+
+  const [picture, setPicture] = useState<string>("");
+
+  const handleTakePicture = async () => {
+    const response = await cameraRef.current?.takePictureAsync();
+    setPicture(response!.uri);
+  };
+
+  if (picture) return <PictureView picture={picture} setPicture={setPicture} />;
 
   return (
     <SafeAreaView
@@ -50,7 +55,7 @@ export default function CameraScreen() {
           ]}
         >
           <CameraSelectRow />
-          <CameraMainRow handleTakePicture={() => {}} />
+          <CameraMainRow handleTakePicture={handleTakePicture} />
         </View>
       </CameraView>
     </SafeAreaView>

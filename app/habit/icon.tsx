@@ -27,7 +27,6 @@ export default function HabitIcon() {
   // Calculate dynamic emoji size based on screen width
   // 6 columns with gaps, so divide by ~7 to account for spacing
   const emojiSize = Math.floor(width / 13);
-  console.log("emojisize", emojiSize);
 
   // UI state
   const [searchQuery, setSearchQuery] = useState<string>("");

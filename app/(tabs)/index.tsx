@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
 import { Check } from "lucide-react-native";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   Image,
   type ImageStyle,
@@ -29,12 +29,28 @@ export default function Index() {
   const c = createColorStyles(colors);
 
   const today = new Date();
-  const formattedDate = today.toLocaleDateString("en-US", {
+  const longDateName = today.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
   });
+  const day = today.getDate();
+  const month = today.getMonth() + 1; // January is 0, so we have to add 1
+  const year = today.getFullYear();
 
-  const habits = useQuery(api.exec.read.getUserHabits);
+  // format today's date to YYYY-MM-DD
+  const habitDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+  // create any of today's missing habit entries before querying them
+  const createMissingEntries = useMutation(api.exec.create.addMissingEntries);
+
+  // get today's habit entries
+  const habits = useQuery(api.exec.read.getTodaysHabits, {
+    date: habitDate,
+  });
+
+  useEffect(() => {
+    createMissingEntries({ date: habitDate });
+  }, [habitDate, createMissingEntries]);
 
   // useMemo to avoid re-filtering on every render
   const { dailyHabits, weeklyHabits, monthlyHabits } = useMemo(() => {
@@ -42,9 +58,9 @@ export default function Index() {
       return { dailyHabits: [], weeklyHabits: [], monthlyHabits: [] };
 
     return {
-      dailyHabits: habits.filter((h) => h.schedule.frequency === "daily"),
-      weeklyHabits: habits.filter((h) => h.schedule.frequency === "weekly"),
-      monthlyHabits: habits.filter((h) => h.schedule.frequency === "monthly"),
+      dailyHabits: habits.dailyHabits || [],
+      weeklyHabits: habits.weeklyHabits || [],
+      monthlyHabits: habits.monthlyHabits || [],
     };
   }, [habits]);
 
@@ -150,7 +166,7 @@ export default function Index() {
         <View style={[s.p4, s.pt8, s.flexRow, s.justifyBetween, s.itemsCenter]}>
           <View style={s.flex1}>
             <Text style={[s.text3xl, s.fontBold, c.textForeground]}>Today</Text>
-            <Text style={[s.textSm, c.textMuted]}>{formattedDate}</Text>
+            <Text style={[s.textSm, c.textMuted]}>{longDateName}</Text>
           </View>
           <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
             <View>

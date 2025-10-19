@@ -1,4 +1,5 @@
 import { Redirect, Tabs } from "expo-router";
+import { SymbolView } from "expo-symbols";
 import { Camera, Cog, ListCheck } from "lucide-react-native";
 import HabitSheet from "@/components/HabitSheet";
 import { useFirstTimeOpen } from "@/hooks/useFirstTimeOpen";
@@ -49,7 +50,12 @@ export default function TabsLayout() {
           options={{
             title: "Camera",
             tabBarIcon: ({ color, size }) => (
-              <Camera size={size} color={color} />
+              <SymbolView
+                name="camera"
+                size={size}
+                tintColor={color}
+                fallback={<Camera size={size} color={color} />}
+              />
             ),
           }}
         />
@@ -61,7 +67,7 @@ export default function TabsLayout() {
           }}
         />
       </Tabs>
-      {isOpen && <HabitSheet habitSelected={null} closeSheet={closeSheet} />}
+      {isOpen && <HabitSheet closeSheet={closeSheet} />}
     </>
   );
 }

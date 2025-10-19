@@ -37,6 +37,7 @@ export const createColorStyles = (colors: ColorScheme) =>
     textSecondary: { color: colors.secondary } as TextStyle,
     textSecondaryForeground: { color: colors.secondaryForeground } as TextStyle,
     textMuted: { color: colors.muted } as TextStyle,
+    textWhite: { color: "white" } as TextStyle,
 
     // State text colors
     textSuccess: { color: colors.success } as TextStyle,
