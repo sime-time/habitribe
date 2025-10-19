@@ -62,10 +62,14 @@
           "recordAudioAndroid": true
         }
       ],
-
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "$(PRODUCT_NAME) accesses your photos to let you share them with others"
+        }
+      ],
       "expo-secure-store",
-      "expo-font",
-      "expo-video"
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,

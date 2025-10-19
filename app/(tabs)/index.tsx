@@ -44,8 +44,9 @@ export default function Index() {
   const createMissingEntries = useMutation(api.exec.create.addMissingEntries);
 
   // get today's habit entries
-  const habits = useQuery(api.exec.read.getTodaysHabits, {
+  const habits = useQuery(api.exec.read.getTodaysHabitEntries, {
     date: habitDate,
+    grouped: true,
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency

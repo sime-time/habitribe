@@ -19,15 +19,15 @@ export default function CameraScreen() {
   const mode = useCameraSettings((state) => state.mode);
   const flash = useCameraSettings((state) => state.flash);
   const facing = useCameraSettings((state) => state.facing);
-
-  const [picture, setPicture] = useState<string>("");
+  const picture = useCameraSettings((state) => state.picture);
+  const setPicture = useCameraSettings((state) => state.setPicture);
 
   const handleTakePicture = async () => {
     const response = await cameraRef.current?.takePictureAsync();
     setPicture(response!.uri);
   };
 
-  if (picture) return <PictureView picture={picture} setPicture={setPicture} />;
+  if (picture) return <PictureView />;
 
   return (
     <SafeAreaView

@@ -236,7 +236,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-Your Name - [@simeon_dunn](https://twitter.com/simeon_dunn)
+Simeon Dunn - [@_simeon_dunn](https://twitter.com/_simeon_dunn)
 
 Project Link: [https://github.com/sime_time/habitribe](https://github.com/sime_time/habitribe)
 

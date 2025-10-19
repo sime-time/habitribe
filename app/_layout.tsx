@@ -64,15 +64,6 @@ function InitialLayout() {
           animation: "fade",
         }}
       />
-      <Stack.Screen
-        name="media-library"
-        options={{
-          headerTitle: "Gallery",
-          presentation: "modal",
-          animation: "slide_from_bottom",
-          headerShown: true,
-        }}
-      />
     </Stack>
   );
 }

@@ -18,16 +18,15 @@ import { spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import IconButton from "@/components/IconButton";
 import useTheme from "@/hooks/useTheme";
+import { useCameraSettings } from "@/stores/cameraSettingsStore";
 import CameraSelectRow from "./CameraSelectRow";
 
-interface PictureViewProps {
-  picture: string;
-  setPicture: React.Dispatch<React.SetStateAction<string>>;
-}
-
-export default function PictureView({ picture, setPicture }: PictureViewProps) {
+export default function PictureView() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
+
+  const picture = useCameraSettings((state) => state.picture);
+  const setPicture = useCameraSettings((state) => state.setPicture);
 
   return (
     <SafeAreaView

@@ -14,7 +14,7 @@ export default defineSchema({
     color: v.optional(v.string()),
     proofMethodId: v.id("proofMethods"),
     goalTarget: v.number(),
-    goalUnit: v.string(), // e.g., time (in seconds)
+    goalUnit: v.string(),
     startDate: v.string(), // "YYYY-MM-DD" format
     schedule: v.object({
       frequency: v.union(
