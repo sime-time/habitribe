@@ -18,6 +18,7 @@ import { spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import IconButton from "@/components/IconButton";
 import useTheme from "@/hooks/useTheme";
+import CameraSelectRow from "./CameraSelectRow";
 
 interface PictureViewProps {
   picture: string;
@@ -84,6 +85,20 @@ export default function PictureView({ picture, setPicture }: PictureViewProps) {
         </View>
 
         <Image source={picture} style={[s.wFull, s.hFull] as ImageStyle[]} />
+
+        {/* SELECT HABIT ROW */}
+        <View
+          style={[
+            s.wFull,
+            s.absolute,
+            s.z10,
+            {
+              bottom: 102, // double the input height
+            },
+          ]}
+        >
+          <CameraSelectRow />
+        </View>
 
         {/* ADD CAPTION + SEND*/}
         <View

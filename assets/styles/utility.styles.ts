@@ -46,6 +46,7 @@ export const s = {
   p8: { padding: spacing[8] } as ViewStyle,
   p10: { padding: spacing[10] } as ViewStyle,
   p12: { padding: spacing[12] } as ViewStyle,
+  p16: { padding: spacing[16] } as ViewStyle,
 
   // Padding Horizontal
   px0: { paddingHorizontal: spacing[0] } as ViewStyle,
@@ -56,6 +57,9 @@ export const s = {
   px5: { paddingHorizontal: spacing[5] } as ViewStyle,
   px6: { paddingHorizontal: spacing[6] } as ViewStyle,
   px8: { paddingHorizontal: spacing[8] } as ViewStyle,
+  px10: { paddingHorizontal: spacing[10] } as ViewStyle,
+  px12: { paddingHorizontal: spacing[12] } as ViewStyle,
+  px16: { paddingHorizontal: spacing[16] } as ViewStyle,
 
   // Padding Vertical
   py0: { paddingVertical: spacing[0] } as ViewStyle,
@@ -66,8 +70,12 @@ export const s = {
   py5: { paddingVertical: spacing[5] } as ViewStyle,
   py6: { paddingVertical: spacing[6] } as ViewStyle,
   py8: { paddingVertical: spacing[8] } as ViewStyle,
+  py10: { paddingVertical: spacing[10] } as ViewStyle,
+  py12: { paddingVertical: spacing[12] } as ViewStyle,
+  py16: { paddingVertical: spacing[16] } as ViewStyle,
 
   // Padding Top
+  pt0: { paddingTop: spacing[0] } as ViewStyle,
   pt1: { paddingTop: spacing[1] } as ViewStyle,
   pt2: { paddingTop: spacing[2] } as ViewStyle,
   pt3: { paddingTop: spacing[3] } as ViewStyle,
@@ -75,8 +83,12 @@ export const s = {
   pt5: { paddingTop: spacing[5] } as ViewStyle,
   pt6: { paddingTop: spacing[6] } as ViewStyle,
   pt8: { paddingTop: spacing[8] } as ViewStyle,
+  pt10: { paddingTop: spacing[10] } as ViewStyle,
+  pt12: { paddingTop: spacing[12] } as ViewStyle,
+  pt16: { paddingTop: spacing[16] } as ViewStyle,
 
   // Padding Bottom
+  pb0: { paddingBottom: spacing[0] } as ViewStyle,
   pb1: { paddingBottom: spacing[1] } as ViewStyle,
   pb2: { paddingBottom: spacing[2] } as ViewStyle,
   pb3: { paddingBottom: spacing[3] } as ViewStyle,
@@ -84,8 +96,12 @@ export const s = {
   pb5: { paddingBottom: spacing[5] } as ViewStyle,
   pb6: { paddingBottom: spacing[6] } as ViewStyle,
   pb8: { paddingBottom: spacing[8] } as ViewStyle,
+  pb10: { paddingBottom: spacing[10] } as ViewStyle,
+  pb12: { paddingBottom: spacing[12] } as ViewStyle,
+  pb16: { paddingBottom: spacing[16] } as ViewStyle,
 
   // Padding Left
+  pl0: { paddingLeft: spacing[0] } as ViewStyle,
   pl1: { paddingLeft: spacing[1] } as ViewStyle,
   pl2: { paddingLeft: spacing[2] } as ViewStyle,
   pl3: { paddingLeft: spacing[3] } as ViewStyle,
@@ -93,8 +109,12 @@ export const s = {
   pl5: { paddingLeft: spacing[5] } as ViewStyle,
   pl6: { paddingLeft: spacing[6] } as ViewStyle,
   pl8: { paddingLeft: spacing[8] } as ViewStyle,
+  pl10: { paddingLeft: spacing[10] } as ViewStyle,
+  pl12: { paddingLeft: spacing[12] } as ViewStyle,
+  pl16: { paddingLeft: spacing[16] } as ViewStyle,
 
   // Padding Right
+  pr0: { paddingRight: spacing[0] } as ViewStyle,
   pr1: { paddingRight: spacing[1] } as ViewStyle,
   pr2: { paddingRight: spacing[2] } as ViewStyle,
   pr3: { paddingRight: spacing[3] } as ViewStyle,
@@ -102,6 +122,9 @@ export const s = {
   pr5: { paddingRight: spacing[5] } as ViewStyle,
   pr6: { paddingRight: spacing[6] } as ViewStyle,
   pr8: { paddingRight: spacing[8] } as ViewStyle,
+  pr10: { paddingRight: spacing[10] } as ViewStyle,
+  pr12: { paddingRight: spacing[12] } as ViewStyle,
+  pr16: { paddingRight: spacing[16] } as ViewStyle,
 
   // Margin
   m0: { margin: spacing[0] } as ViewStyle,
@@ -112,8 +135,12 @@ export const s = {
   m5: { margin: spacing[5] } as ViewStyle,
   m6: { margin: spacing[6] } as ViewStyle,
   m8: { margin: spacing[8] } as ViewStyle,
+  m10: { margin: spacing[10] } as ViewStyle,
+  m12: { margin: spacing[12] } as ViewStyle,
+  m16: { margin: spacing[16] } as ViewStyle,
 
   // Margin Horizontal
+  mx0: { marginHorizontal: spacing[0] } as ViewStyle,
   mx1: { marginHorizontal: spacing[1] } as ViewStyle,
   mx2: { marginHorizontal: spacing[2] } as ViewStyle,
   mx3: { marginHorizontal: spacing[3] } as ViewStyle,
@@ -121,8 +148,12 @@ export const s = {
   mx5: { marginHorizontal: spacing[5] } as ViewStyle,
   mx6: { marginHorizontal: spacing[6] } as ViewStyle,
   mx8: { marginHorizontal: spacing[8] } as ViewStyle,
+  mx10: { marginHorizontal: spacing[10] } as ViewStyle,
+  mx12: { marginHorizontal: spacing[12] } as ViewStyle,
+  mx16: { marginHorizontal: spacing[16] } as ViewStyle,
 
   // Margin Vertical
+  my0: { marginVertical: spacing[0] } as ViewStyle,
   my1: { marginVertical: spacing[1] } as ViewStyle,
   my2: { marginVertical: spacing[2] } as ViewStyle,
   my3: { marginVertical: spacing[3] } as ViewStyle,
@@ -130,8 +161,12 @@ export const s = {
   my5: { marginVertical: spacing[5] } as ViewStyle,
   my6: { marginVertical: spacing[6] } as ViewStyle,
   my8: { marginVertical: spacing[8] } as ViewStyle,
+  my10: { marginVertical: spacing[10] } as ViewStyle,
+  my12: { marginVertical: spacing[12] } as ViewStyle,
+  my16: { marginVertical: spacing[16] } as ViewStyle,
 
   // Margin Top
+  mt0: { marginTop: spacing[0] } as ViewStyle,
   mt1: { marginTop: spacing[1] } as ViewStyle,
   mt2: { marginTop: spacing[2] } as ViewStyle,
   mt3: { marginTop: spacing[3] } as ViewStyle,
@@ -139,8 +174,12 @@ export const s = {
   mt5: { marginTop: spacing[5] } as ViewStyle,
   mt6: { marginTop: spacing[6] } as ViewStyle,
   mt8: { marginTop: spacing[8] } as ViewStyle,
+  mt10: { marginTop: spacing[10] } as ViewStyle,
+  mt12: { marginTop: spacing[12] } as ViewStyle,
+  mt16: { marginTop: spacing[16] } as ViewStyle,
 
   // Margin Bottom
+  mb0: { marginBottom: spacing[0] } as ViewStyle,
   mb1: { marginBottom: spacing[1] } as ViewStyle,
   mb2: { marginBottom: spacing[2] } as ViewStyle,
   mb3: { marginBottom: spacing[3] } as ViewStyle,
@@ -148,8 +187,12 @@ export const s = {
   mb5: { marginBottom: spacing[5] } as ViewStyle,
   mb6: { marginBottom: spacing[6] } as ViewStyle,
   mb8: { marginBottom: spacing[8] } as ViewStyle,
+  mb10: { marginBottom: spacing[10] } as ViewStyle,
+  mb12: { marginBottom: spacing[12] } as ViewStyle,
+  mb16: { marginBottom: spacing[16] } as ViewStyle,
 
   // Margin Left
+  ml0: { marginLeft: spacing[0] } as ViewStyle,
   ml1: { marginLeft: spacing[1] } as ViewStyle,
   ml2: { marginLeft: spacing[2] } as ViewStyle,
   ml3: { marginLeft: spacing[3] } as ViewStyle,
@@ -157,8 +200,12 @@ export const s = {
   ml5: { marginLeft: spacing[5] } as ViewStyle,
   ml6: { marginLeft: spacing[6] } as ViewStyle,
   ml8: { marginLeft: spacing[8] } as ViewStyle,
+  ml10: { marginLeft: spacing[10] } as ViewStyle,
+  ml12: { marginLeft: spacing[12] } as ViewStyle,
+  ml16: { marginLeft: spacing[16] } as ViewStyle,
 
   // Margin Right
+  mr0: { marginRight: spacing[0] } as ViewStyle,
   mr1: { marginRight: spacing[1] } as ViewStyle,
   mr2: { marginRight: spacing[2] } as ViewStyle,
   mr3: { marginRight: spacing[3] } as ViewStyle,
@@ -166,6 +213,9 @@ export const s = {
   mr5: { marginRight: spacing[5] } as ViewStyle,
   mr6: { marginRight: spacing[6] } as ViewStyle,
   mr8: { marginRight: spacing[8] } as ViewStyle,
+  mr10: { marginRight: spacing[10] } as ViewStyle,
+  mr12: { marginRight: spacing[12] } as ViewStyle,
+  mr16: { marginRight: spacing[16] } as ViewStyle,
 
   // Z-Index
   zBottom: { zIndex: -999 } as ViewStyle,

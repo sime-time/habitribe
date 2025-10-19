@@ -13,7 +13,7 @@ import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import { useHabitSheetStore } from "@/stores/habitSheetStore";
+import { useHabitSelectStore } from "@/stores/habitSelectStore";
 import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
 import Emoji from "./Emoji";
 
@@ -27,8 +27,8 @@ export default function HabitSheet({ closeSheet }: HabitSheetProps) {
   const c = createColorStyles(colors);
 
   const habits = useQuery(api.exec.read.getUserHabits);
-  const habitSelected = useHabitSheetStore((state) => state.habitSelected);
-  const selectHabit = useHabitSheetStore((state) => state.selectHabit);
+  const habitSelected = useHabitSelectStore((state) => state.habitSelected);
+  const selectHabit = useHabitSelectStore((state) => state.selectHabit);
 
   const renderHabitOption = ({ item }: { item: Habit }) => (
     <Pressable

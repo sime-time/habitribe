@@ -51,8 +51,8 @@ function InitialLayout() {
       <Stack.Screen
         name="habit"
         options={{
-          animation: "slide_from_bottom",
           presentation: "modal",
+          animation: "slide_from_bottom",
           gestureDirection: "vertical",
         }}
       />
@@ -62,6 +62,15 @@ function InitialLayout() {
           presentation: "fullScreenModal",
           headerShown: false,
           animation: "fade",
+        }}
+      />
+      <Stack.Screen
+        name="media-library"
+        options={{
+          headerTitle: "Gallery",
+          presentation: "modal",
+          animation: "slide_from_bottom",
+          headerShown: true,
         }}
       />
     </Stack>

@@ -1,11 +1,11 @@
 import { ChevronDown } from "lucide-react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 import { s } from "@/assets/styles/utility.styles";
-import { useHabitSheetStore } from "@/stores/habitSheetStore";
+import { useHabitSelectStore } from "@/stores/habitSelectStore";
 
 export default function CameraSelectRow() {
-  const openSheet = useHabitSheetStore((state) => state.openSheet);
-  const habitSelected = useHabitSheetStore((state) => state.habitSelected);
+  const openSheet = useHabitSelectStore((state) => state.openSheet);
+  const habitSelected = useHabitSelectStore((state) => state.habitSelected);
 
   return (
     <View

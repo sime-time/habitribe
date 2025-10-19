@@ -74,6 +74,16 @@ export const addReminder = mutation({
   },
 });
 
+/**
+ * Creates missing habit entries for a given date on-demand.
+ * Called by the client when the user opens the app to ensure entries exist.
+ *
+ * This pattern solves timezone issues - the client controls what "today" means
+ * in their local timezone, and entries are created just-in-time.
+ *
+ * The midnight cron jobs serve as a backup but this mutation is the primary
+ * entry creation mechanism.
+ */
 export const addMissingEntries = mutation({
   args: {
     date: v.string(),

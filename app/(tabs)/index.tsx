@@ -48,9 +48,10 @@ export default function Index() {
     date: habitDate,
   });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
   useEffect(() => {
     createMissingEntries({ date: habitDate });
-  }, [habitDate, createMissingEntries]);
+  }, [habitDate]); // only re-run when date changes
 
   // useMemo to avoid re-filtering on every render
   const { dailyHabits, weeklyHabits, monthlyHabits } = useMemo(() => {
