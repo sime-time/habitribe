@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { getMonthBounds, getWeekBounds } from "@/utils/boundsHelper";
+import { getMonthBounds, getWeekBounds } from "@/utils/dateHelper";
 import { internalMutation } from "../_generated/server";
 
 export const createDailyHabitEntries = internalMutation({

@@ -27,6 +27,16 @@ export default function PictureView() {
 
   const picture = useCameraSettings((state) => state.picture);
   const setPicture = useCameraSettings((state) => state.setPicture);
+  const caption = useCameraSettings((state) => state.caption);
+  const setCaption = useCameraSettings((state) => state.setCaption);
+
+  const handleSend = async () => {
+    // 1. Validate: Is a habit and entry selected?
+    // 2. Get the entryId (or create entry if null)
+    // 3. Upload image to R2
+    // 4. Update habitEntry with new proof
+    // 5. Reset state and close view
+  };
 
   return (
     <SafeAreaView
@@ -46,7 +56,10 @@ export default function PictureView() {
           <IconButton
             iosName="xmark"
             androidName="close"
-            onPress={() => setPicture("")}
+            onPress={() => {
+              setPicture("");
+              setCaption("");
+            }}
           />
         </View>
 
@@ -92,14 +105,13 @@ export default function PictureView() {
             s.absolute,
             s.z10,
             {
-              bottom: 102, // double the input height
+              bottom: 102, // double the s.InputHeight value
             },
           ]}
         >
           <CameraSelectRow />
         </View>
 
-        {/* ADD CAPTION + SEND*/}
         <View
           style={[
             s.flexRow,
@@ -111,6 +123,7 @@ export default function PictureView() {
             { bottom: 0 },
           ]}
         >
+          {/* ADD CAPTION*/}
           <View
             style={[
               s.inputHeight,
@@ -124,12 +137,17 @@ export default function PictureView() {
             ]}
           >
             <TextInput
+              value={caption}
+              onChangeText={setCaption}
               placeholder="Add caption (optional)..."
               placeholderTextColor={colors.muted}
               style={[c.textForeground, s.textBase, s.flexGrow] as TextStyle[]}
             />
           </View>
+
+          {/* SEND */}
           <TouchableOpacity
+            onPress={handleSend}
             style={[
               c.bgPrimary,
               s.justifyCenter,

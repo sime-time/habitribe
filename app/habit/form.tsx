@@ -92,8 +92,6 @@ export default function HabitForm() {
         color: currentHabit.color,
         icon: currentHabit.icon,
         proofMethodId: currentHabit.proofMethodId,
-        goalTarget: currentHabit.goalTarget,
-        goalUnit: currentHabit.goalUnit,
         startDate: currentHabit.startDate,
         schedule: {
           frequency: currentHabit.schedule.frequency as Frequency,

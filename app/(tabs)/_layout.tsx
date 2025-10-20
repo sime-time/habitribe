@@ -1,7 +1,7 @@
 import { Redirect, Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Camera, CircleCheck, Cog } from "lucide-react-native";
-import HabitSheet from "@/components/HabitSheet";
+import HabitSelectSheet from "@/components/HabitSelectSheet";
 import { useFirstTimeOpen } from "@/hooks/useFirstTimeOpen";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
@@ -67,7 +67,7 @@ export default function TabsLayout() {
           }}
         />
       </Tabs>
-      {isOpen && <HabitSheet closeSheet={closeSheet} />}
+      {isOpen && <HabitSelectSheet closeSheet={closeSheet} />}
     </>
   );
 }

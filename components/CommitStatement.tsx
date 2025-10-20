@@ -99,7 +99,7 @@ export default function CommitStatement() {
     );
   }
 
-  // Default format: I'll [proofMethod] that I'll [description] every [frequency]. goal: [goalTarget]
+  // Default format: I'll [proofMethod] that I'll [description] every [frequency]
   return (
     <View style={styles.commitContainer}>
       <View style={styles.commitRow}>
@@ -117,82 +117,3 @@ export default function CommitStatement() {
     </View>
   );
 }
-
-// const renderGoalButton = () => (
-//   <TouchableOpacity
-//     style={styles.commitPill}
-//     onPress={() => router.push("/habit/goal")}
-//   >
-//     <Text
-//       style={[
-//         styles.commitText,
-//         goalTarget && goalUnit ? c.textPrimary : c.textMuted,
-//       ]}
-//     >
-//       {getGoalLabel(goalTarget, goalUnit)}
-//     </Text>
-//   </TouchableOpacity>
-// );
-
-// const renderTimeButton = () => (
-//   <TouchableOpacity
-//     style={styles.commitPill}
-//     onPress={() => router.push("/habit/time")}
-//   >
-//     <Text
-//       style={[
-//         styles.commitText,
-//         goalTarget && goalUnit ? c.textPrimary : c.textMuted,
-//       ]}
-//     >
-//       {getGoalLabel(goalTarget, goalUnit)}
-//     </Text>
-//   </TouchableOpacity>
-// );
-// Time-lapse format: I'll [proofMethod] of [description] for [goalTarget] every [frequency]
-// if (proofMethodName === "Time-lapse") {
-//   return (
-//     <View style={styles.commitContainer}>
-//       <View style={styles.commitRow}>
-//         <Text style={styles.commitText}>I'll</Text>
-//         {renderProofMethodButton()}
-//       </View>
-//       <View style={styles.commitRow}>
-//         <Text style={styles.commitText}>of</Text>
-//         {renderDescriptionInput()}
-//       </View>
-//       <View style={styles.commitRow}>
-//         <Text style={styles.commitText}>for</Text>
-//         {renderTimeButton()}
-//       </View>
-//       <View style={styles.commitRow}>
-//         <Text style={styles.commitText}>every</Text>
-//         {renderFrequencyButton()}
-//       </View>
-//     </View>
-//   );
-// }
-
-// Focus Timer format: I'll [proofMethod] for [goalTarget] to [description] every [frequency]
-// if (proofMethodName === "Focus Timer") {
-//   return (
-//     <View style={styles.commitContainer}>
-//       <View style={styles.commitRow}>
-//         <Text style={styles.commitText}>I'll</Text>
-//         {renderProofMethodButton()}
-//       </View>
-//       <View style={styles.commitRow}>
-//         <Text style={styles.commitText}>for</Text>
-//         {renderTimeButton()}
-//       </View>
-//       <View style={styles.commitRow}>
-//         <Text style={styles.commitText}>to</Text>
-//         {renderDescriptionInput()}
-//       </View>
-//       <View style={styles.commitRow}>
-//         <Text style={styles.commitText}>every</Text>
-//         {renderFrequencyButton()}
-//       </View>
-//     </View>
-//   );
-// }

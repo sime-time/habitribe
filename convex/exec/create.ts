@@ -1,6 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
-import { getMonthBounds, getWeekBounds } from "@/utils/boundsHelper";
+import { getMonthBounds, getWeekBounds } from "@/utils/dateHelper";
 import { mutation } from "../_generated/server";
 
 export const addHabit = mutation({
@@ -33,6 +33,17 @@ export const addHabit = mutation({
       ...args,
     });
 
+    // habit entry needs to be created immediately
+    // because the addMissingEntry mutation only re-triggers when the date changes
+    await ctx.db.insert("habitEntries", {
+      habitId: habitId,
+      userId: userId,
+      date: args.startDate,
+      progress: 0,
+      isCompleted: false,
+      proof: undefined,
+    });
+
     return habitId;
   },
 });
@@ -44,7 +55,14 @@ export const addHabitEntry = mutation({
     date: v.string(), // "YYYY-MM-DD" format
     progress: v.number(),
     isCompleted: v.boolean(),
-    proofUrl: v.optional(v.array(v.string())),
+    proof: v.optional(
+      v.array(
+        v.object({
+          url: v.string(),
+          caption: v.optional(v.string()),
+        }),
+      ),
+    ),
   },
   handler: async (ctx, args) => {
     const habitEntryId = await ctx.db.insert("habitEntries", {

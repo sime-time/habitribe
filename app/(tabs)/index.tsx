@@ -20,6 +20,7 @@ import Emoji from "@/components/Emoji";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
+import { getTodayDateString } from "@/utils/dateHelper";
 import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
 
 type Habit = Doc<"habits">;
@@ -28,17 +29,13 @@ export default function Index() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
-  const today = new Date();
-  const longDateName = today.toLocaleDateString("en-US", {
+  const longDateName = new Date().toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
   });
-  const day = today.getDate();
-  const month = today.getMonth() + 1; // January is 0, so we have to add 1
-  const year = today.getFullYear();
 
   // format today's date to YYYY-MM-DD
-  const habitDate = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  const habitDate = getTodayDateString();
 
   // create any of today's missing habit entries before querying them
   const createMissingEntries = useMutation(api.exec.create.addMissingEntries);
@@ -46,7 +43,7 @@ export default function Index() {
   // get today's habit entries
   const habits = useQuery(api.exec.read.getTodaysHabitEntries, {
     date: habitDate,
-    grouped: true,
+    grouped: true, // mandatory for this screen
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
@@ -56,7 +53,8 @@ export default function Index() {
 
   // useMemo to avoid re-filtering on every render
   const { dailyHabits, weeklyHabits, monthlyHabits } = useMemo(() => {
-    if (!habits)
+    // habits must be grouped in this screen, return empty arrays if it is not
+    if (!habits || Array.isArray(habits))
       return { dailyHabits: [], weeklyHabits: [], monthlyHabits: [] };
 
     return {
@@ -212,8 +210,10 @@ export default function Index() {
                 </Text>
               </View>
 
-              {dailyHabits.map((item) => (
-                <View key={item._id}>{renderHabitCard({ item })}</View>
+              {dailyHabits.map((d) => (
+                <View key={d.habit._id}>
+                  {renderHabitCard({ item: d.habit })}
+                </View>
               ))}
             </>
           )}
@@ -226,8 +226,10 @@ export default function Index() {
                 </Text>
               </View>
 
-              {weeklyHabits.map((item) => (
-                <View key={item._id}>{renderHabitCard({ item })}</View>
+              {weeklyHabits.map((w) => (
+                <View key={w.habit._id}>
+                  {renderHabitCard({ item: w.habit })}
+                </View>
               ))}
             </>
           )}
@@ -240,8 +242,10 @@ export default function Index() {
                 </Text>
               </View>
 
-              {monthlyHabits.map((item) => (
-                <View key={item._id}>{renderHabitCard({ item })}</View>
+              {monthlyHabits.map((m) => (
+                <View key={m.habit._id}>
+                  {renderHabitCard({ item: m.habit })}
+                </View>
               ))}
             </>
           )}

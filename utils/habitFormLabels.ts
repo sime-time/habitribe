@@ -32,52 +32,6 @@ export function getScheduleLabel(
   }
 }
 
-export function getGoalLabel(goalTarget: number, goalUnit: string) {
-  if (!goalTarget || goalTarget === 0) {
-    switch (goalUnit) {
-      case "seconds":
-        return "0 minutes";
-      case "count":
-        return "0 times";
-      default:
-        return `0 ${goalUnit || "times"}`;
-    }
-  }
-
-  switch (goalUnit) {
-    case "seconds": {
-      // time is stored in seconds
-      const totalMinutes = Math.floor(goalTarget / 60);
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-
-      if (hours === 0 && minutes === 0) {
-        return "Set time";
-      }
-
-      const hourText = hours === 1 ? "hour" : "hours";
-      const minuteText = minutes === 1 ? "minute" : "minutes";
-
-      if (hours > 0 && minutes > 0) {
-        return `${hours} ${hourText}, ${minutes} ${minuteText}`;
-      } else if (hours > 0) {
-        return `${hours} ${hourText}`;
-      } else {
-        return `${minutes} ${minuteText}`;
-      }
-    }
-
-    case "count": {
-      const countText = goalTarget === 1 ? "time" : "times";
-      return `${goalTarget} ${countText}`;
-    }
-
-    default:
-      // Custom unit
-      return `${goalTarget} ${goalUnit}`;
-  }
-}
-
 type ProofMethod = Doc<"proofMethods">;
 export function getProofMethodDescription(
   id: string,

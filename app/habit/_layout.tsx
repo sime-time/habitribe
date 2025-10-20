@@ -45,24 +45,6 @@ export default function CreateHabitLayout() {
         }}
       />
       <Stack.Screen
-        name="goal"
-        options={{
-          headerTitle: "Set Goal",
-          headerTitleStyle: combine(s.fontMedium, s.textLg, c.textForeground),
-          headerStyle: combine(c.bgBackground),
-          headerLeft: () => renderReturnButton("Back"),
-        }}
-      />
-      <Stack.Screen
-        name="time"
-        options={{
-          headerTitle: "Set Time",
-          headerTitleStyle: combine(s.fontMedium, s.textLg, c.textForeground),
-          headerStyle: combine(c.bgBackground),
-          headerLeft: () => renderReturnButton("Back"),
-        }}
-      />
-      <Stack.Screen
         name="proof"
         options={{
           headerTitle: "Select Proof",

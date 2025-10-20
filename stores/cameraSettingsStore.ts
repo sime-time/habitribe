@@ -8,12 +8,14 @@ interface CameraSettings {
   zoom: number;
   facing: CameraType;
   isRecording: boolean;
+  caption: string;
   setPicture: (uri: string) => void;
   setMode: (mode: CameraMode) => void;
   setFlash: (mode: FlashMode) => void;
   setZoom: (value: number) => void;
   setFacing: (type: CameraType) => void;
   setIsRecording: (value: boolean) => void;
+  setCaption: (text: string) => void;
 }
 
 export const useCameraSettings = create<CameraSettings>((set) => ({
@@ -24,6 +26,7 @@ export const useCameraSettings = create<CameraSettings>((set) => ({
   zoom: 0,
   facing: "back",
   isRecording: false,
+  caption: "",
   setPicture: (uri) =>
     set({
       picture: uri,
@@ -47,5 +50,9 @@ export const useCameraSettings = create<CameraSettings>((set) => ({
   setIsRecording: (value) =>
     set({
       isRecording: value,
+    }),
+  setCaption: (text) =>
+    set({
+      caption: text,
     }),
 }));

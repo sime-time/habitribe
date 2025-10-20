@@ -1,6 +1,6 @@
 import { FlashList } from "@shopify/flash-list";
-import { useQuery } from "convex/react";
-import { useEffect } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { useEffect, useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -14,23 +14,55 @@ import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
+import { getTodayDateString } from "@/utils/dateHelper";
 import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
 import Emoji from "./Emoji";
 
 type Habit = Doc<"habits">;
+type HabitEntry = Doc<"habitEntries">;
 
-interface HabitSheetProps {
+interface HabitSelectSheetProps {
   closeSheet: () => void;
 }
-export default function HabitSheet({ closeSheet }: HabitSheetProps) {
+export default function HabitSelectSheet({
+  closeSheet,
+}: HabitSelectSheetProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
-  const habits = useQuery(api.exec.read.getUserHabits);
   const habitSelected = useHabitSelectStore((state) => state.habitSelected);
   const selectHabit = useHabitSelectStore((state) => state.selectHabit);
+  const selectEntry = useHabitSelectStore((state) => state.selectEntry);
 
-  const renderHabitOption = ({ item }: { item: Habit }) => (
+  const habitDate = getTodayDateString();
+
+  // create any of today's missing habit entries before querying them
+  const createMissingEntries = useMutation(api.exec.create.addMissingEntries);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
+  useEffect(() => {
+    createMissingEntries({ date: habitDate });
+  }, [habitDate]); // only re-run when date changes
+
+  // get today's habit entries
+  const habits = useQuery(api.exec.read.getTodaysHabitEntries, {
+    date: habitDate,
+    grouped: false,
+  });
+
+  // useMemo to avoid re-filtering on every render
+  const habitsWithEntry = useMemo(() => {
+    if (Array.isArray(habits)) {
+      return habits;
+    }
+    return [];
+  }, [habits]);
+
+  const renderHabitOption = ({
+    item,
+  }: {
+    item: { habit: Habit; entry: HabitEntry | null };
+  }) => (
     <Pressable
       style={[
         s.flexRow,
@@ -40,14 +72,17 @@ export default function HabitSheet({ closeSheet }: HabitSheetProps) {
         s.gap4,
         s.p4,
         s.itemsCenter,
-        item._id === habitSelected?._id ? c.bgForeground : c.bgCard,
+        item.habit._id === habitSelected?._id ? c.bgForeground : c.bgCard,
         s.outline1,
         c.outlineDefault,
-        item._id === habitSelected?._id
+        item.habit._id === habitSelected?._id
           ? c.outlineForeground
           : c.outlineDefault,
       ]}
-      onPress={() => selectHabit(item)}
+      onPress={() => {
+        selectHabit(item.habit);
+        selectEntry(item.entry);
+      }}
     >
       <View
         style={[
@@ -55,29 +90,33 @@ export default function HabitSheet({ closeSheet }: HabitSheetProps) {
           s.roundedLg,
           s.itemsCenter,
           s.justifyCenter,
-          { backgroundColor: `${item.color}30` },
+          { backgroundColor: `${item.habit.color}30` },
         ]}
       >
-        <Emoji iconName={item.icon} iconColor={item.color} iconSize={18} />
+        <Emoji
+          iconName={item.habit.icon}
+          iconColor={item.habit.color}
+          iconSize={18}
+        />
       </View>
       <View style={[s.gap1]}>
         <Text
           style={[
             s.textBase,
             c.textForeground,
-            item._id === habitSelected?._id
+            item.habit._id === habitSelected?._id
               ? c.textBackground
               : c.textForeground,
-            item._id === habitSelected?._id ? s.fontMedium : s.fontNormal,
+            item.habit._id === habitSelected?._id ? s.fontMedium : s.fontNormal,
           ]}
         >
-          {item.name}
+          {item.habit.name}
         </Text>
         <Text style={[s.textXs, c.textMuted]}>
-          {item.description}{" "}
+          {item.habit.description}{" "}
           {getScheduleLabel(
-            item.schedule.frequency as Frequency,
-            item.schedule.pattern,
+            item.habit.schedule.frequency as Frequency,
+            item.habit.schedule.pattern,
           ).toLowerCase()}
         </Text>
       </View>
@@ -160,9 +199,9 @@ export default function HabitSheet({ closeSheet }: HabitSheetProps) {
               </Text>
 
               <FlashList
-                data={habits}
+                data={habitsWithEntry}
                 renderItem={renderHabitOption}
-                keyExtractor={(item) => item._id}
+                keyExtractor={(item) => item.habit._id}
               />
             </View>
           </Animated.View>

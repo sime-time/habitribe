@@ -33,7 +33,14 @@ export default defineSchema({
     date: v.string(), // "YYYY-MM-DD" format
     progress: v.number(),
     isCompleted: v.boolean(),
-    proofUrl: v.optional(v.array(v.string())),
+    proof: v.optional(
+      v.array(
+        v.object({
+          url: v.string(),
+          caption: v.optional(v.string()),
+        }),
+      ),
+    ),
   }),
 
   reminders: defineTable({

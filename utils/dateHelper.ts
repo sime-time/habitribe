@@ -1,3 +1,13 @@
+export function getTodayDateString(): string {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.getMonth() + 1; // January is 0, so we have to add 1
+  const year = today.getFullYear();
+
+  // format today's date to YYYY-MM-DD
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
 // weekly helper function
 export function getWeekBounds(date: string): { start: string; end: string } {
   const d = new Date(date);

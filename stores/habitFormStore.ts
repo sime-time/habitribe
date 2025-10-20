@@ -83,14 +83,10 @@ export const useHabitFormStore = create<HabitFormStore>()(
           console.warn(`Invalid proof method: ${proofMethodName}`);
           return;
         }
-        const defaults = { goalUnit: "count", goalTarget: 1 };
-
         set((state) => ({
           habitForm: {
             ...state.habitForm,
             proofMethodId,
-            goalTarget: defaults.goalTarget,
-            goalUnit: defaults.goalUnit,
           },
           isDraftSaved: true,
         }));
