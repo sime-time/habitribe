@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
 import { Check } from "lucide-react-native";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import {
   Image,
   type ImageStyle,
@@ -41,9 +41,8 @@ export default function Index() {
   const createMissingEntries = useMutation(api.exec.create.addMissingEntries);
 
   // get today's habit entries
-  const habits = useQuery(api.exec.read.getTodaysHabitEntries, {
+  const habits = useQuery(api.exec.read.getGroupedHabitEntries, {
     date: habitDate,
-    grouped: true, // mandatory for this screen
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
@@ -51,113 +50,128 @@ export default function Index() {
     createMissingEntries({ date: habitDate });
   }, [habitDate]); // only re-run when date changes
 
-  // useMemo to avoid re-filtering on every render
-  const { dailyHabits, weeklyHabits, monthlyHabits } = useMemo(() => {
-    // habits must be grouped in this screen, return empty arrays if it is not
-    if (!habits || Array.isArray(habits))
-      return { dailyHabits: [], weeklyHabits: [], monthlyHabits: [] };
+  // arrays need to be defined to an empty array by default
+  const {
+    dailyHabits = [],
+    weeklyHabits = [],
+    monthlyHabits = [],
+  } = habits || {}; // if habit is undefined, use an empty object
 
-    return {
-      dailyHabits: habits.dailyHabits || [],
-      weeklyHabits: habits.weeklyHabits || [],
-      monthlyHabits: habits.monthlyHabits || [],
-    };
-  }, [habits]);
+  const renderHabitCard = ({
+    habit,
+    entry,
+  }: {
+    habit: Habit;
+    entry: any | null;
+  }) => {
+    // get most recent (last) proof url
+    let proofUrl = "";
+    if (entry.proof) {
+      proofUrl = entry.proof.at(-1).url;
+    }
+    console.log("proofUrl", proofUrl);
+    return (
+      <Pressable
+        style={[
+          s.mb5,
+          s.p4,
+          s.gap3,
+          s.roundedLg,
+          c.bgCard,
+          c.borderDefault,
+          s.border1,
+        ]}
+        onPress={() => router.navigate(`/habit/form?id=${habit._id}`)}
+      >
+        {/* Header: Icon + Name + Description */}
+        <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
+          <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
+            <View
+              style={[
+                s.p3,
+                s.roundedLg,
+                s.itemsCenter,
+                s.justifyCenter,
+                { backgroundColor: `${habit.color}30` },
+              ]}
+            >
+              <Emoji iconName={habit.icon} iconColor={habit.color} />
+            </View>
+            <View style={[s.flexCol, s.gap1]}>
+              <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+                {habit.name}
+              </Text>
+              <Text style={[s.textSm, c.textMuted]}>
+                {getScheduleLabel(
+                  habit.schedule.frequency as Frequency,
+                  habit.schedule.pattern,
+                )}
+              </Text>
+            </View>
+          </View>
 
-  const renderHabitCard = ({ item }: { item: Habit }) => (
-    <Pressable
-      style={[
-        s.mb5,
-        s.p4,
-        s.gap3,
-        s.roundedLg,
-        c.bgCard,
-        c.borderDefault,
-        s.border1,
-      ]}
-      onPress={() => router.navigate(`/habit/form?id=${item._id}`)}
-    >
-      {/* Header: Icon + Name + Description */}
-      <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
-        <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
-          <View
-            style={[
-              s.p3,
-              s.roundedLg,
-              s.itemsCenter,
-              s.justifyCenter,
-              { backgroundColor: `${item.color}30` },
-            ]}
+          {/* Checkbox */}
+          <Pressable
+            style={[c.bgBackground, s.rounded, s.inputHeight, { width: 51 }]}
+            onPress={() => router.push("/camera")}
           >
-            <Emoji iconName={item.icon} iconColor={item.color} />
-          </View>
-          <View style={[s.flexCol, s.gap1]}>
-            <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
-              {item.name}
-            </Text>
-            <Text style={[s.textSm, c.textMuted]}>
-              {getScheduleLabel(
-                item.schedule.frequency as Frequency,
-                item.schedule.pattern,
-              )}
-            </Text>
-          </View>
+            <Image
+              source={{ uri: entry.proof ? entry.proof.at(-1).url : undefined }}
+              style={
+                [
+                  s.rounded,
+                  s.border1,
+                  c.borderDefault,
+                  s.inputHeight,
+                  {
+                    width: 51,
+                  },
+                ] as ImageStyle[]
+              }
+              resizeMode="cover"
+            />
+
+            {/* Success Overlay */}
+            {entry.isCompleted && (
+              <>
+                <View
+                  style={[
+                    s.absolute,
+                    s.opacity75,
+                    s.rounded,
+                    c.bgSuccess,
+                    s.z10,
+                    {
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                    },
+                  ]}
+                />
+                <View
+                  style={[
+                    s.absolute,
+                    s.itemsCenter,
+                    s.justifyCenter,
+                    s.z20,
+                    {
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                    },
+                  ]}
+                >
+                  <Check size={32} color="white" />
+                </View>
+              </>
+            )}
+          </Pressable>
         </View>
-
-        {/* Checkbox */}
-        <Pressable
-          style={{ width: 56, height: 56 }}
-          onPress={() => router.push("/camera")}
-        >
-          <Image
-            source={require("@/assets/images/icon.png")}
-            style={
-              [
-                s.rounded,
-                s.border1,
-                c.borderDefault,
-                {
-                  width: 56,
-                  height: 56,
-                },
-              ] as ImageStyle[]
-            }
-            resizeMode="cover"
-          />
-          {/* Overlay + Icon */}
-          <View
-            style={[
-              s.absolute,
-              c.bgSuccess,
-              s.opacity75,
-              s.rounded,
-              {
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              },
-            ]}
-          />
-          <View
-            style={[
-              s.absolute,
-              s.itemsCenter,
-              s.justifyCenter,
-              {
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-              },
-            ]}
-          >
-            <Check size={32} color="white" />
-          </View>
-        </Pressable>
-      </View>
-    </Pressable>
-  );
+      </Pressable>
+    );
+  };
 
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
@@ -212,7 +226,7 @@ export default function Index() {
 
               {dailyHabits.map((d) => (
                 <View key={d.habit._id}>
-                  {renderHabitCard({ item: d.habit })}
+                  {renderHabitCard({ habit: d.habit, entry: d.entry })}
                 </View>
               ))}
             </>
@@ -228,7 +242,7 @@ export default function Index() {
 
               {weeklyHabits.map((w) => (
                 <View key={w.habit._id}>
-                  {renderHabitCard({ item: w.habit })}
+                  {renderHabitCard({ habit: w.habit, entry: w.entry })}
                 </View>
               ))}
             </>
@@ -244,7 +258,7 @@ export default function Index() {
 
               {monthlyHabits.map((m) => (
                 <View key={m.habit._id}>
-                  {renderHabitCard({ item: m.habit })}
+                  {renderHabitCard({ habit: m.habit, entry: m.entry })}
                 </View>
               ))}
             </>

@@ -10,8 +10,9 @@
 
 import type * as auth from "../auth.js";
 import type * as bucket from "../bucket.js";
-import type * as crons_entries from "../crons/entries.js";
 import type * as crons from "../crons.js";
+import type * as entries_cron from "../entries/cron.js";
+import type * as entries_helpers from "../entries/helpers.js";
 import type * as exec_create from "../exec/create.js";
 import type * as exec_delete from "../exec/delete.js";
 import type * as exec_read from "../exec/read.js";
@@ -36,8 +37,9 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   bucket: typeof bucket;
-  "crons/entries": typeof crons_entries;
   crons: typeof crons;
+  "entries/cron": typeof entries_cron;
+  "entries/helpers": typeof entries_helpers;
   "exec/create": typeof exec_create;
   "exec/delete": typeof exec_delete;
   "exec/read": typeof exec_read;

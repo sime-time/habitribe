@@ -45,18 +45,9 @@ export default function HabitSelectSheet({
   }, [habitDate]); // only re-run when date changes
 
   // get today's habit entries
-  const habits = useQuery(api.exec.read.getTodaysHabitEntries, {
+  const habitsWithEntry = useQuery(api.exec.read.getTodaysHabitEntries, {
     date: habitDate,
-    grouped: false,
   });
-
-  // useMemo to avoid re-filtering on every render
-  const habitsWithEntry = useMemo(() => {
-    if (Array.isArray(habits)) {
-      return habits;
-    }
-    return [];
-  }, [habits]);
 
   const renderHabitOption = ({
     item,

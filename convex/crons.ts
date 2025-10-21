@@ -6,19 +6,19 @@ const crons = cronJobs();
 crons.daily(
   "Create daily habit entries",
   { hourUTC: 0, minuteUTC: 5 },
-  internal.crons.entries.createDailyHabitEntries,
+  internal.entries.cron.createDailyHabitEntries,
 );
 
 crons.weekly(
   "Create weekly habit entries",
   { dayOfWeek: "monday", hourUTC: 0, minuteUTC: 5 },
-  internal.crons.entries.createWeeklyHabitEntries,
+  internal.entries.cron.createWeeklyHabitEntries,
 );
 
 crons.monthly(
   "Create monthly habit entries",
   { day: 1, hourUTC: 0, minuteUTC: 5 },
-  internal.crons.entries.createMonthlyHabitEntries,
+  internal.entries.cron.createMonthlyHabitEntries,
 );
 
 export default crons;

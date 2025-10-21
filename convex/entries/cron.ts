@@ -1,4 +1,3 @@
-import { v } from "convex/values";
 import { getMonthBounds, getWeekBounds } from "@/utils/dateHelper";
 import { internalMutation } from "../_generated/server";
 
@@ -52,7 +51,6 @@ export const createDailyHabitEntries = internalMutation({
           date: date,
           progress: 0,
           isCompleted: false,
-          proofUrl: undefined,
         });
         created++;
       }
@@ -96,7 +94,7 @@ export const createWeeklyHabitEntries = internalMutation({
         await ctx.db.insert("habitEntries", {
           habitId: habit._id,
           userId: habit.userId,
-          date: date, // Monday's date
+          date: start, // Monday's date
           progress: 0,
           isCompleted: false,
         });
@@ -141,7 +139,7 @@ export const createMonthlyHabitEntries = internalMutation({
         await ctx.db.insert("habitEntries", {
           habitId: habit._id,
           userId: habit.userId,
-          date: date, // start of the month
+          date: start, // start of the month
           progress: 0,
           isCompleted: false,
         });
