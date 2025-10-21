@@ -36,7 +36,7 @@ export default defineSchema({
     proof: v.optional(
       v.array(
         v.object({
-          key: v.string(), // r2 storage key
+          key: v.string(), // r2 storage key used to generate image urls
           caption: v.optional(v.string()),
         }),
       ),
