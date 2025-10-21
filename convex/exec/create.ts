@@ -58,7 +58,7 @@ export const addHabitEntry = mutation({
     proof: v.optional(
       v.array(
         v.object({
-          url: v.string(),
+          key: v.string(),
           caption: v.optional(v.string()),
         }),
       ),

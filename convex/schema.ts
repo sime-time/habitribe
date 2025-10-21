@@ -36,7 +36,7 @@ export default defineSchema({
     proof: v.optional(
       v.array(
         v.object({
-          url: v.string(),
+          key: v.string(), // r2 storage key
           caption: v.optional(v.string()),
         }),
       ),

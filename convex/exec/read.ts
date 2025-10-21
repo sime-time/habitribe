@@ -1,7 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
 import { getMonthBounds, getWeekBounds } from "@/utils/dateHelper";
-import type { Id } from "../_generated/dataModel";
 import { query } from "../_generated/server";
 
 export const currentUser = query({
