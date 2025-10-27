@@ -117,7 +117,7 @@ export default function Index() {
 
           {/* Checkbox */}
           <Pressable
-            style={[s.rounded, s.inputHeight, { width: 51 }]}
+            style={[s.rounded, s.h13, s.w13]}
             onPress={() => {
               if (proofMethod.type === "camera") {
                 // take a picture with camera to complete habit
@@ -137,10 +137,8 @@ export default function Index() {
                   s.rounded,
                   s.border2,
                   c.borderDefault,
-                  s.inputHeight,
-                  {
-                    width: 51,
-                  },
+                  s.h13,
+                  s.w13,
                 ] as ImageStyle[]
               }
               resizeMode="cover"

@@ -286,7 +286,7 @@ export default function HabitForm() {
                     s.flexRow,
                     s.justifyBetween,
                     s.itemsCenter,
-                    s.inputHeight,
+                    s.h13,
                   ]}
                 >
                   <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
@@ -318,7 +318,7 @@ export default function HabitForm() {
                     s.flexRow,
                     s.justifyBetween,
                     s.itemsCenter,
-                    s.inputHeight,
+                    s.h13,
                   ]}
                   onPress={() => router.push("/habit/icon")}
                 >
@@ -357,7 +357,7 @@ export default function HabitForm() {
                     s.flexRow,
                     s.justifyBetween,
                     s.itemsCenter,
-                    s.inputHeight,
+                    s.h13,
                   ]}
                 >
                   <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
@@ -389,7 +389,7 @@ export default function HabitForm() {
                             s.flexRow,
                             s.justifyBetween,
                             s.itemsCenter,
-                            s.inputHeight,
+                            s.h13,
                           ]}
                         >
                           <DateTimePicker
@@ -431,7 +431,7 @@ export default function HabitForm() {
                         s.flexRow,
                         s.justifyBetween,
                         s.itemsCenter,
-                        s.inputHeight,
+                        s.h13,
                       ]}
                       onPress={addReminder}
                     >

@@ -112,7 +112,7 @@ export default function HabitSchedule() {
                         s.flexRow,
                         s.justifyBetween,
                         s.itemsCenter,
-                        s.inputHeight,
+                        s.h13,
                       ]}
                       onPress={() => {
                         // set frequency and pattern simultaneously
@@ -163,7 +163,7 @@ export default function HabitSchedule() {
                       s.flexRow,
                       s.justifyBetween,
                       s.itemsCenter,
-                      s.inputHeight,
+                      s.h13,
                     ]}
                     onPress={() => setPattern(1)}
                   >
@@ -184,7 +184,7 @@ export default function HabitSchedule() {
                         s.flexRow,
                         s.justifyBetween,
                         s.itemsCenter,
-                        s.inputHeight,
+                        s.h13,
                       ]}
                       onPress={() => setPattern(1)}
                     >
@@ -215,7 +215,7 @@ export default function HabitSchedule() {
                     s.flexRow,
                     s.justifyBetween,
                     s.itemsCenter,
-                    s.inputHeight,
+                    s.h13,
                   ]}
                   onPress={() => setPattern(2)}
                 >

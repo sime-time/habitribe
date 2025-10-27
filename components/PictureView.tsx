@@ -159,7 +159,7 @@ export default function PictureView() {
             s.absolute,
             s.z10,
             {
-              bottom: 102, // double the s.InputHeight value
+              bottom: 104, // double the h13 value
             },
           ]}
         >
@@ -180,7 +180,7 @@ export default function PictureView() {
           {/* ADD CAPTION*/}
           <View
             style={[
-              s.inputHeight,
+              s.h13,
               s.justifyCenter,
               s.px6,
               c.bgCard,
@@ -208,10 +208,8 @@ export default function PictureView() {
               s.justifyCenter,
               s.itemsCenter,
               s.roundedFull,
-              s.inputHeight,
-              {
-                width: 51, // from inputHeight
-              },
+              s.h13,
+              s.w13,
             ]}
           >
             {uploading ? (

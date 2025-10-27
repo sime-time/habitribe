@@ -184,7 +184,6 @@ const c = createColorStyles(colors);
 #### Component Presets
 - `s.button` - Standard button preset (px6, py4, roundedMd, centered flex layout)
 - `s.input` - Text input preset (px6, py4, roundedMd, border2)
-- `s.inputHeight` - Fixed input height (51px)
 - `s.divider` - Horizontal divider line (height: 1px, opacity: 0.3)
 
 ## Tips
