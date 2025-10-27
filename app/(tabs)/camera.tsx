@@ -1,5 +1,5 @@
 import { CameraView } from "expo-camera";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { StatusBar, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { spacing } from "@/assets/styles/token.styles";
@@ -24,7 +24,9 @@ export default function CameraScreen() {
 
   const handleTakePicture = async () => {
     const response = await cameraRef.current?.takePictureAsync();
-    setPicture(response!.uri);
+    if (response) {
+      setPicture(response.uri);
+    }
   };
 
   if (picture) return <PictureView />;

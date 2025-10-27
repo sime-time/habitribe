@@ -51,6 +51,7 @@ export default defineSchema({
 
   proofMethods: defineTable({
     name: v.string(),
+    type: v.union(v.literal("selfVerify"), v.literal("camera")),
     order: v.number(),
     description: v.string(),
     requirements: v.string(),

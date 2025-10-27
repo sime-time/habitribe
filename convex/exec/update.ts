@@ -68,12 +68,19 @@ export const editHabitEntryProof = mutation({
 export const toggleHabitEntry = mutation({
   args: { id: v.id("habitEntries") },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("Unauthorized");
+
     const entry = await ctx.db.get(args.id);
-    if (!entry) {
-      throw new ConvexError("Entry not found");
-    }
+    if (!entry) throw new ConvexError("Entry not found");
+
+    const newProgress = entry.isCompleted
+      ? entry.progress - 1
+      : entry.progress + 1;
+
     await ctx.db.patch(args.id, {
       isCompleted: !entry.isCompleted,
+      progress: newProgress,
     });
   },
 });

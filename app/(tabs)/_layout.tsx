@@ -1,6 +1,6 @@
 import { Redirect, Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { Camera, CircleCheck, Cog } from "lucide-react-native";
+import { Calendar, Camera, CircleCheck, Cog } from "lucide-react-native";
 import HabitSelectSheet from "@/components/HabitSelectSheet";
 import { useFirstTimeOpen } from "@/hooks/useFirstTimeOpen";
 import useTheme from "@/hooks/useTheme";
@@ -36,6 +36,20 @@ export default function TabsLayout() {
           headerShown: false,
         }}
       >
+        <Tabs.Screen
+          name="history"
+          options={{
+            title: "History",
+            tabBarIcon: ({ color, size }) => (
+              <SymbolView
+                name="calendar"
+                size={size}
+                tintColor={color}
+                fallback={<Calendar size={size} color={color} />}
+              />
+            ),
+          }}
+        />
         <Tabs.Screen
           name="index"
           options={{

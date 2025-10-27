@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
+import Header from "@/components/Header";
 import useTheme from "@/hooks/useTheme";
 
 type MenuItem = {
@@ -221,30 +222,7 @@ export default function SettingsScreen() {
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1} edges={["top"]}>
         {/* HEADER */}
-        <View style={[s.p4, s.pt8, s.flexRow, s.justifyBetween, s.itemsCenter]}>
-          <Text style={[s.text3xl, s.fontBold, c.textForeground]}>
-            Settings
-          </Text>
-          <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
-            <TouchableOpacity
-              onPress={() => Alert.alert("Coming Soon", "Notifications")}
-            >
-              <Ionicons
-                name="notifications-outline"
-                size={24}
-                color={colors.foreground}
-              />
-            </TouchableOpacity>
-            <Image
-              source={{ uri: "https://i.pravatar.cc/150?img=3" }}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-              }}
-            />
-          </View>
-        </View>
+        <Header title="Settings" />
 
         {/* CONTENT */}
         <ScrollView

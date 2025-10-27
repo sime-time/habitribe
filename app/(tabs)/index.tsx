@@ -2,8 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
-import { Check } from "lucide-react-native";
-import { useEffect } from "react";
+import { Camera, Check, X } from "lucide-react-native";
+import { useEffect, useMemo } from "react";
 import {
   Image,
   type ImageStyle,
@@ -45,6 +45,16 @@ export default function Index() {
     date: habitDate,
   });
 
+  // get all proof methods
+  const proofMethods = useQuery(api.exec.read.getProofMethods);
+  const proofMethodMap = useMemo(() => {
+    if (!proofMethods) return new Map();
+    return new Map(proofMethods.map((pm) => [pm._id, pm]));
+  }, [proofMethods]);
+
+  // toggle habit entry completion
+  const toggleHabitEntry = useMutation(api.exec.update.toggleHabitEntry);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
   useEffect(() => {
     createMissingEntries({ date: habitDate });
@@ -64,12 +74,7 @@ export default function Index() {
     habit: Habit;
     entry: any | null;
   }) => {
-    // get most recent (last) proof url
-    let proofUrl = "";
-    if (entry.proof) {
-      proofUrl = entry.proof.at(-1).url;
-    }
-    console.log("proofUrl", proofUrl);
+    const proofMethod = proofMethodMap.get(habit.proofMethodId);
     return (
       <Pressable
         style={[
@@ -112,15 +117,25 @@ export default function Index() {
 
           {/* Checkbox */}
           <Pressable
-            style={[c.bgBackground, s.rounded, s.inputHeight, { width: 51 }]}
-            onPress={() => router.push("/camera")}
+            style={[s.rounded, s.inputHeight, { width: 51 }]}
+            onPress={() => {
+              if (proofMethod.type === "camera") {
+                // take a picture with camera to complete habit
+                router.push("/camera");
+              } else {
+                // manually toggle habit entry completion
+                toggleHabitEntry({ id: entry._id });
+              }
+            }}
           >
             <Image
-              source={{ uri: entry.proof ? entry.proof.at(-1).url : undefined }}
+              source={{
+                uri: entry.proof ? entry.proof.at(-1).url : undefined,
+              }}
               style={
                 [
                   s.rounded,
-                  s.border1,
+                  s.border2,
                   c.borderDefault,
                   s.inputHeight,
                   {
@@ -132,7 +147,7 @@ export default function Index() {
             />
 
             {/* Success Overlay */}
-            {entry.isCompleted && (
+            {entry.isCompleted ? (
               <>
                 <View
                   style={[
@@ -166,6 +181,27 @@ export default function Index() {
                   <Check size={32} color="white" />
                 </View>
               </>
+            ) : (
+              <View
+                style={[
+                  s.absolute,
+                  s.itemsCenter,
+                  s.justifyCenter,
+                  s.z20,
+                  {
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                  },
+                ]}
+              >
+                {proofMethod.type === "camera" ? (
+                  <Camera size={32} color={colors.border} />
+                ) : (
+                  <X size={32} color={colors.border} />
+                )}
+              </View>
             )}
           </Pressable>
         </View>
