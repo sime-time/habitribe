@@ -1,4 +1,7 @@
 import { Text, View } from "react-native";
+import { createColorStyles } from "@/assets/styles/color.styles";
+import { s } from "@/assets/styles/utility.styles";
+import useTheme from "@/hooks/useTheme";
 
 interface HeatmapCalendarProps {
   startDate: string; // YYYY-MM-DD
@@ -8,6 +11,9 @@ export default function HeatmapCalendar({
   startDate,
   endDate,
 }: HeatmapCalendarProps) {
+  const { colors } = useTheme();
+  const c = createColorStyles(colors);
+
   // convert strings to Date objects
   const startingDate = new Date(startDate);
   const endingDate = new Date(endDate);
@@ -28,7 +34,7 @@ export default function HeatmapCalendar({
   return (
     <View>
       {calendarGrid.map((day, index) => (
-        <Text key={index}>{day}</Text>
+        <View key={index} style={[s.w4, s.h4, s.roundedSm, c.bgPrimary]} />
       ))}
     </View>
   );

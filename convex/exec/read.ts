@@ -119,9 +119,7 @@ export const getGroupedHabitEntries = query({
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
-    if (userId === null) {
-      throw new ConvexError("No user ID found");
-    }
+    if (userId === null) throw new ConvexError("Unauthorized");
 
     const sorted: {
       dailyHabits: HabitWithEntry[];
@@ -174,5 +172,15 @@ export const getGroupedHabitEntries = query({
 
     // habit+entry grouped by frequency and proofs include a url to view on the client
     return { dailyHabits, weeklyHabits, monthlyHabits };
+  },
+});
+
+export const getHabitEntryProgress = query({
+  args: {
+    startDate: v.string(),
+  },
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthorized");
   },
 });

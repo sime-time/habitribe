@@ -26,6 +26,18 @@ export const emojiData: EmojiData[] = [
     keywords: ["run", "jog", "cardio", "exercise", "marathon"],
   },
   {
+    emoji: "🚶‍♂️",
+    name: "man walking",
+    category: "fitness",
+    keywords: ["walk", "step", "exercise", "movement", "cardio"],
+  },
+  {
+    emoji: "🚶‍♀️",
+    name: "woman walking",
+    category: "fitness",
+    keywords: ["walk", "step", "exercise", "movement", "cardio"],
+  },
+  {
     emoji: "🚴‍♂️",
     name: "man biking",
     category: "fitness",
@@ -102,6 +114,12 @@ export const emojiData: EmojiData[] = [
     name: "sleeping face",
     category: "health",
     keywords: ["sleep", "rest", "tired", "nap", "zzz"],
+  },
+  {
+    emoji: "🛏️",
+    name: "bed",
+    category: "health",
+    keywords: ["sleep", "rest", "bedroom", "comfortable", "relax"],
   },
   {
     emoji: "⏰",
