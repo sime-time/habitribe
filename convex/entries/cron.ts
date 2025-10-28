@@ -50,7 +50,6 @@ export const createDailyHabitEntries = internalMutation({
           userId: habit.userId,
           date: date,
           progress: 0,
-          isCompleted: false,
         });
         created++;
       }
@@ -96,7 +95,6 @@ export const createWeeklyHabitEntries = internalMutation({
           userId: habit.userId,
           date: start, // Monday's date
           progress: 0,
-          isCompleted: false,
         });
         created++;
       }
@@ -141,7 +139,6 @@ export const createMonthlyHabitEntries = internalMutation({
           userId: habit.userId,
           date: start, // start of the month
           progress: 0,
-          isCompleted: false,
         });
         created++;
       }

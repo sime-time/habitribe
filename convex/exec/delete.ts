@@ -1,4 +1,5 @@
-import { v } from "convex/values";
+import { getAuthUserId } from "@convex-dev/auth/server";
+import { ConvexError, v } from "convex/values";
 import { mutation } from "../_generated/server";
 
 export const deleteHabit = mutation({
@@ -40,5 +41,38 @@ export const deleteReminder = mutation({
   args: { id: v.id("reminders") },
   handler: async (ctx, args) => {
     await ctx.db.delete(args.id);
+  },
+});
+
+/**
+ * Delete a proof and decrement the habit entry's progress
+ */
+export const deleteProof = mutation({
+  args: {
+    proofId: v.id("proofs"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("Unauthorized");
+
+    // Get the proof
+    const proof = await ctx.db.get(args.proofId);
+    if (!proof) throw new ConvexError("Proof not found");
+
+    // Verify it belongs to this user
+    if (proof.userId !== userId) {
+      throw new ConvexError("Proof does not belong to this user");
+    }
+
+    // Delete the proof
+    await ctx.db.delete(args.proofId);
+
+    // Decrement progress on the entry
+    const entry = await ctx.db.get(proof.habitEntryId);
+    if (entry) {
+      await ctx.db.patch(proof.habitEntryId, {
+        progress: Math.max(0, entry.progress - 1),
+      });
+    }
   },
 });

@@ -26,6 +26,7 @@ import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { useCameraSettings } from "@/stores/cameraSettingsStore";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
+import { getTodayDateString } from "@/utils/dateHelper";
 import CameraSelectRow from "./CameraSelectRow";
 
 export default function PictureView() {
@@ -34,9 +35,7 @@ export default function PictureView() {
 
   const uploadFile = useUploadFile(api.bucket);
   const [uploading, setUploading] = useState(false);
-  const updateHabitEntryProof = useMutation(
-    api.exec.update.editHabitEntryProof,
-  );
+  const createProof = useMutation(api.exec.create.addProof);
 
   const picture = useCameraSettings((state) => state.picture);
   const setPicture = useCameraSettings((state) => state.setPicture);
@@ -63,9 +62,12 @@ export default function PictureView() {
       // Upload image to R2 and return the storage key
       const storageKey = await uploadFile(file);
 
-      // Update habitEntry with new proof
-      updateHabitEntryProof({
-        id: entry._id,
+      const today = getTodayDateString();
+
+      // Add new proof to habit entry
+      createProof({
+        habitEntryId: entry._id,
+        date: today,
         key: storageKey,
         caption: caption || undefined,
       });

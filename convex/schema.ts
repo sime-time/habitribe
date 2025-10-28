@@ -32,16 +32,17 @@ export default defineSchema({
     userId: v.id("users"),
     date: v.string(), // "YYYY-MM-DD" format
     progress: v.number(),
-    isCompleted: v.boolean(),
-    proof: v.optional(
-      v.array(
-        v.object({
-          key: v.string(), // r2 storage key used to generate image urls
-          caption: v.optional(v.string()),
-        }),
-      ),
-    ),
   }),
+
+  proofs: defineTable({
+    userId: v.id("users"),
+    habitEntryId: v.id("habitEntries"),
+    date: v.string(), // "YYYY-MM-DD"
+    key: v.string(), // R2 storage key
+    caption: v.optional(v.string()),
+  })
+    .index("by_user_date", ["userId", "date"])
+    .index("by_habit_entry", ["habitEntryId"]),
 
   reminders: defineTable({
     habitId: v.id("habits"),

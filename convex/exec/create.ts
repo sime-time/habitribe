@@ -40,8 +40,6 @@ export const addHabit = mutation({
       userId: userId,
       date: args.startDate,
       progress: 0,
-      isCompleted: false,
-      proof: undefined,
     });
 
     return habitId;
@@ -54,15 +52,6 @@ export const addHabitEntry = mutation({
     userId: v.id("users"),
     date: v.string(), // "YYYY-MM-DD" format
     progress: v.number(),
-    isCompleted: v.boolean(),
-    proof: v.optional(
-      v.array(
-        v.object({
-          key: v.string(),
-          caption: v.optional(v.string()),
-        }),
-      ),
-    ),
   },
   handler: async (ctx, args) => {
     const habitEntryId = await ctx.db.insert("habitEntries", {
@@ -180,7 +169,6 @@ export const addMissingEntries = mutation({
               userId: userId,
               date: args.date,
               progress: 0,
-              isCompleted: false,
             });
             created++;
           }
@@ -196,7 +184,6 @@ export const addMissingEntries = mutation({
               userId: userId,
               date: weekStart,
               progress: 0,
-              isCompleted: false,
             });
             created++;
           }
@@ -211,7 +198,6 @@ export const addMissingEntries = mutation({
               userId: userId,
               date: monthStart,
               progress: 0,
-              isCompleted: false,
             });
             created++;
           }
@@ -222,5 +208,36 @@ export const addMissingEntries = mutation({
 
     console.log(`created ${created} missing entries on ${args.date}`);
     return { created, date: args.date };
+  },
+});
+
+export const addProof = mutation({
+  args: {
+    habitEntryId: v.id("habitEntries"),
+    date: v.string(), // date the proof was uploaded
+    key: v.string(), // r2 storage key
+    caption: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("No user ID found");
+
+    // get the habit entry
+    const entry = await ctx.db.get(args.habitEntryId);
+    if (!entry) throw new ConvexError("Habit entry not found");
+
+    // insert the new proof
+    const proofId = await ctx.db.insert("proofs", {
+      userId: userId,
+      ...args,
+    });
+
+    // increment progress on the habit entry
+    await ctx.db.patch(args.habitEntryId, {
+      progress: entry.progress + 1,
+    });
+
+    console.log(`inserted proof: ${proofId}`);
+    return proofId;
   },
 });

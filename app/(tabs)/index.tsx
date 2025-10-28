@@ -22,6 +22,7 @@ import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { getTodayDateString } from "@/utils/dateHelper";
 import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
+import { calculateIsCompleted } from "@/utils/isCompletedCalculation";
 
 type Habit = Doc<"habits">;
 
@@ -130,7 +131,10 @@ export default function Index() {
           >
             <Image
               source={{
-                uri: entry.proof ? entry.proof.at(-1).url : undefined,
+                uri:
+                  entry.proof && entry.proof.length > 0
+                    ? entry.proof[entry.proof.length - 1].url
+                    : undefined,
               }}
               style={
                 [
@@ -145,7 +149,7 @@ export default function Index() {
             />
 
             {/* Success Overlay */}
-            {entry.isCompleted ? (
+            {calculateIsCompleted(entry.progress, habit) ? (
               <>
                 <View
                   style={[
