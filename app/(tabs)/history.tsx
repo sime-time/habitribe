@@ -14,11 +14,11 @@ export default function History() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
-  const monthAgo = "2025-07-15";
   const today = getTodayDateString();
+  const yearAgo = "2024-11-03";
 
   const heatmapData = useQuery(api.exec.read.getHabitHeatmaps, {
-    startDate: monthAgo,
+    startDate: yearAgo,
     endDate: today,
   });
 
@@ -42,7 +42,7 @@ export default function History() {
             >
               <Text style={c.textForeground}>{item.habit.name}</Text>
               <HeatmapGrid
-                startDate={monthAgo}
+                startDate={yearAgo}
                 endDate={today}
                 activity={item.activity}
                 color={item.habit.color}

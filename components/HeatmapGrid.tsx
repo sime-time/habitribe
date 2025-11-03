@@ -93,7 +93,7 @@ export default function HeatmapGrid({
                   s.opacity50,
                   s.h3,
                   s.text2xs,
-                  s.textRight
+                  s.textRight,
                 ] as TextStyle[]
               }
             >

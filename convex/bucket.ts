@@ -6,14 +6,14 @@ import { components } from "./_generated/api";
 export const r2 = new R2(components.r2);
 
 export const { generateUploadUrl, syncMetadata } = r2.clientApi({
-  checkUpload: async (ctx, bucket) => {
+  checkUpload: async (ctx) => {
     // validate that the user can upload to this bucket
     const userId = await getAuthUserId(ctx);
     if (userId === null) {
       throw new ConvexError("Upload failed. No user id found");
     }
   },
-  onUpload: async (ctx, bucket, key) => {
+  onUpload: async (_ctx, bucket, key) => {
     // ...do something with the key
     // This technically runs in the `syncMetadata` mutation, as the upload
     // is performed from the client side. Will run if using the `useUploadFile`

@@ -1,4 +1,4 @@
-import { ConvexError, v } from "convex/values";
+import { v } from "convex/values";
 import { getMonthBounds, getWeekBounds } from "@/utils/dateHelper";
 import { internalQuery } from "../_generated/server";
 

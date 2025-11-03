@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { Doc } from "@/convex/_generated/dataModel";
 import { Frequency } from "@/utils/habitFormLabels";
 
 export const HabitSchema = z.object({

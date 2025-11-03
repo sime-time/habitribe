@@ -1,30 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, router } from "expo-router";
-import { Camera, Check, X } from "lucide-react-native";
-import { useEffect, useMemo } from "react";
-import {
-  Image,
-  type ImageStyle,
-  Pressable,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Link } from "expo-router";
+import { useEffect } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
-import Emoji from "@/components/Emoji";
+import HabitCard from "@/components/HabitCard";
 import { api } from "@/convex/_generated/api";
-import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { getTodayDateString } from "@/utils/dateHelper";
-import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
-import { calculateIsCompleted } from "@/utils/isCompletedCalculation";
-
-type Habit = Doc<"habits">;
 
 export default function Index() {
   const { colors } = useTheme();
@@ -46,16 +32,6 @@ export default function Index() {
     date: habitDate,
   });
 
-  // get all proof methods
-  const proofMethods = useQuery(api.exec.read.getProofMethods);
-  const proofMethodMap = useMemo(() => {
-    if (!proofMethods) return new Map();
-    return new Map(proofMethods.map((pm) => [pm._id, pm]));
-  }, [proofMethods]);
-
-  // toggle habit entry completion
-  const toggleHabitEntry = useMutation(api.exec.update.toggleHabitEntry);
-
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
   useEffect(() => {
     createMissingEntries({ date: habitDate });
@@ -67,149 +43,6 @@ export default function Index() {
     weeklyHabits = [],
     monthlyHabits = [],
   } = habits || {}; // if habit is undefined, use an empty object
-
-  const renderHabitCard = ({
-    habit,
-    entry,
-  }: {
-    habit: Habit;
-    entry: any | null;
-  }) => {
-    const proofMethod = proofMethodMap.get(habit.proofMethodId);
-    return (
-      <Pressable
-        style={[
-          s.mb5,
-          s.p4,
-          s.gap3,
-          s.roundedLg,
-          c.bgCard,
-          c.borderDefault,
-          s.border1,
-        ]}
-        onPress={() => router.navigate(`/habit/form?id=${habit._id}`)}
-      >
-        {/* Header: Icon + Name + Description */}
-        <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
-          <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
-            <View
-              style={[
-                s.p3,
-                s.roundedLg,
-                s.itemsCenter,
-                s.justifyCenter,
-                { backgroundColor: `${habit.color}30` },
-              ]}
-            >
-              <Emoji iconName={habit.icon} iconColor={habit.color} />
-            </View>
-            <View style={[s.flexCol, s.gap1]}>
-              <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
-                {habit.name}
-              </Text>
-              <Text style={[s.textSm, c.textMuted]}>
-                {getScheduleLabel(
-                  habit.schedule.frequency as Frequency,
-                  habit.schedule.pattern,
-                )}
-              </Text>
-            </View>
-          </View>
-
-          {/* Checkbox */}
-          <Pressable
-            style={[s.rounded, s.h13, s.w13]}
-            onPress={() => {
-              if (proofMethod.type === "camera") {
-                // take a picture with camera to complete habit
-                router.push("/camera");
-              } else {
-                // manually toggle habit entry completion
-                toggleHabitEntry({ id: entry._id });
-              }
-            }}
-          >
-            <Image
-              source={{
-                uri:
-                  entry.proof && entry.proof.length > 0
-                    ? entry.proof[entry.proof.length - 1].url
-                    : undefined,
-              }}
-              style={
-                [
-                  s.rounded,
-                  s.border2,
-                  c.borderDefault,
-                  s.h13,
-                  s.w13,
-                ] as ImageStyle[]
-              }
-              resizeMode="cover"
-            />
-
-            {/* Success Overlay */}
-            {calculateIsCompleted(entry.progress, habit) ? (
-              <>
-                <View
-                  style={[
-                    s.absolute,
-                    s.opacity75,
-                    s.rounded,
-                    c.bgSuccess,
-                    s.z10,
-                    {
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                    },
-                  ]}
-                />
-                <View
-                  style={[
-                    s.absolute,
-                    s.itemsCenter,
-                    s.justifyCenter,
-                    s.z20,
-                    {
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                    },
-                  ]}
-                >
-                  <Check size={32} color="white" />
-                </View>
-              </>
-            ) : (
-              <View
-                style={[
-                  s.absolute,
-                  s.itemsCenter,
-                  s.justifyCenter,
-                  s.z20,
-                  {
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                  },
-                ]}
-              >
-                {proofMethod.type === "camera" ? (
-                  <Camera size={32} color={colors.border} />
-                ) : (
-                  <X size={32} color={colors.border} />
-                )}
-              </View>
-            )}
-          </Pressable>
-        </View>
-      </Pressable>
-    );
-  };
 
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
@@ -264,7 +97,7 @@ export default function Index() {
 
               {dailyHabits.map((d) => (
                 <View key={d.habit._id}>
-                  {renderHabitCard({ habit: d.habit, entry: d.entry })}
+                  <HabitCard habit={d.habit} entry={d.entry} />
                 </View>
               ))}
             </>
@@ -280,7 +113,7 @@ export default function Index() {
 
               {weeklyHabits.map((w) => (
                 <View key={w.habit._id}>
-                  {renderHabitCard({ habit: w.habit, entry: w.entry })}
+                  <HabitCard habit={w.habit} entry={w.entry} />
                 </View>
               ))}
             </>
@@ -296,7 +129,7 @@ export default function Index() {
 
               {monthlyHabits.map((m) => (
                 <View key={m.habit._id}>
-                  {renderHabitCard({ habit: m.habit, entry: m.entry })}
+                  <HabitCard habit={m.habit} entry={m.entry} />
                 </View>
               ))}
             </>
