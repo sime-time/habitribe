@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
@@ -23,6 +23,13 @@ export default function Index() {
 
   // format today's date to YYYY-MM-DD
   const habitDate = getTodayDateString();
+
+  // get all proof methods
+  const proofMethods = useQuery(api.exec.read.getProofMethods);
+  const proofMethodMap = useMemo(() => {
+    if (!proofMethods) return new Map();
+    return new Map(proofMethods.map((pm) => [pm._id, pm]));
+  }, [proofMethods]);
 
   // create any of today's missing habit entries before querying them
   const createMissingEntries = useMutation(api.exec.create.addMissingEntries);
@@ -97,7 +104,11 @@ export default function Index() {
 
               {dailyHabits.map((d) => (
                 <View key={d.habit._id}>
-                  <HabitCard habit={d.habit} entry={d.entry} />
+                  <HabitCard
+                    habit={d.habit}
+                    entry={d.entry}
+                    proofMethodType={proofMethodMap.get(d.habit.proofMethodId)}
+                  />
                 </View>
               ))}
             </>
@@ -113,7 +124,13 @@ export default function Index() {
 
               {weeklyHabits.map((w) => (
                 <View key={w.habit._id}>
-                  <HabitCard habit={w.habit} entry={w.entry} />
+                  <HabitCard
+                    habit={w.habit}
+                    entry={w.entry}
+                    proofMethodType={
+                      proofMethodMap.get(w.habit.proofMethodId).type
+                    }
+                  />
                 </View>
               ))}
             </>
@@ -129,7 +146,13 @@ export default function Index() {
 
               {monthlyHabits.map((m) => (
                 <View key={m.habit._id}>
-                  <HabitCard habit={m.habit} entry={m.entry} />
+                  <HabitCard
+                    habit={m.habit}
+                    entry={m.entry}
+                    proofMethodType={
+                      proofMethodMap.get(m.habit.proofMethodId).type
+                    }
+                  />
                 </View>
               ))}
             </>

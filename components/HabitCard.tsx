@@ -1,7 +1,6 @@
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { router } from "expo-router";
 import { Camera, Check, X } from "lucide-react-native";
-import { useMemo } from "react";
 import { Image, type ImageStyle, Pressable, Text, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
@@ -14,24 +13,22 @@ import { calculateIsCompleted } from "@/utils/isCompletedCalculation";
 
 type HabitCardProps = {
   habit: Doc<"habits">;
+  // biome-ignore lint/suspicious/noExplicitAny: entry type comes from Convex query
   entry: any | null;
+  proofMethodType: string;
 };
 
-export default function HabitCard({ habit, entry }: HabitCardProps) {
+export default function HabitCard({
+  habit,
+  entry,
+  proofMethodType,
+}: HabitCardProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
-
-  // get all proof methods
-  const proofMethods = useQuery(api.exec.read.getProofMethods);
-  const proofMethodMap = useMemo(() => {
-    if (!proofMethods) return new Map();
-    return new Map(proofMethods.map((pm) => [pm._id, pm]));
-  }, [proofMethods]);
 
   // toggle habit entry completion
   const toggleHabitEntry = useMutation(api.exec.update.toggleHabitEntry);
 
-  const proofMethod = proofMethodMap.get(habit.proofMethodId);
   return (
     <Pressable
       style={[
@@ -76,7 +73,7 @@ export default function HabitCard({ habit, entry }: HabitCardProps) {
         <Pressable
           style={[s.rounded, s.h13, s.w13]}
           onPress={() => {
-            if (proofMethod.type === "camera") {
+            if (proofMethodType === "camera") {
               // take a picture with camera to complete habit
               router.push("/camera");
             } else {
@@ -154,7 +151,7 @@ export default function HabitCard({ habit, entry }: HabitCardProps) {
                 },
               ]}
             >
-              {proofMethod.type === "camera" ? (
+              {proofMethodType === "camera" ? (
                 <Camera size={32} color={colors.border} />
               ) : (
                 <X size={32} color={colors.border} />
