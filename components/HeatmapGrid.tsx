@@ -3,11 +3,14 @@
 // where each small square represents a day,
 // colored by intensity of activity.
 
+import { useEffect, useRef } from "react";
 import { ScrollView, Text, type TextStyle, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import { iconColors } from "@/constants/colors";
 import useTheme from "@/hooks/useTheme";
+
+const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface HeatmapCalendarProps {
   startDate: string; // YYYY-MM-DD
@@ -15,8 +18,6 @@ interface HeatmapCalendarProps {
   activity: { date: string; progress: number }[];
   color?: string;
 }
-
-const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export default function HeatmapGrid({
   startDate,
@@ -51,7 +52,6 @@ export default function HeatmapGrid({
   );
 
   const getIntensity = (value: number) => {
-    console.log("value", value);
     if (maxValue !== value) {
       return Number(value / maxValue);
     } else {
@@ -60,16 +60,21 @@ export default function HeatmapGrid({
   };
 
   const getColorFromIntensity = (intensity: number) => {
-    const opacities = ["20", "60", "80", "FF"];
+    const hex = color ? color : iconColors[0];
+    const colorShades = [
+      colors.border,
+      `${hex}20`,
+      `${hex}60`,
+      `${hex}80`,
+      `${hex}FF`,
+    ];
+
     const index = Math.min(
-      Math.floor(intensity * opacities.length),
-      opacities.length - 1,
+      Math.floor(intensity * colorShades.length),
+      colorShades.length - 1,
     );
 
-    const opacity = opacities[index];
-
-    if (!color) return `${iconColors[0]}${opacity}`;
-    return `${color}${opacity}`;
+    return colorShades[index];
   };
 
   // group calendar grid into weeks (7 items per week = 1 column)
@@ -77,6 +82,16 @@ export default function HeatmapGrid({
   for (let i = 0; i < calendarGrid.length; i += 7) {
     weeks.push(calendarGrid.slice(i, i + 7));
   }
+
+  // useEffect: if you call `scrollToEnd()` before React Native has measured and laid out the ScrollView content, it won't know how far to scroll.
+  // scroll to the end after a small delay to allow layout to complete
+  const scrollViewRef = useRef<ScrollView>(null);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: false });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <View style={[s.flexCol, s.gap1]}>
@@ -102,7 +117,11 @@ export default function HeatmapGrid({
           ))}
         </View>
 
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        <ScrollView
+          ref={scrollViewRef}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
           <View style={[s.flexCol, s.gap1]}>
             {/* Heatmap grid */}
             <View style={[s.flexRow, s.gap1]}>
