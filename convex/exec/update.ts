@@ -1,7 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
 import { mutation } from "../_generated/server";
-import { r2 } from "../bucket";
 
 export const editHabit = mutation({
   args: {
@@ -33,38 +32,6 @@ export const editHabit = mutation({
   },
 });
 
-export const editHabitEntryProof = mutation({
-  args: {
-    id: v.id("habitEntries"),
-    key: v.string(),
-    caption: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new Error("Unauthorized");
-
-    const entry = await ctx.db
-      .query("habitEntries")
-      .filter((q) => q.eq(q.field("_id"), args.id))
-      .first();
-    const currentProof = entry?.proof || [];
-
-    // const url = await r2.getUrl(args.storageKey);
-
-    await ctx.db.patch(args.id, {
-      progress: 1,
-      isCompleted: true,
-      proof: [
-        ...currentProof,
-        {
-          key: args.key,
-          caption: args.caption,
-        },
-      ],
-    });
-  },
-});
-
 export const toggleHabitEntry = mutation({
   args: { id: v.id("habitEntries") },
   handler: async (ctx, args) => {
@@ -74,12 +41,10 @@ export const toggleHabitEntry = mutation({
     const entry = await ctx.db.get(args.id);
     if (!entry) throw new ConvexError("Entry not found");
 
-    const newProgress = entry.isCompleted
-      ? entry.progress - 1
-      : entry.progress + 1;
+    // toggle between 0 and 1 for selfVerify habits
+    const newProgress = entry.progress === 0 ? 1 : 0;
 
     await ctx.db.patch(args.id, {
-      isCompleted: !entry.isCompleted,
       progress: newProgress,
     });
   },

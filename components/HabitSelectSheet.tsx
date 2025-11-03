@@ -1,6 +1,6 @@
 import { FlashList } from "@shopify/flash-list";
 import { useMutation, useQuery } from "convex/react";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 import Animated, {
   useAnimatedStyle,

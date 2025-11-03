@@ -91,9 +91,7 @@ export const getTodaysHabitEntries = query({
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
-    if (userId === null) {
-      throw new ConvexError("No user ID found");
-    }
+    if (userId === null) throw new ConvexError("Unauthorized");
 
     const sorted: {
       dailyHabits: HabitWithEntry[];
@@ -130,23 +128,31 @@ export const getGroupedHabitEntries = query({
       { date: args.date, userId: userId },
     );
 
+    // add proofs to each entry
     // generate URL for each entry's proof
-    async function addUrlsToEntryProof(item: HabitWithEntry) {
+    async function addProofToEntry(item: HabitWithEntry) {
       // no entry, return item as-is
-      if (!item.entry) return item;
-      // no proof, return item as-is
-      if (!item.entry.proof || item.entry.proof.length === 0) return item;
+      if (!item.entry) {
+        return item;
+      }
 
-      // generate URLs for each proof in this entry
-      const proofWithUrls: { key: string; caption?: string; url: string }[] =
-        await Promise.all(
-          item.entry.proof.map(async (proof) => ({
-            ...proof,
-            url: await r2.getUrl(proof.key, {
-              expiresIn: 60 * 60 * 24, // 1 day
-            }),
-          })),
-        );
+      const habitEntryId = item.entry._id;
+
+      // fetch proofs for this entry
+      const proofs = await ctx.db
+        .query("proofs")
+        .withIndex("by_habit_entry", (q) => q.eq("habitEntryId", habitEntryId))
+        .collect();
+
+      // generate URLs for each proof
+      const proofWithUrls = await Promise.all(
+        proofs.map(async (proof) => ({
+          ...proof,
+          url: await r2.getUrl(proof.key, {
+            expiresIn: 60 * 60 * 24, // 1 day
+          }),
+        })),
+      );
 
       return {
         habit: item.habit,
@@ -160,13 +166,13 @@ export const getGroupedHabitEntries = query({
     // parallel optimization
     const [dailyHabits, weeklyHabits, monthlyHabits] = await Promise.all([
       Promise.all(
-        sorted.dailyHabits.map(async (item) => addUrlsToEntryProof(item)),
+        sorted.dailyHabits.map(async (item) => addProofToEntry(item)),
       ),
       Promise.all(
-        sorted.weeklyHabits.map(async (item) => addUrlsToEntryProof(item)),
+        sorted.weeklyHabits.map(async (item) => addProofToEntry(item)),
       ),
       Promise.all(
-        sorted.monthlyHabits.map(async (item) => addUrlsToEntryProof(item)),
+        sorted.monthlyHabits.map(async (item) => addProofToEntry(item)),
       ),
     ]);
 
@@ -175,12 +181,46 @@ export const getGroupedHabitEntries = query({
   },
 });
 
-export const getHabitEntryProgress = query({
+export const getHabitHeatmaps = query({
   args: {
     startDate: v.string(),
+    endDate: v.string(),
   },
-  handler: async (ctx) => {
+  handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (userId === null) throw new ConvexError("Unauthorized");
+
+    // get all user habits
+    const habits = await ctx.db
+      .query("habits")
+      .filter((q) => q.eq(q.field("userId"), userId))
+      .collect();
+
+    // fetch heatmap data for each habit in parallel
+    const heatmapData = await Promise.all(
+      habits.map(async (habit) => {
+        const entries = await ctx.db
+          .query("habitEntries")
+          .filter((q) =>
+            q.and(
+              q.eq(q.field("userId"), userId),
+              q.eq(q.field("habitId"), habit._id),
+              q.gte(q.field("date"), args.startDate),
+              q.lte(q.field("date"), args.endDate),
+            ),
+          )
+          .collect();
+
+        return {
+          habit: habit,
+          activity: entries.map((entry) => ({
+            date: entry.date,
+            progress: entry.progress,
+          })),
+        };
+      }),
+    );
+
+    return heatmapData;
   },
 });

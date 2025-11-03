@@ -330,6 +330,7 @@ export const s = {
   outline4: { outlineWidth: 4 } as ViewStyle,
 
   // Text Size
+  text2xs: { fontSize: fontSize["2xs"] } as TextStyle,
   textXs: { fontSize: fontSize.xs } as TextStyle,
   textSm: { fontSize: fontSize.sm } as TextStyle,
   textBase: { fontSize: fontSize.base } as TextStyle,
