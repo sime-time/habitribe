@@ -74,7 +74,7 @@ export const sortHabitEntriesByFrequency = internalQuery({
           if (
             Number.isInteger(habit.schedule.pattern) ||
             (Array.isArray(habit.schedule.pattern) &&
-              habit.schedule.pattern.includes(weekday))
+              habit.schedule.pattern.includes(args.weekday))
           ) {
             dailyHabits.push({ habit: habit, entry: entry || null });
           }
