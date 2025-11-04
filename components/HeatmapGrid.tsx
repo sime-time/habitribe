@@ -14,7 +14,7 @@ const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface HeatmapCalendarProps {
   startDate: string; // YYYY-MM-DD
-  endDate: string;
+  endDate: string; // This must be a monday or it won't work
   activity: { date: string; progress: number }[];
   color?: string;
 }
@@ -33,13 +33,13 @@ export default function HeatmapGrid({
   const endingDate = new Date(endDate);
 
   // get the difference between ending date and starting date in days
-  const daysInMonth =
+  const dayDifference =
     Math.ceil(
       (endingDate.getTime() - startingDate.getTime()) / (1000 * 60 * 60 * 24),
     ) + 1; // add 1 to include the ending date
 
   // create each date in between starting and ending dates
-  const calendarGrid = Array.from({ length: daysInMonth }, (_, i) => {
+  const calendarGrid = Array.from({ length: dayDifference }, (_, i) => {
     const date = new Date(startingDate);
     date.setDate(startingDate.getDate() + i);
     return date.toISOString().slice(0, 10); // YYYY-MM-DD
@@ -62,7 +62,7 @@ export default function HeatmapGrid({
   const getColorFromIntensity = (intensity: number) => {
     const hex = color ? color : iconColors[0];
     const colorShades = [
-      colors.border,
+      `${colors.border}80`,
       `${hex}20`,
       `${hex}60`,
       `${hex}80`,

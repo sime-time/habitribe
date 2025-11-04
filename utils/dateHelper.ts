@@ -45,3 +45,28 @@ export function getMonthBounds(date: string): { start: string; end: string } {
     end: last.toISOString().split("T")[0],
   };
 }
+
+// annual helper function
+// the start date should be the closest sunday 365 days ago
+// the end date should be today
+export function getYearBounds(date: string): { start: string; end: string } {
+  const today = new Date(date);
+
+  // calculate date 365 days ago
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - 365);
+
+  // find the closest sunday to 365 days ago
+  const dayOfWeek = startDate.getDay();
+
+  // if dayOfWeek is 0 (Sunday), we're already on a Sunday, so no adjustment needed
+  // otherwise, move back to the previous Sunday
+  const sundayOffset = dayOfWeek === 0 ? 0 : dayOfWeek;
+
+  startDate.setDate(startDate.getDate() - sundayOffset);
+
+  return {
+    start: startDate.toISOString().split("T")[0],
+    end: today.toISOString().split("T")[0],
+  };
+}

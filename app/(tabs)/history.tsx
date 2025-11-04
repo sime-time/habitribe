@@ -4,22 +4,23 @@ import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
+import Emoji from "@/components/Emoji";
 import Header from "@/components/Header";
 import HeatmapGrid from "@/components/HeatmapGrid";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
-import { getTodayDateString } from "@/utils/dateHelper";
+import { getTodayDateString, getYearBounds } from "@/utils/dateHelper";
 
 export default function History() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
   const today = getTodayDateString();
-  const yearAgo = "2024-11-03";
+  const { start, end } = getYearBounds(today);
 
   const heatmapData = useQuery(api.exec.read.getHabitHeatmaps, {
-    startDate: yearAgo,
-    endDate: today,
+    startDate: start,
+    endDate: end,
   });
 
   return (
@@ -40,10 +41,36 @@ export default function History() {
                 s.border1,
               ]}
             >
-              <Text style={c.textForeground}>{item.habit.name}</Text>
+              {/* Header: Icon + Name + Streak */}
+              <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
+                <View
+                  style={[
+                    s.p2,
+                    s.roundedMd,
+                    s.itemsCenter,
+                    s.justifyCenter,
+                    { backgroundColor: `${item.habit.color}30` },
+                  ]}
+                >
+                  <Emoji
+                    iconName={item.habit.icon}
+                    iconColor={item.habit.color}
+                    iconSize={20}
+                  />
+                </View>
+                <View style={[s.flexCol, s.gap1]}>
+                  <Text style={[s.textBase, s.fontMedium, c.textForeground]}>
+                    {item.habit.name}
+                  </Text>
+                  <Text style={[s.textXs, c.textMuted]}>
+                    Streak: 3, Completed 47
+                  </Text>
+                </View>
+              </View>
+
               <HeatmapGrid
-                startDate={yearAgo}
-                endDate={today}
+                startDate={start}
+                endDate={end}
                 activity={item.activity}
                 color={item.habit.color}
               />
