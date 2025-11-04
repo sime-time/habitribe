@@ -9,13 +9,13 @@ import Header from "@/components/Header";
 import HeatmapGrid from "@/components/HeatmapGrid";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
-import { getTodayDateString, getYearBounds } from "@/utils/dateHelper";
+import { getYearBounds } from "@/utils/dateHelper";
 
 export default function History() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
-  const today = getTodayDateString();
+  const today = new Date();
   const { start, end } = getYearBounds(today);
 
   const heatmapData = useQuery(api.exec.read.getHabitHeatmaps, {

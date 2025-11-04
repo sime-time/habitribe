@@ -10,7 +10,7 @@ import { s } from "@/assets/styles/utility.styles";
 import HabitCard from "@/components/HabitCard";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
-import { getTodayDateString } from "@/utils/dateHelper";
+import { getDateBounds, getTodayDateString } from "@/utils/dateHelper";
 
 export default function Index() {
   const { colors } = useTheme();
@@ -23,6 +23,12 @@ export default function Index() {
 
   // format today's date to YYYY-MM-DD
   const habitDate = getTodayDateString();
+
+  // client side should calculate any dates
+  // this prevents timezone issues with client/server
+  const today = new Date(habitDate);
+  const weekday = today.getDay(); // 0-6 for daily habit pattern matching
+  const bounds = getDateBounds(today);
 
   // get all proof methods
   const proofMethods = useQuery(api.exec.read.getProofMethods);
@@ -37,11 +43,18 @@ export default function Index() {
   // get today's habit entries
   const habits = useQuery(api.exec.read.getGroupedHabitEntries, {
     date: habitDate,
+    weekday,
+    bounds,
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
   useEffect(() => {
-    createMissingEntries({ date: habitDate });
+    console.log("proof methods", proofMethods);
+    createMissingEntries({
+      date: habitDate,
+      weekday,
+      bounds,
+    });
   }, [habitDate]); // only re-run when date changes
 
   // arrays need to be defined to an empty array by default
@@ -107,7 +120,9 @@ export default function Index() {
                   <HabitCard
                     habit={d.habit}
                     entry={d.entry}
-                    proofMethodType={proofMethodMap.get(d.habit.proofMethodId)}
+                    proofMethodType={
+                      proofMethodMap.get(d.habit.proofMethodId).type
+                    }
                   />
                 </View>
               ))}

@@ -14,7 +14,7 @@ import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
-import { getTodayDateString } from "@/utils/dateHelper";
+import { getDateBounds, getTodayDateString } from "@/utils/dateHelper";
 import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
 import Emoji from "./Emoji";
 
@@ -34,19 +34,30 @@ export default function HabitSelectSheet({
   const selectHabit = useHabitSelectStore((state) => state.selectHabit);
   const selectEntry = useHabitSelectStore((state) => state.selectEntry);
 
+  // client side should calculate any dates
+  // this prevents timezone issues with client/server
   const habitDate = getTodayDateString();
+  const today = new Date(habitDate);
+  const weekday = today.getDay(); // 0-6 for daily habit pattern matching
+  const bounds = getDateBounds(today);
 
   // create any of today's missing habit entries before querying them
   const createMissingEntries = useMutation(api.exec.create.addMissingEntries);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
   useEffect(() => {
-    createMissingEntries({ date: habitDate });
+    createMissingEntries({
+      date: habitDate,
+      weekday,
+      bounds,
+    });
   }, [habitDate]); // only re-run when date changes
 
   // get today's habit entries
   const habitsWithEntry = useQuery(api.exec.read.getTodaysHabitEntries, {
     date: habitDate,
+    weekday,
+    bounds,
   });
 
   const renderHabitOption = ({

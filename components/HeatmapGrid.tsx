@@ -10,7 +10,7 @@ import { s } from "@/assets/styles/utility.styles";
 import { iconColors } from "@/constants/colors";
 import useTheme from "@/hooks/useTheme";
 
-const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 interface HeatmapCalendarProps {
   startDate: string; // YYYY-MM-DD
@@ -112,7 +112,7 @@ export default function HeatmapGrid({
                 ] as TextStyle[]
               }
             >
-              {["Mon", "Wed", "Fri"].includes(day) ? day : ""}
+              {["Mon", "Wed", "Fri", "Sun"].includes(day) ? day : ""}
             </Text>
           ))}
         </View>

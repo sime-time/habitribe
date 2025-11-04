@@ -9,13 +9,12 @@ export function getTodayDateString(): string {
 }
 
 // weekly helper function
-export function getWeekBounds(date: string): { start: string; end: string } {
-  const d = new Date(date);
-  const dayOfWeek = d.getDay();
+export function getWeekBounds(date: Date): { start: string; end: string } {
+  const dayOfWeek = date.getDay();
 
   // calculate monday of this week (start)
-  const monday = new Date(d);
-  monday.setDate(d.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
+  const monday = new Date(date);
+  monday.setDate(date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
 
   // calculate sunday of this week (end)
   const sunday = new Date(monday);
@@ -28,11 +27,9 @@ export function getWeekBounds(date: string): { start: string; end: string } {
 }
 
 // monthly helper function
-export function getMonthBounds(date: string): { start: string; end: string } {
-  const d = new Date(date);
-
+export function getMonthBounds(date: Date): { start: string; end: string } {
   // first day of the month (start)
-  const first = new Date(d);
+  const first = new Date(date);
   first.setDate(1);
 
   // last day of the month (end)
@@ -46,24 +43,33 @@ export function getMonthBounds(date: string): { start: string; end: string } {
   };
 }
 
+export function getDateBounds(date: Date) {
+  const { start: weekStart, end: weekEnd } = getWeekBounds(date);
+  const { start: monthStart, end: monthEnd } = getMonthBounds(date);
+  return { weekStart, weekEnd, monthStart, monthEnd };
+}
+
 // annual helper function
-// the start date should be the closest sunday 365 days ago
+// the start date should be the closest monday 365 days ago
 // the end date should be today
-export function getYearBounds(date: string): { start: string; end: string } {
+export function getYearBounds(date: Date): { start: string; end: string } {
   const today = new Date(date);
 
   // calculate date 365 days ago
   const startDate = new Date(today);
   startDate.setDate(today.getDate() - 365);
 
-  // find the closest sunday to 365 days ago
+  // find the closest monday to 365 days ago
   const dayOfWeek = startDate.getDay();
 
-  // if dayOfWeek is 0 (Sunday), we're already on a Sunday, so no adjustment needed
-  // otherwise, move back to the previous Sunday
-  const sundayOffset = dayOfWeek === 0 ? 0 : dayOfWeek;
+  // calculate offset to previous monday
+  // dayOfWeek: 0=Sunday, 1=Monday, 2=Tuesday, ..., 6=Saturday
+  // to get to monday: if we're on monday (1), offset is 0
+  // if we're on sunday (0), offset is -6 (go back to previous monday)
+  // otherwise, offset is (dayOfWeek - 1) to go back to the previous monday
+  const mondayOffset = dayOfWeek === 0 ? -6 : dayOfWeek - 1;
 
-  startDate.setDate(startDate.getDate() - sundayOffset);
+  startDate.setDate(startDate.getDate() - mondayOffset);
 
   return {
     start: startDate.toISOString().split("T")[0],

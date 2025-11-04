@@ -1,6 +1,5 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
-import { getMonthBounds, getWeekBounds } from "@/utils/dateHelper";
 import { mutation } from "../_generated/server";
 
 export const addHabit = mutation({
@@ -92,22 +91,23 @@ export const addReminder = mutation({
 export const addMissingEntries = mutation({
   args: {
     date: v.string(),
+    weekday: v.number(),
+    bounds: v.object({
+      weekStart: v.string(),
+      weekEnd: v.string(),
+      monthStart: v.string(),
+      monthEnd: v.string(),
+    }),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (userId === null) throw new ConvexError("No user ID found");
-
-    const weekday = new Date(args.date).getDay();
 
     // get all the user habits
     const habits = await ctx.db
       .query("habits")
       .filter((q) => q.eq(q.field("userId"), userId))
       .collect();
-
-    // get the start and end dates of the current week and month
-    const { start: weekStart, end: weekEnd } = getWeekBounds(args.date);
-    const { start: monthStart, end: monthEnd } = getMonthBounds(args.date);
 
     // get all habit entries in this current period
     const todayEntries = await ctx.db
@@ -125,8 +125,8 @@ export const addMissingEntries = mutation({
       .filter((q) =>
         q.and(
           q.eq(q.field("userId"), userId),
-          q.gte(q.field("date"), weekStart),
-          q.lte(q.field("date"), weekEnd),
+          q.gte(q.field("date"), args.bounds.weekStart),
+          q.lte(q.field("date"), args.bounds.weekEnd),
         ),
       )
       .collect();
@@ -136,8 +136,8 @@ export const addMissingEntries = mutation({
       .filter((q) =>
         q.and(
           q.eq(q.field("userId"), userId),
-          q.gte(q.field("date"), monthStart),
-          q.lte(q.field("date"), monthEnd),
+          q.gte(q.field("date"), args.bounds.monthStart),
+          q.lte(q.field("date"), args.bounds.monthEnd),
         ),
       )
       .collect();
@@ -161,7 +161,7 @@ export const addMissingEntries = mutation({
           const shouldExist: boolean =
             Number.isInteger(habit.schedule.pattern) ||
             (Array.isArray(habit.schedule.pattern) &&
-              habit.schedule.pattern.includes(weekday));
+              habit.schedule.pattern.includes(args.weekday));
 
           if (!entry && shouldExist) {
             await ctx.db.insert("habitEntries", {
@@ -182,7 +182,7 @@ export const addMissingEntries = mutation({
             await ctx.db.insert("habitEntries", {
               habitId: habit._id,
               userId: userId,
-              date: weekStart,
+              date: args.bounds.weekStart,
               progress: 0,
             });
             created++;
@@ -196,7 +196,7 @@ export const addMissingEntries = mutation({
             await ctx.db.insert("habitEntries", {
               habitId: habit._id,
               userId: userId,
-              date: monthStart,
+              date: args.bounds.monthStart,
               progress: 0,
             });
             created++;

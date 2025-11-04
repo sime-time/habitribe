@@ -70,7 +70,7 @@ export const createWeeklyHabitEntries = internalMutation({
       .filter((q) => q.eq(q.field("schedule.frequency"), "weekly"))
       .collect();
 
-    const { start, end } = getWeekBounds(date);
+    const { start, end } = getWeekBounds(today);
 
     // get entries within this week's bounds (monday and sunday)
     const entries = await ctx.db
@@ -115,7 +115,7 @@ export const createMonthlyHabitEntries = internalMutation({
       .filter((q) => q.eq(q.field("schedule.frequency"), "monthly"))
       .collect();
 
-    const { start, end } = getMonthBounds(date);
+    const { start, end } = getMonthBounds(today);
 
     // get entries created on the first of the month
     const entries = await ctx.db

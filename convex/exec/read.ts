@@ -88,6 +88,13 @@ type HabitWithEntry = {
 export const getTodaysHabitEntries = query({
   args: {
     date: v.string(), // YYYY-MM-DD
+    weekday: v.number(),
+    bounds: v.object({
+      weekStart: v.string(),
+      weekEnd: v.string(),
+      monthStart: v.string(),
+      monthEnd: v.string(),
+    }),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -99,7 +106,12 @@ export const getTodaysHabitEntries = query({
       monthlyHabits: HabitWithEntry[];
     } = await ctx.runQuery(
       internal.entries.helpers.sortHabitEntriesByFrequency,
-      { date: args.date, userId: userId },
+      {
+        date: args.date,
+        weekday: args.weekday,
+        userId: userId,
+        bounds: args.bounds,
+      },
     );
 
     // flat array of habit+entry objects
@@ -114,6 +126,13 @@ export const getTodaysHabitEntries = query({
 export const getGroupedHabitEntries = query({
   args: {
     date: v.string(), // YYYY-MM-DD
+    weekday: v.number(),
+    bounds: v.object({
+      weekStart: v.string(),
+      weekEnd: v.string(),
+      monthStart: v.string(),
+      monthEnd: v.string(),
+    }),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
@@ -125,7 +144,12 @@ export const getGroupedHabitEntries = query({
       monthlyHabits: HabitWithEntry[];
     } = await ctx.runQuery(
       internal.entries.helpers.sortHabitEntriesByFrequency,
-      { date: args.date, userId: userId },
+      {
+        date: args.date,
+        weekday: args.weekday,
+        userId: userId,
+        bounds: args.bounds,
+      },
     );
 
     // add proofs to each entry

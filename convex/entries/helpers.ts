@@ -1,24 +1,24 @@
 import { v } from "convex/values";
-import { getMonthBounds, getWeekBounds } from "@/utils/dateHelper";
 import { internalQuery } from "../_generated/server";
 
 export const sortHabitEntriesByFrequency = internalQuery({
   args: {
     date: v.string(),
+    weekday: v.number(),
     userId: v.id("users"),
+    bounds: v.object({
+      weekStart: v.string(),
+      weekEnd: v.string(),
+      monthStart: v.string(),
+      monthEnd: v.string(),
+    }),
   },
   handler: async (ctx, args) => {
-    const weekday = new Date(args.date).getDay();
-
     // get all the user habits
     const habits = await ctx.db
       .query("habits")
       .filter((q) => q.eq(q.field("userId"), args.userId))
       .collect();
-
-    // get the start and end dates of the current week and month
-    const { start: weekStart, end: weekEnd } = getWeekBounds(args.date);
-    const { start: monthStart, end: monthEnd } = getMonthBounds(args.date);
 
     // get all habit entries in this current period
     const todayEntries = await ctx.db
@@ -36,8 +36,8 @@ export const sortHabitEntriesByFrequency = internalQuery({
       .filter((q) =>
         q.and(
           q.eq(q.field("userId"), args.userId),
-          q.gte(q.field("date"), weekStart),
-          q.lte(q.field("date"), weekEnd),
+          q.gte(q.field("date"), args.bounds.weekStart),
+          q.lte(q.field("date"), args.bounds.weekEnd),
         ),
       )
       .collect();
@@ -47,8 +47,8 @@ export const sortHabitEntriesByFrequency = internalQuery({
       .filter((q) =>
         q.and(
           q.eq(q.field("userId"), args.userId),
-          q.gte(q.field("date"), monthStart),
-          q.lte(q.field("date"), monthEnd),
+          q.gte(q.field("date"), args.bounds.monthStart),
+          q.lte(q.field("date"), args.bounds.monthEnd),
         ),
       )
       .collect();
