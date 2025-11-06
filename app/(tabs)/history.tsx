@@ -4,9 +4,8 @@ import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
-import Emoji from "@/components/Emoji";
 import Header from "@/components/Header";
-import HeatmapGrid from "@/components/HeatmapGrid";
+import HeatmapHabitCard from "@/components/HeatmapHabitCard";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { getYearBounds } from "@/utils/dateHelper";
@@ -23,59 +22,75 @@ export default function History() {
     endDate: end,
   });
 
+  if (!heatmapData) return null;
+
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1} edges={["top"]}>
         <Header title="Overview" />
         <ScrollView style={[s.flex1, s.px4]}>
-          {heatmapData?.map((item) => (
-            <View
-              key={item.habit._id}
-              style={[
-                s.mb5,
-                s.p4,
-                s.gap3,
-                s.roundedLg,
-                c.bgCard,
-                c.borderDefault,
-                s.border1,
-              ]}
-            >
-              {/* Header: Icon + Name + Streak */}
-              <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
-                <View
-                  style={[
-                    s.p2,
-                    s.roundedMd,
-                    s.itemsCenter,
-                    s.justifyCenter,
-                    { backgroundColor: `${item.habit.color}30` },
-                  ]}
-                >
-                  <Emoji
-                    iconName={item.habit.icon}
-                    iconColor={item.habit.color}
-                    iconSize={20}
-                  />
-                </View>
-                <View style={[s.flexCol, s.gap1]}>
-                  <Text style={[s.textBase, s.fontMedium, c.textForeground]}>
-                    {item.habit.name}
-                  </Text>
-                  <Text style={[s.textXs, c.textMuted]}>
-                    Streak: 3, Completed 47
-                  </Text>
-                </View>
+          {heatmapData.daily.length > 0 && (
+            <>
+              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
+                <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
+                  Daily Habits
+                </Text>
               </View>
 
-              <HeatmapGrid
-                startDate={start}
-                endDate={end}
-                activity={item.activity}
-                color={item.habit.color}
-              />
-            </View>
-          ))}
+              {heatmapData?.daily.map((item) => (
+                <HeatmapHabitCard
+                  key={item.habit._id}
+                  variant="daily"
+                  habit={item.habit}
+                  activity={item.activity}
+                  startDate={start}
+                  endDate={end}
+                />
+              ))}
+            </>
+          )}
+
+          {heatmapData.weekly.length > 0 && (
+            <>
+              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
+                <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
+                  Weekly Habits
+                </Text>
+              </View>
+
+              {heatmapData?.weekly.map((item) => (
+                <HeatmapHabitCard
+                  key={item.habit._id}
+                  variant="weekly"
+                  habit={item.habit}
+                  activity={item.activity}
+                  startDate={start}
+                  endDate={end}
+                />
+              ))}
+            </>
+          )}
+
+          {heatmapData.monthly.length > 0 && (
+            <>
+              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
+                <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
+                  Monthly Habits
+                </Text>
+              </View>
+
+              {heatmapData?.monthly.map((item) => (
+                <HeatmapHabitCard
+                  key={item.habit._id}
+                  variant="monthly"
+                  habit={item.habit}
+                  activity={item.activity}
+                  startDate={start}
+                  endDate={end}
+                />
+              ))}
+            </>
+          )}
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>

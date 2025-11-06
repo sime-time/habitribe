@@ -25,7 +25,6 @@ export default function CameraMainRow({
 
     if (!result.canceled) {
       // result.assets is an array of selected media
-      // console.log("Selected media:", result.assets);
       setPicture(result.assets[0].uri);
     }
   };

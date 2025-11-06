@@ -7,12 +7,20 @@ import { useEffect, useRef } from "react";
 import { ScrollView, Text, type TextStyle, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
-import { iconColors } from "@/constants/colors";
 import useTheme from "@/hooks/useTheme";
+import {
+  aggregateWeekActivity,
+  calculateIntensity,
+  generateDateRange,
+  getColorFromIntensity,
+  getMaxActivityValue,
+  groupDatesIntoWeeks,
+} from "@/utils/heatmapHelper";
 
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 interface HeatmapCalendarProps {
+  variant: "daily" | "weekly" | "monthly";
   startDate: string; // YYYY-MM-DD
   endDate: string; // This must be a monday or it won't work
   activity: { date: string; progress: number }[];
@@ -20,6 +28,7 @@ interface HeatmapCalendarProps {
 }
 
 export default function HeatmapGrid({
+  variant = "daily",
   startDate,
   endDate,
   activity,
@@ -27,73 +36,15 @@ export default function HeatmapGrid({
 }: HeatmapCalendarProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
-
-  // convert strings to Date objects
-  const startingDate = new Date(startDate);
-  const endingDate = new Date(endDate);
-
-  // get the difference between ending date and starting date in days
-  const dayDifference =
-    Math.ceil(
-      (endingDate.getTime() - startingDate.getTime()) / (1000 * 60 * 60 * 24),
-    ) + 1; // add 1 to include the ending date
-
-  // create each date in between starting and ending dates
-  const calendarGrid = Array.from({ length: dayDifference }, (_, i) => {
-    const date = new Date(startingDate);
-    date.setDate(startingDate.getDate() + i);
-    return date.toISOString().slice(0, 10); // YYYY-MM-DD
-  });
-
-  // intensity of color depends on highest progress in time period
-  const maxValue = activity?.reduce(
-    (a, b) => Math.max(a, b.progress),
-    -Infinity,
-  );
-
-  const getIntensity = (value: number) => {
-    if (maxValue !== value) {
-      return Number(value / maxValue);
-    } else {
-      return value;
-    }
-  };
-
-  const getColorFromIntensity = (intensity: number) => {
-    const hex = color ? color : iconColors[0];
-    const colorShades = [
-      `${colors.border}80`,
-      `${hex}20`,
-      `${hex}60`,
-      `${hex}80`,
-      `${hex}FF`,
-    ];
-
-    const index = Math.min(
-      Math.floor(intensity * colorShades.length),
-      colorShades.length - 1,
-    );
-
-    return colorShades[index];
-  };
-
-  // group calendar grid into weeks (7 items per week = 1 column)
-  const weeks: string[][] = [];
-  for (let i = 0; i < calendarGrid.length; i += 7) {
-    weeks.push(calendarGrid.slice(i, i + 7));
-  }
-
-  // useEffect: if you call `scrollToEnd()` before React Native has measured and laid out the ScrollView content, it won't know how far to scroll.
-  // scroll to the end after a small delay to allow layout to complete
   const scrollViewRef = useRef<ScrollView>(null);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: false });
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
 
-  return (
+  const dateRange = generateDateRange(startDate, endDate);
+  const weeks = groupDatesIntoWeeks(dateRange);
+  const maxValue = getMaxActivityValue(activity);
+  const accentColor = color || colors.primary;
+
+  /* Daily heatmap variant (grid chart) */
+  const renderDailyVariant = () => (
     <View style={[s.flexCol, s.gap1]}>
       {/* Main row: static labels + scrollable content */}
       <View style={[s.flexRow, s.gap2]}>
@@ -130,8 +81,15 @@ export default function HeatmapGrid({
                   {week.map((day, dayIndex) => {
                     const progressValue =
                       activity.find((item) => item.date === day)?.progress || 0;
-                    const intensity = getIntensity(progressValue);
-                    const color = getColorFromIntensity(intensity);
+                    const intensity = calculateIntensity(
+                      progressValue,
+                      maxValue,
+                    );
+                    const cellColor = getColorFromIntensity(
+                      intensity,
+                      accentColor,
+                      colors.border,
+                    );
                     return (
                       <View
                         key={dayIndex}
@@ -139,7 +97,7 @@ export default function HeatmapGrid({
                           s.h3,
                           s.w3,
                           s.roundedSm,
-                          { backgroundColor: color },
+                          { backgroundColor: cellColor },
                         ]}
                       ></View>
                     );
@@ -152,4 +110,49 @@ export default function HeatmapGrid({
       </View>
     </View>
   );
+
+  /* Weekly heatmap variant (vertical bars) */
+  const renderWeeklyVariant = () => (
+    <View style={[s.flexCol, s.gap1]}>
+      <ScrollView
+        ref={scrollViewRef}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+      >
+        <View style={[s.flexRow, s.gap2]}>
+          {weeks.map((week, weekIndex) => {
+            const weekActivity = aggregateWeekActivity(activity, week);
+            const intensity = calculateIntensity(weekActivity, maxValue);
+            const barColor = getColorFromIntensity(
+              intensity,
+              accentColor,
+              colors.border,
+            );
+            return (
+              <View
+                key={weekIndex}
+                style={[
+                  s.h12,
+                  { width: 8 },
+                  s.roundedSm,
+                  { backgroundColor: barColor },
+                ]}
+              />
+            );
+          })}
+        </View>
+      </ScrollView>
+    </View>
+  );
+  // useEffect required:
+  // if you call `scrollToEnd()` before React Native has rendered/measured the ScrollView content,
+  // it won't know how far to scroll.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: false });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return variant === "daily" ? renderDailyVariant() : renderWeeklyVariant();
 }

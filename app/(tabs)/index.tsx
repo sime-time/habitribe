@@ -49,7 +49,6 @@ export default function Index() {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
   useEffect(() => {
-    console.log("proof methods", proofMethods);
     createMissingEntries({
       date: habitDate,
       weekday,

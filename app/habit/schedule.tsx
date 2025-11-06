@@ -17,7 +17,7 @@ import WeekDaySelector from "@/components/WeekDaySelector";
 import { CHECKMARK_SIZE } from "@/constants/sizes";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
-import { Frequency } from "@/utils/habitFormLabels";
+import { Frequency } from "@/utils/habitLabelHelper";
 
 export default function HabitSchedule() {
   const { colors } = useTheme();

@@ -15,7 +15,7 @@ import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
 import { getDateBounds, getTodayDateString } from "@/utils/dateHelper";
-import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
+import { type Frequency, getScheduleLabel } from "@/utils/habitLabelHelper";
 import Emoji from "./Emoji";
 
 type Habit = Doc<"habits">;

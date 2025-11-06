@@ -14,7 +14,7 @@ import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
-import { getProofMethodDescription } from "@/utils/habitFormLabels";
+import { getProofMethodDescription } from "@/utils/habitLabelHelper";
 
 const MAX_CHARACTERS = 100;
 

@@ -1,4 +1,4 @@
-import { Frequency } from "@/utils/habitFormLabels";
+import { Frequency } from "@/utils/habitLabelHelper";
 import type { HabitFormData } from "@/validation/HabitSchema";
 import { iconColors } from "./colors";
 

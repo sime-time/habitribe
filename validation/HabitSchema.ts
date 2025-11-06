@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Frequency } from "@/utils/habitFormLabels";
+import { Frequency } from "@/utils/habitLabelHelper";
 
 export const HabitSchema = z.object({
   name: z.string().min(1, "Habit name is required"),

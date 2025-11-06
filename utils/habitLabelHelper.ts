@@ -1,10 +1,14 @@
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 
+type Habit = Doc<"habits">;
+type ProofMethod = Doc<"proofMethods">;
+
 export enum Frequency {
   Daily = "daily",
   Weekly = "weekly",
   Monthly = "monthly",
 }
+
 export function getScheduleLabel(
   frequency: Frequency,
   pattern: number | number[],
@@ -32,7 +36,6 @@ export function getScheduleLabel(
   }
 }
 
-type ProofMethod = Doc<"proofMethods">;
 export function getProofMethodDescription(
   id: string,
   proofMethods: ProofMethod[] | undefined,
@@ -51,4 +54,14 @@ export function getProofMethodRequirements(
   const proofMethodId = id as Id<"proofMethods">;
   const proofMethod = proofMethods.find((pt) => pt._id === proofMethodId);
   return proofMethod?.requirements || "Requires Method of Proof";
+}
+
+export function calculateIsCompleted(progress: number, habit: Habit) {
+  // get the target count from habit schedule pattern
+  const target: number = Array.isArray(habit?.schedule.pattern)
+    ? habit.schedule.pattern.length
+    : habit.schedule.pattern;
+
+  const isCompleted = progress >= target;
+  return isCompleted;
 }

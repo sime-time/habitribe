@@ -29,7 +29,7 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
-import type { Frequency } from "@/utils/habitFormLabels";
+import type { Frequency } from "@/utils/habitLabelHelper";
 import { HabitSchema } from "@/validation/HabitSchema";
 
 type HabitId = Id<"habits">;

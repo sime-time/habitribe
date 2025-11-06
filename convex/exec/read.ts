@@ -5,6 +5,10 @@ import { components, internal } from "../_generated/api";
 import type { Doc } from "../_generated/dataModel";
 import { query } from "../_generated/server";
 
+type HabitWithEntry = {
+  habit: Doc<"habits">;
+  entry: Doc<"habitEntries"> | null;
+};
 const r2 = new R2(components.r2);
 
 export const currentUser = query({
@@ -79,11 +83,6 @@ export const getProofMethods = query({
     return proofMethods;
   },
 });
-
-type HabitWithEntry = {
-  habit: Doc<"habits">;
-  entry: Doc<"habitEntries"> | null;
-};
 
 export const getTodaysHabitEntries = query({
   args: {
@@ -214,6 +213,18 @@ export const getHabitHeatmaps = query({
     const userId = await getAuthUserId(ctx);
     if (userId === null) throw new ConvexError("Unauthorized");
 
+    type HeatmapData = {
+      habit: Doc<"habits">;
+      activity: {
+        date: string;
+        progress: number;
+      }[];
+    };
+
+    const daily: HeatmapData[] = [];
+    const weekly: HeatmapData[] = [];
+    const monthly: HeatmapData[] = [];
+
     // get all user habits
     const habits = await ctx.db
       .query("habits")
@@ -221,7 +232,7 @@ export const getHabitHeatmaps = query({
       .collect();
 
     // fetch heatmap data for each habit in parallel
-    const heatmapData = await Promise.all(
+    await Promise.all(
       habits.map(async (habit) => {
         const entries = await ctx.db
           .query("habitEntries")
@@ -235,16 +246,38 @@ export const getHabitHeatmaps = query({
           )
           .collect();
 
-        return {
-          habit: habit,
-          activity: entries.map((entry) => ({
-            date: entry.date,
-            progress: entry.progress,
-          })),
-        };
+        switch (habit.schedule.frequency) {
+          case "daily":
+            daily.push({
+              habit: habit,
+              activity: entries.map((entry) => ({
+                date: entry.date,
+                progress: entry.progress,
+              })),
+            });
+            break;
+          case "weekly":
+            weekly.push({
+              habit: habit,
+              activity: entries.map((entry) => ({
+                date: entry.date,
+                progress: entry.progress,
+              })),
+            });
+            break;
+          case "monthly":
+            monthly.push({
+              habit: habit,
+              activity: entries.map((entry) => ({
+                date: entry.date,
+                progress: entry.progress,
+              })),
+            });
+            break;
+        }
       }),
     );
 
-    return heatmapData;
+    return { daily, weekly, monthly };
   },
 });

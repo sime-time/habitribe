@@ -10,7 +10,7 @@ import { useHabitFormStore } from "@/stores/habitFormStore";
 import {
   getProofMethodDescription,
   getScheduleLabel,
-} from "@/utils/habitFormLabels";
+} from "@/utils/habitLabelHelper";
 
 export default function CommitStatement() {
   const { colors } = useTheme();

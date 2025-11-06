@@ -8,8 +8,11 @@ import Emoji from "@/components/Emoji";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import { type Frequency, getScheduleLabel } from "@/utils/habitFormLabels";
-import { calculateIsCompleted } from "@/utils/isCompletedCalculation";
+import {
+  calculateIsCompleted,
+  type Frequency,
+  getScheduleLabel,
+} from "@/utils/habitLabelHelper";
 
 type HabitCardProps = {
   habit: Doc<"habits">;
