@@ -42,9 +42,6 @@ export default function HeatmapGrid({
   const scrollViewRef = useRef<ScrollView>(null);
 
   const fullActivity = generateFullActivityRange(startDate, endDate, activity);
-  if (variant === "daily") {
-    console.log("full activity", fullActivity);
-  }
   const weeks = groupActivityIntoWeeks(fullActivity);
   const valuePerWeek = aggregateWeekValues(weeks);
   const accentColor = color || colors.primary;
@@ -84,9 +81,9 @@ export default function HeatmapGrid({
             <View style={[s.flexRow, s.gap1]}>
               {weeks.map((activities, weekIndex) => (
                 <View key={weekIndex} style={[s.flexCol, s.gap1]}>
-                  {activities.map((activity, activityIndex) => {
+                  {activities.map((currentActivity, activityIndex) => {
                     const intensity = calculateIntensity(
-                      activity.value,
+                      currentActivity.value,
                       maxValue,
                     );
                     const cellColor = getColorFromIntensity(

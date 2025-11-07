@@ -24,6 +24,13 @@ export function generateFullActivityRange(
   // create a map for O(1) lookup
   const activityMap = new Map(activity.map((a) => [a.date, a.value]));
 
+  console.log("activity array:", activity);
+  console.log(
+    "activity items:",
+    activity.map((a) => ({ date: a.date, value: a.value })),
+  );
+  console.log("activityMap", activityMap);
+
   const fullActivityRange = Array.from({ length: dayDifference }, (_, i) => {
     const date = new Date(startingDate);
     date.setDate(startingDate.getDate() + i);
