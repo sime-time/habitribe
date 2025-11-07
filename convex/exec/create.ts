@@ -229,6 +229,7 @@ export const addProof = mutation({
     // insert the new proof
     const proofId = await ctx.db.insert("proofs", {
       userId: userId,
+      habitId: entry.habitId,
       ...args,
     });
 

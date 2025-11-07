@@ -1,6 +1,6 @@
 import { useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
-import { ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
@@ -22,7 +22,17 @@ export default function History() {
     endDate: end,
   });
 
-  if (!heatmapData) return null;
+  if (!heatmapData)
+    return (
+      <LinearGradient colors={colors.gradients.background} style={s.flex1}>
+        <SafeAreaView
+          style={[s.flex1, s.justifyCenter, s.itemsCenter]}
+          edges={["top"]}
+        >
+          <ActivityIndicator size="large" color={colors.muted} />
+        </SafeAreaView>
+      </LinearGradient>
+    );
 
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>

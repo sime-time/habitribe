@@ -6,21 +6,22 @@ import Emoji from "@/components/Emoji";
 import HeatmapGrid from "@/components/HeatmapGrid";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
+import type { Activity } from "@/validation/HabitSchema";
 
 interface HeatmapHabitCardProps {
   habit: Doc<"habits">;
-  activity: { date: string; progress: number }[];
-  variant: "daily" | "weekly" | "monthly";
+  activity: Activity[];
   startDate: string;
   endDate: string;
+  variant: "daily" | "weekly" | "monthly";
 }
 
 export default function HeatmapHabitCard({
   habit,
   activity,
-  variant,
   startDate,
   endDate,
+  variant,
 }: HeatmapHabitCardProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
@@ -63,6 +64,11 @@ export default function HeatmapHabitCard({
         startDate={startDate}
         endDate={endDate}
         activity={activity}
+        maxValue={
+          Array.isArray(habit.schedule.pattern)
+            ? habit.schedule.pattern.length
+            : Number(habit.schedule.pattern)
+        }
         color={habit.color}
       />
     </View>

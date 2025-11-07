@@ -1,6 +1,7 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { R2 } from "@convex-dev/r2";
 import { ConvexError, v } from "convex/values";
+import type { HabitActivity } from "@/validation/HabitSchema";
 import { components, internal } from "../_generated/api";
 import type { Doc } from "../_generated/dataModel";
 import { query } from "../_generated/server";
@@ -213,17 +214,9 @@ export const getHabitHeatmaps = query({
     const userId = await getAuthUserId(ctx);
     if (userId === null) throw new ConvexError("Unauthorized");
 
-    type HeatmapData = {
-      habit: Doc<"habits">;
-      activity: {
-        date: string;
-        progress: number;
-      }[];
-    };
-
-    const daily: HeatmapData[] = [];
-    const weekly: HeatmapData[] = [];
-    const monthly: HeatmapData[] = [];
+    const daily: HabitActivity[] = [];
+    const weekly: HabitActivity[] = [];
+    const monthly: HabitActivity[] = [];
 
     // get all user habits
     const habits = await ctx.db
@@ -252,7 +245,7 @@ export const getHabitHeatmaps = query({
               habit: habit,
               activity: entries.map((entry) => ({
                 date: entry.date,
-                progress: entry.progress,
+                value: entry.progress,
               })),
             });
             break;
@@ -261,7 +254,7 @@ export const getHabitHeatmaps = query({
               habit: habit,
               activity: entries.map((entry) => ({
                 date: entry.date,
-                progress: entry.progress,
+                value: entry.progress,
               })),
             });
             break;
@@ -270,7 +263,7 @@ export const getHabitHeatmaps = query({
               habit: habit,
               activity: entries.map((entry) => ({
                 date: entry.date,
-                progress: entry.progress,
+                value: entry.progress,
               })),
             });
             break;

@@ -36,6 +36,7 @@ export default defineSchema({
 
   proofs: defineTable({
     userId: v.id("users"),
+    habitId: v.id("habits"),
     habitEntryId: v.id("habitEntries"),
     date: v.string(), // "YYYY-MM-DD"
     key: v.string(), // R2 storage key

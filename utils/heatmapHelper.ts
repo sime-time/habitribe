@@ -1,13 +1,18 @@
+import type { Activity } from "@/validation/HabitSchema";
+
 /**
- * Generate array of dates from startDate to endDate (inclusive)
+ * Generate array of activities from startDate to endDate (inclusive)
+ * Fills in missing dates with value of 0
  * @param startDate - YYYY-MM-DD format
  * @param endDate - YYYY-MM-DD format
- * @returns array of dates as YYYY-MM-DD strings
+ * @param activity - Array of existing activity items
+ * @returns array of activities for all dates in range
  */
-export function generateDateRange(
+export function generateFullActivityRange(
   startDate: string,
   endDate: string,
-): string[] {
+  activity: Activity[],
+): Activity[] {
   const startingDate = new Date(startDate);
   const endingDate = new Date(endDate);
 
@@ -16,47 +21,53 @@ export function generateDateRange(
       (endingDate.getTime() - startingDate.getTime()) / (1000 * 60 * 60 * 24),
     ) + 1; // add 1 to include the ending date
 
-  const dateArray = Array.from({ length: dayDifference }, (_, i) => {
+  // create a map for O(1) lookup
+  const activityMap = new Map(activity.map((a) => [a.date, a.value]));
+
+  const fullActivityRange = Array.from({ length: dayDifference }, (_, i) => {
     const date = new Date(startingDate);
     date.setDate(startingDate.getDate() + i);
-    return date.toISOString().slice(0, 10); // YYYY-MM-DD
+    const dateString = date.toISOString().slice(0, 10); // YYYY-MM-DD
+
+    return {
+      date: dateString,
+      value: activityMap.get(dateString) ?? 0, // use existing value or 0
+    };
   });
 
-  return dateArray;
+  return fullActivityRange;
 }
 
 /**
- * Group dates into weeks (7 days per week, starting with week 0).
- * For this to work properly, the weeks should start on a monday.
+ * Group activity data into weeks (7 days per week).
+ * For this to work properly, the first activity.date should be a monday.
  * @param dates - Array of date strings YYYY-MM-DD
  * @returns 2D array where each inner array represents a week
  */
-export function groupDatesIntoWeeks(dates: string[]): string[][] {
-  // const firstDay = new Date(dates[0]).getDay();
-  // console.log("first day", firstDay);
-  // if (firstDay !== 1) throw new Error("Weeks must begin on a monday");
-
-  const weeks: string[][] = [];
-  for (let i = 0; i < dates.length; i += 7) {
-    weeks.push(dates.slice(i, i + 7));
+export function groupActivityIntoWeeks(activity: Activity[]): Activity[][] {
+  const weeks: Activity[][] = [];
+  for (let i = 0; i < activity.length; i += 7) {
+    weeks.push(activity.slice(i, i + 7));
   }
   return weeks;
 }
 
 /**
- * Aggregate activity data by week
- * @param activity - array of dates and progress values
- * @param week - array of date strings in a week
+ * Transform the activity data grouped by week into data
+ * that can be used to generate a weekly bar chart
+ * @param weeks - 2D array of dates and progress values
  * @returns total progress for the week
  */
-export function aggregateWeekActivity(
-  activity: { date: string; progress: number }[],
-  week: string[],
-): number {
-  return week.reduce((total, date) => {
-    const dayActivity = activity.find((item) => item.date === date);
-    return total + (dayActivity?.progress || 0);
-  }, 0);
+export function aggregateWeekValues(weeks: Activity[][]): { value: number }[] {
+  const weekValues = weeks.map((weekActivity) => {
+    // sum up all the values of the week
+    const weekTotal = weekActivity.reduce((sum, a) => {
+      return sum + a.value;
+    }, 0);
+    return { value: weekTotal };
+  });
+
+  return weekValues;
 }
 
 /**
@@ -76,10 +87,8 @@ export function calculateIntensity(value: number, maxValue: number): number {
  * @param activity - array of dates and progress values
  * @returns maxium progress value in activity
  */
-export function getMaxActivityValue(
-  activity: { date: string; progress: number }[],
-): number {
-  return activity.reduce((a, b) => Math.max(a, b.progress), -Infinity) || 0;
+export function getMaxActivityValue(activity: Activity[]): number {
+  return activity.reduce((a, b) => Math.max(a, b.value), -Infinity) || 0;
 }
 
 /**

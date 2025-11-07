@@ -53,11 +53,9 @@ export function getDateBounds(date: Date) {
 // the start date should be the closest monday 365 days ago
 // the end date should be today
 export function getYearBounds(date: Date): { start: string; end: string } {
-  const today = new Date(date);
-
   // calculate date 365 days ago
-  const startDate = new Date(today);
-  startDate.setDate(today.getDate() - 365);
+  const startDate = new Date(date);
+  startDate.setDate(date.getDate() - 365);
 
   // find the closest monday to 365 days ago
   const dayOfWeek = startDate.getDay();
@@ -73,6 +71,6 @@ export function getYearBounds(date: Date): { start: string; end: string } {
 
   return {
     start: startDate.toISOString().split("T")[0],
-    end: today.toISOString().split("T")[0],
+    end: date.toISOString().split("T")[0],
   };
 }

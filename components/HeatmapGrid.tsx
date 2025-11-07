@@ -5,45 +5,51 @@
 
 import { useEffect, useRef } from "react";
 import { ScrollView, Text, type TextStyle, View } from "react-native";
+import { BarChart } from "react-native-gifted-charts";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import useTheme from "@/hooks/useTheme";
 import {
-  aggregateWeekActivity,
+  aggregateWeekValues,
   calculateIntensity,
-  generateDateRange,
+  generateFullActivityRange,
   getColorFromIntensity,
-  getMaxActivityValue,
-  groupDatesIntoWeeks,
+  groupActivityIntoWeeks,
 } from "@/utils/heatmapHelper";
+import type { Activity } from "@/validation/HabitSchema";
 
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-interface HeatmapCalendarProps {
+interface HeatmapGridProps {
   variant: "daily" | "weekly" | "monthly";
-  startDate: string; // YYYY-MM-DD
-  endDate: string; // This must be a monday or it won't work
-  activity: { date: string; progress: number }[];
+  maxValue: number;
+  activity: Activity[];
+  startDate: string;
+  endDate: string;
   color?: string;
 }
 
 export default function HeatmapGrid({
   variant = "daily",
+  maxValue,
+  activity,
   startDate,
   endDate,
-  activity,
   color,
-}: HeatmapCalendarProps) {
+}: HeatmapGridProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const dateRange = generateDateRange(startDate, endDate);
-  const weeks = groupDatesIntoWeeks(dateRange);
-  const maxValue = getMaxActivityValue(activity);
+  const fullActivity = generateFullActivityRange(startDate, endDate, activity);
+  if (variant === "daily") {
+    console.log("full activity", fullActivity);
+  }
+  const weeks = groupActivityIntoWeeks(fullActivity);
+  const valuePerWeek = aggregateWeekValues(weeks);
   const accentColor = color || colors.primary;
 
-  /* Daily heatmap variant (grid chart) */
+  /* Daily variant (heatmap grid) */
   const renderDailyVariant = () => (
     <View style={[s.flexCol, s.gap1]}>
       {/* Main row: static labels + scrollable content */}
@@ -76,13 +82,11 @@ export default function HeatmapGrid({
           <View style={[s.flexCol, s.gap1]}>
             {/* Heatmap grid */}
             <View style={[s.flexRow, s.gap1]}>
-              {weeks.map((week, weekIndex) => (
+              {weeks.map((activities, weekIndex) => (
                 <View key={weekIndex} style={[s.flexCol, s.gap1]}>
-                  {week.map((day, dayIndex) => {
-                    const progressValue =
-                      activity.find((item) => item.date === day)?.progress || 0;
+                  {activities.map((activity, activityIndex) => {
                     const intensity = calculateIntensity(
-                      progressValue,
+                      activity.value,
                       maxValue,
                     );
                     const cellColor = getColorFromIntensity(
@@ -92,14 +96,14 @@ export default function HeatmapGrid({
                     );
                     return (
                       <View
-                        key={dayIndex}
+                        key={activityIndex}
                         style={[
                           s.h3,
                           s.w3,
                           s.roundedSm,
                           { backgroundColor: cellColor },
                         ]}
-                      ></View>
+                      />
                     );
                   })}
                 </View>
@@ -111,7 +115,7 @@ export default function HeatmapGrid({
     </View>
   );
 
-  /* Weekly heatmap variant (vertical bars) */
+  /* Weekly variant (bar chart) */
   const renderWeeklyVariant = () => (
     <View style={[s.flexCol, s.gap1]}>
       <ScrollView
@@ -119,31 +123,11 @@ export default function HeatmapGrid({
         horizontal={true}
         showsHorizontalScrollIndicator={false}
       >
-        <View style={[s.flexRow, s.gap2]}>
-          {weeks.map((week, weekIndex) => {
-            const weekActivity = aggregateWeekActivity(activity, week);
-            const intensity = calculateIntensity(weekActivity, maxValue);
-            const barColor = getColorFromIntensity(
-              intensity,
-              accentColor,
-              colors.border,
-            );
-            return (
-              <View
-                key={weekIndex}
-                style={[
-                  s.h12,
-                  { width: 8 },
-                  s.roundedSm,
-                  { backgroundColor: barColor },
-                ]}
-              />
-            );
-          })}
-        </View>
+        <Text>{maxValue}</Text>
       </ScrollView>
     </View>
   );
+
   // useEffect required:
   // if you call `scrollToEnd()` before React Native has rendered/measured the ScrollView content,
   // it won't know how far to scroll.
@@ -154,5 +138,10 @@ export default function HeatmapGrid({
     return () => clearTimeout(timer);
   }, []);
 
-  return variant === "daily" ? renderDailyVariant() : renderWeeklyVariant();
+  switch (variant) {
+    case "daily":
+      return renderDailyVariant();
+    case "weekly":
+      return renderWeeklyVariant();
+  }
 }

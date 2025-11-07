@@ -25,6 +25,16 @@ export const deleteHabit = mutation({
       await ctx.db.delete(entry._id);
     }
 
+    // delete all proofs linked to this habit
+    const proofs = await ctx.db
+      .query("proofs")
+      .filter((q) => q.eq(q.field("habitId"), args.id))
+      .collect();
+
+    for (const proof of proofs) {
+      await ctx.db.delete(proof._id);
+    }
+
     // delete the habit
     await ctx.db.delete(args.id);
   },
