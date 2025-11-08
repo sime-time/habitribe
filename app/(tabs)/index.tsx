@@ -3,51 +3,51 @@ import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import { useEffect, useMemo } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
-import HabitCard from "@/components/HabitCard";
+import CurrentPeriodView from "@/components/CurrentPeriodView";
+import HeatmapView from "@/components/HeatmapView";
 import { api } from "@/convex/_generated/api";
+import type { Doc, Id } from "@/convex/_generated/dataModel";
+import { useHabitActivityView } from "@/hooks/useHabitActivityView";
 import useTheme from "@/hooks/useTheme";
-import { getDateBounds, getTodayDateString } from "@/utils/dateHelper";
+import {
+  getTodayDateString,
+  getWeekMonthBounds,
+  getYearBounds,
+} from "@/utils/dateHelper";
+
+type ProofMethod = Doc<"proofMethods">;
+type ProofMethodId = Id<"proofMethods">;
 
 export default function Index() {
   const { colors } = useTheme();
-  const c = createColorStyles(colors);
 
-  const longDateName = new Date().toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-  });
-
-  // format today's date to YYYY-MM-DD
   const habitDate = getTodayDateString();
+  const { currentHabitEntries, heatmapData, showHeatmap, setShowHeatmap } =
+    useHabitActivityView(habitDate);
 
-  // client side should calculate any dates
+  // dates should be calculated on the client side
   // this prevents timezone issues with client/server
   const today = new Date(habitDate);
   const weekday = today.getDay(); // 0-6 for daily habit pattern matching
-  const bounds = getDateBounds(today);
+  const bounds = getWeekMonthBounds(today);
+  const { start: yearStart, end: yearEnd } = getYearBounds(today);
 
-  // get all proof methods
+  // categorize by proof method
   const proofMethods = useQuery(api.exec.read.getProofMethods);
   const proofMethodMap = useMemo(() => {
-    if (!proofMethods) return new Map();
-    return new Map(proofMethods.map((pm) => [pm._id, pm]));
+    if (!proofMethods) return new Map<ProofMethodId, ProofMethod>();
+    return new Map(
+      proofMethods.map((pm) => [pm._id as ProofMethodId, pm as ProofMethod]),
+    );
   }, [proofMethods]);
 
-  // create any of today's missing habit entries before querying them
+  // create missing entries before querying
   const createMissingEntries = useMutation(api.exec.create.addMissingEntries);
 
-  // get today's habit entries
-  const habits = useQuery(api.exec.read.getGroupedHabitEntries, {
-    date: habitDate,
-    weekday,
-    bounds,
-  });
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: suppress mutation dependency
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only re-run when date changes
   useEffect(() => {
     createMissingEntries({
       date: habitDate,
@@ -56,32 +56,30 @@ export default function Index() {
     });
   }, [habitDate]); // only re-run when date changes
 
-  // arrays need to be defined to an empty array by default
-  const {
-    dailyHabits = [],
-    weeklyHabits = [],
-    monthlyHabits = [],
-  } = habits || {}; // if habit is undefined, use an empty object
-
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1} edges={["top"]}>
         {/* HEADER */}
         <View style={[s.p4, s.pt8, s.flexRow, s.justifyBetween, s.itemsCenter]}>
-          <View style={s.flex1}>
-            <Text style={[s.text3xl, s.fontBold, c.textForeground]}>Today</Text>
-            <Text style={[s.textSm, c.textMuted]}>{longDateName}</Text>
-          </View>
-          <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
-            <View>
-              <Ionicons
-                name="notifications-outline"
-                size={24}
-                color={colors.foreground}
-              />
-            </View>
+          {/* TOGGLE VIEW BUTTON */}
+          <TouchableOpacity
+            onPress={() => setShowHeatmap(!showHeatmap)}
+            style={[s.p2]}
+          >
+            <Ionicons
+              name={showHeatmap ? "calendar" : "stats-chart"}
+              size={24}
+              color={colors.foreground}
+            />
+          </TouchableOpacity>
 
-            {/* ADD HABIT BUTTON */}
+          {/* ADD HABIT BUTTON */}
+          <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
+            <Ionicons
+              name="notifications-outline"
+              size={24}
+              color={colors.foreground}
+            />
             <Link href="/habit/form" asChild>
               <TouchableOpacity>
                 <LinearGradient
@@ -104,74 +102,30 @@ export default function Index() {
           </View>
         </View>
 
-        {/* HABIT LIST */}
-        <ScrollView style={[s.flex1, s.px4]}>
-          {dailyHabits.length > 0 && (
-            <>
-              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-                <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-                  Daily Habits
-                </Text>
-              </View>
+        {/* CONTENT */}
+        {!showHeatmap && currentHabitEntries && (
+          <CurrentPeriodView
+            dailyHabits={currentHabitEntries.dailyHabits}
+            weeklyHabits={currentHabitEntries.weeklyHabits}
+            monthlyHabits={currentHabitEntries.monthlyHabits}
+            proofMethodMap={proofMethodMap}
+          />
+        )}
 
-              {dailyHabits.map((d) => (
-                <View key={d.habit._id}>
-                  <HabitCard
-                    habit={d.habit}
-                    entry={d.entry}
-                    proofMethodType={
-                      proofMethodMap.get(d.habit.proofMethodId).type
-                    }
-                  />
-                </View>
-              ))}
-            </>
-          )}
-
-          {weeklyHabits.length > 0 && (
-            <>
-              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-                <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-                  Weekly Habits
-                </Text>
-              </View>
-
-              {weeklyHabits.map((w) => (
-                <View key={w.habit._id}>
-                  <HabitCard
-                    habit={w.habit}
-                    entry={w.entry}
-                    proofMethodType={
-                      proofMethodMap.get(w.habit.proofMethodId).type
-                    }
-                  />
-                </View>
-              ))}
-            </>
-          )}
-
-          {monthlyHabits.length > 0 && (
-            <>
-              <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-                <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-                  Monthly Habits
-                </Text>
-              </View>
-
-              {monthlyHabits.map((m) => (
-                <View key={m.habit._id}>
-                  <HabitCard
-                    habit={m.habit}
-                    entry={m.entry}
-                    proofMethodType={
-                      proofMethodMap.get(m.habit.proofMethodId).type
-                    }
-                  />
-                </View>
-              ))}
-            </>
-          )}
-        </ScrollView>
+        {showHeatmap &&
+          (heatmapData ? (
+            <HeatmapView
+              daily={heatmapData.daily}
+              weekly={heatmapData.weekly}
+              monthly={heatmapData.monthly}
+              startDate={yearStart}
+              endDate={yearEnd}
+            />
+          ) : (
+            <View style={[s.flex1, s.justifyCenter, s.itemsCenter]}>
+              <ActivityIndicator size="large" color={colors.muted} />
+            </View>
+          ))}
       </SafeAreaView>
     </LinearGradient>
   );

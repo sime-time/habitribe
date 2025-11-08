@@ -14,7 +14,7 @@ import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
-import { getDateBounds, getTodayDateString } from "@/utils/dateHelper";
+import { getTodayDateString, getWeekMonthBounds } from "@/utils/dateHelper";
 import { type Frequency, getScheduleLabel } from "@/utils/habitLabelHelper";
 import Emoji from "./Emoji";
 
@@ -39,7 +39,7 @@ export default function HabitSelectSheet({
   const habitDate = getTodayDateString();
   const today = new Date(habitDate);
   const weekday = today.getDay(); // 0-6 for daily habit pattern matching
-  const bounds = getDateBounds(today);
+  const bounds = getWeekMonthBounds(today);
 
   // create any of today's missing habit entries before querying them
   const createMissingEntries = useMutation(api.exec.create.addMissingEntries);

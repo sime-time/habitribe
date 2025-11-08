@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import Emoji from "@/components/Emoji";
-import HeatmapGrid from "@/components/HeatmapGrid";
+import HeatmapChart from "@/components/HeatmapChart";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import type { Activity } from "@/validation/HabitSchema";
@@ -59,7 +59,7 @@ export default function HeatmapHabitCard({
         </View>
       </View>
 
-      <HeatmapGrid
+      <HeatmapChart
         variant={variant}
         startDate={startDate}
         endDate={endDate}

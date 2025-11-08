@@ -21,7 +21,7 @@ import type { Activity } from "@/validation/HabitSchema";
 
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-interface HeatmapGridProps {
+interface HeatmapChartProps {
   variant: "daily" | "weekly" | "monthly";
   maxValue: number;
   activity: Activity[];
@@ -30,14 +30,14 @@ interface HeatmapGridProps {
   color?: string;
 }
 
-export default function HeatmapGrid({
+export default function HeatmapChart({
   variant = "daily",
   maxValue,
   activity,
   startDate,
   endDate,
   color,
-}: HeatmapGridProps) {
+}: HeatmapChartProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
   const scrollViewRef = useRef<ScrollView>(null);

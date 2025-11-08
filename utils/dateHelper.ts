@@ -43,7 +43,7 @@ export function getMonthBounds(date: Date): { start: string; end: string } {
   };
 }
 
-export function getDateBounds(date: Date) {
+export function getWeekMonthBounds(date: Date) {
   const { start: weekStart, end: weekEnd } = getWeekBounds(date);
   const { start: monthStart, end: monthEnd } = getMonthBounds(date);
   return { weekStart, weekEnd, monthStart, monthEnd };
