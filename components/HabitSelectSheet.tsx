@@ -54,7 +54,7 @@ export default function HabitSelectSheet({
   }, [habitDate]); // only re-run when date changes
 
   // get today's habit entries
-  const habitsWithEntry = useQuery(api.exec.read.getTodaysHabitEntries, {
+  const flatHabitEntries = useQuery(api.exec.read.getFlatHabitEntries, {
     date: habitDate,
     weekday,
     bounds,
@@ -201,7 +201,7 @@ export default function HabitSelectSheet({
               </Text>
 
               <FlashList
-                data={habitsWithEntry}
+                data={flatHabitEntries}
                 renderItem={renderHabitOption}
                 keyExtractor={(item) => item.habit._id}
               />

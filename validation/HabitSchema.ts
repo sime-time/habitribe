@@ -41,3 +41,8 @@ export type HabitActivity = {
   habit: Doc<"habits">;
   activity: Activity[];
 };
+
+export type HabitWithEntry = {
+  habit: Doc<"habits">;
+  entry: Doc<"habitEntries"> | null;
+};
