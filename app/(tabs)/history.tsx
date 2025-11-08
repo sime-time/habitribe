@@ -38,7 +38,10 @@ export default function History() {
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1} edges={["top"]}>
         <Header title="Overview" />
-        <ScrollView style={[s.flex1, s.px4]}>
+        <ScrollView
+          style={[s.flex1, s.px4]}
+          showsVerticalScrollIndicator={false}
+        >
           {heatmapData.daily.length > 0 && (
             <>
               <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>

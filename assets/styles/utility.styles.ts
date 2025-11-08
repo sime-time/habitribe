@@ -289,7 +289,7 @@ export const s = {
   // Border Radius
   roundedNone: { borderRadius: borderRadius.none } as ViewStyle,
   roundedSm: { borderRadius: borderRadius.sm } as ViewStyle,
-  rounded: { borderRadius: borderRadius.DEFAULT } as ViewStyle,
+  rounded: { borderRadius: borderRadius.base } as ViewStyle,
   roundedMd: { borderRadius: borderRadius.md } as ViewStyle,
   roundedLg: { borderRadius: borderRadius.lg } as ViewStyle,
   roundedXl: { borderRadius: borderRadius.xl } as ViewStyle,

@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 import { ScrollView, Text, type TextStyle, View } from "react-native";
 import { BarChart } from "react-native-gifted-charts";
 import { createColorStyles } from "@/assets/styles/color.styles";
+import { borderRadius, spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import useTheme from "@/hooks/useTheme";
 import {
@@ -48,7 +49,7 @@ export default function HeatmapGrid({
 
   /* Daily variant (heatmap grid) */
   const renderDailyVariant = () => (
-    <View style={[s.flexCol, s.gap1]}>
+    <View style={[s.flexCol, s.gap1, s.pr1]}>
       {/* Main row: static labels + scrollable content */}
       <View style={[s.flexRow, s.gap2]}>
         {/* Static weekday labels column (left side, never scrolls) */}
@@ -114,14 +115,32 @@ export default function HeatmapGrid({
 
   /* Weekly variant (bar chart) */
   const renderWeeklyVariant = () => (
-    <View style={[s.flexCol, s.gap1]}>
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-      >
-        <Text>{maxValue}</Text>
-      </ScrollView>
+    <View style={[s.overflowHidden]}>
+      <BarChart
+        scrollRef={scrollViewRef}
+        data={valuePerWeek}
+        maxValue={maxValue}
+        stepValue={1}
+        height={spacing[28]}
+        xAxisLabelsHeight={0}
+        xAxisThickness={1}
+        xAxisColor={`${colors.border}`}
+        yAxisThickness={1}
+        yAxisColor={`${colors.border}`}
+        yAxisLabelContainerStyle={[s.w3, s.opacity50]}
+        yAxisTextStyle={[s.text2xs, c.textForeground]}
+        yAxisLabelWidth={0}
+        hideYAxisText={false}
+        rulesType="solid"
+        rulesThickness={1}
+        rulesColor={`${colors.border}`}
+        barBorderRadius={borderRadius.sm}
+        barWidth={spacing[3]}
+        frontColor={accentColor}
+        initialSpacing={0}
+        endSpacing={0}
+        spacing={spacing[1]}
+      />
     </View>
   );
 

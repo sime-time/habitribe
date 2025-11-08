@@ -14,12 +14,15 @@ export const spacing = {
   16: 64,
   20: 80,
   24: 96,
+  28: 112,
+  32: 128,
+  36: 144,
 } as const;
 
 export const borderRadius = {
   none: 0,
   sm: 4,
-  DEFAULT: 8,
+  base: 8,
   md: 12,
   lg: 16,
   xl: 24,
