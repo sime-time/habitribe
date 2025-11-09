@@ -167,6 +167,7 @@ export default function HeatmapChart({
         },
       ];
 
+
       return {
         month,
         pieData,
@@ -196,7 +197,7 @@ export default function HeatmapChart({
               innerRadius={spacing[8]}
               centerLabelComponent={() => (
                 <Text style={[c.textForeground, s.textSm, s.fontSemibold]}>
-                  {new Date(`${chart.month}-01`).toLocaleDateString("en-US", {
+                  {new Date(`${chart.month}-02`).toLocaleDateString("en-US", {
                     month: "short",
                   })}
                 </Text>
