@@ -1,6 +1,7 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { Calendar, Camera, Cog } from "lucide-react-native";
+import { Calendar, Cog } from "lucide-react-native";
 import HabitSelectSheet from "@/components/HabitSelectSheet";
 import { useFirstTimeOpen } from "@/hooks/useFirstTimeOpen";
 import useTheme from "@/hooks/useTheme";
@@ -55,12 +56,7 @@ export default function TabsLayout() {
           options={{
             title: "Camera",
             tabBarIcon: ({ color, size }) => (
-              <SymbolView
-                name="camera"
-                size={size}
-                tintColor={color}
-                fallback={<Camera size={size} color={color} />}
-              />
+              <Ionicons name="camera-outline" size={size} color={color} />
             ),
           }}
         />

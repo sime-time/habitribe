@@ -28,6 +28,7 @@ export interface ColorScheme {
     background: [string, string];
     primary: [string, string];
     muted: [string, string];
+    success: [string, string];
   };
 
   statusBarStyle: "light-content" | "dark-content";
@@ -49,7 +50,8 @@ export const lightColors: ColorScheme = {
   gradients: {
     background: ["#eeeeee", "#f8fafc"],
     primary: ["#7777ff", "#5555dd"],
-    muted: ["#e8eef2", "#f5f7f9"],
+    muted: ["#dee1e6", "#e8ecf1"],
+    success: ["#10B981", "#059669"],
   },
   statusBarStyle: "dark-content" as const,
 };
@@ -70,7 +72,8 @@ export const darkColors: ColorScheme = {
   gradients: {
     background: ["#000000", "#0c0c0e"],
     primary: ["#7777ff", "#5555dd"],
-    muted: ["#242936", "#313847"],
+    muted: ["#323743", "#3d434d"],
+    success: ["#34D399", "#10B981"],
   },
   statusBarStyle: "light-content" as const,
 };

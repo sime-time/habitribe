@@ -16,6 +16,7 @@ import {
   getTodayDateString,
   getWeekMonthBounds,
   getYearBounds,
+  parseLocalDate,
 } from "@/utils/dateHelper";
 
 type ProofMethod = Doc<"proofMethods">;
@@ -30,7 +31,7 @@ export default function Index() {
 
   // dates should be calculated on the client side
   // this prevents timezone issues with client/server
-  const today = new Date(habitDate);
+  const today = parseLocalDate(habitDate);
   const weekday = today.getDay(); // 0-6 for daily habit pattern matching
   const bounds = getWeekMonthBounds(today);
   const { start: yearStart, end: yearEnd } = getYearBounds(today);

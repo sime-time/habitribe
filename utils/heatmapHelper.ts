@@ -1,4 +1,5 @@
 import type { Activity } from "@/validation/HabitSchema";
+import { formatLocalDate, parseLocalDate } from "./dateHelper";
 
 /**
  * Generate array of activities from startDate to endDate (inclusive)
@@ -13,8 +14,8 @@ export function generateFullActivityRange(
   endDate: string,
   activity: Activity[],
 ): Activity[] {
-  const startingDate = new Date(startDate);
-  const endingDate = new Date(endDate);
+  const startingDate = parseLocalDate(startDate);
+  const endingDate = parseLocalDate(endDate);
 
   const dayDifference =
     Math.ceil(
@@ -27,7 +28,7 @@ export function generateFullActivityRange(
   const fullActivityRange = Array.from({ length: dayDifference }, (_, i) => {
     const date = new Date(startingDate);
     date.setDate(startingDate.getDate() + i);
-    const dateString = date.toISOString().slice(0, 10); // YYYY-MM-DD
+    const dateString = formatLocalDate(date);
 
     return {
       date: dateString,
@@ -45,6 +46,19 @@ export function generateFullActivityRange(
  * @returns 2D array where each inner array represents a week
  */
 export function groupActivityIntoWeeks(activity: Activity[]): Activity[][] {
+  if (activity.length === 0) return [];
+
+  // Verify first day is Monday (dayOfWeek = 1)
+  const firstDate = parseLocalDate(activity[0].date);
+  const firstDayOfWeek = firstDate.getDay();
+
+  if (firstDayOfWeek !== 1) {
+    console.warn(
+      `First activity date (${activity[0].date}) is not a Monday (day ${firstDayOfWeek}). ` +
+        `The heatmap grid may be misaligned.`,
+    );
+  }
+
   const weeks: Activity[][] = [];
   for (let i = 0; i < activity.length; i += 7) {
     weeks.push(activity.slice(i, i + 7));

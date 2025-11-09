@@ -1,4 +1,14 @@
-function formatLocalDate(d: Date) {
+/**
+ * Parse a date string (YYYY-MM-DD) as local time, not UTC
+ * @param dateString - YYYY-MM-DD format
+ * @returns Date object in local timezone
+ */
+export function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day, 0, 0, 0, 0);
+}
+
+export function formatLocalDate(d: Date) {
   const year = d.getFullYear();
   // January is 0, so we have to add 1
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -76,7 +86,7 @@ export function getYearBounds(date: Date): { start: string; end: string } {
   startDate.setDate(startDate.getDate() - mondayOffset);
 
   return {
-    start: startDate.toISOString().split("T")[0],
-    end: date.toISOString().split("T")[0],
+    start: formatLocalDate(startDate),
+    end: formatLocalDate(date),
   };
 }

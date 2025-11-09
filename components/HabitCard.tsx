@@ -1,10 +1,12 @@
 import { useMutation } from "convex/react";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Camera, Check, X } from "lucide-react-native";
 import { Image, type ImageStyle, Pressable, Text, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import Emoji from "@/components/Emoji";
+import HabitCheckbox from "@/components/HabitCheckbox";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
@@ -17,7 +19,7 @@ import {
 type HabitCardProps = {
   habit: Doc<"habits">;
   // biome-ignore lint/suspicious/noExplicitAny: entry type comes from Convex query
-  entry: any | null;
+  entry: Doc<"habitEntries"> | null;
   proofMethodType: string;
 };
 
@@ -28,9 +30,6 @@ export default function HabitCard({
 }: HabitCardProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
-
-  // toggle habit entry completion
-  const toggleHabitEntry = useMutation(api.exec.update.toggleHabitEntry);
 
   return (
     <Pressable
@@ -72,96 +71,7 @@ export default function HabitCard({
           </View>
         </View>
 
-        {/* Checkbox */}
-        <Pressable
-          style={[s.rounded, s.h13, s.w13]}
-          onPress={() => {
-            if (proofMethodType === "camera") {
-              // take a picture with camera to complete habit
-              router.push("/camera");
-            } else {
-              // manually toggle habit entry completion
-              toggleHabitEntry({ id: entry._id });
-            }
-          }}
-        >
-          <Image
-            source={{
-              uri:
-                entry.proof && entry.proof.length > 0
-                  ? entry.proof[entry.proof.length - 1].url
-                  : undefined,
-            }}
-            style={
-              [
-                s.rounded,
-                s.border2,
-                c.borderDefault,
-                s.h13,
-                s.w13,
-              ] as ImageStyle[]
-            }
-            resizeMode="cover"
-          />
-
-          {/* Success Overlay */}
-          {calculateIsCompleted(entry.progress, habit) ? (
-            <>
-              <View
-                style={[
-                  s.absolute,
-                  s.opacity75,
-                  s.rounded,
-                  c.bgSuccess,
-                  s.z10,
-                  {
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                  },
-                ]}
-              />
-              <View
-                style={[
-                  s.absolute,
-                  s.itemsCenter,
-                  s.justifyCenter,
-                  s.z20,
-                  {
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                  },
-                ]}
-              >
-                <Check size={32} color="white" />
-              </View>
-            </>
-          ) : (
-            <View
-              style={[
-                s.absolute,
-                s.itemsCenter,
-                s.justifyCenter,
-                s.z20,
-                {
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                },
-              ]}
-            >
-              {proofMethodType === "camera" ? (
-                <Camera size={32} color={colors.border} />
-              ) : (
-                <X size={32} color={colors.border} />
-              )}
-            </View>
-          )}
-        </Pressable>
+        <HabitCheckbox />
       </View>
     </Pressable>
   );
