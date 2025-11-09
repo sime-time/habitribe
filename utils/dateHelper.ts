@@ -1,11 +1,15 @@
+  function formatLocalDate(d: Date) {
+    const year = d.getFullYear();
+    // January is 0, so we have to add 1
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  
+  
 export function getTodayDateString(): string {
   const today = new Date();
-  const day = today.getDate();
-  const month = today.getMonth() + 1; // January is 0, so we have to add 1
-  const year = today.getFullYear();
-
-  // format today's date to YYYY-MM-DD
-  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  return formatLocalDate(today)
 }
 
 // weekly helper function
@@ -21,8 +25,8 @@ export function getWeekBounds(date: Date): { start: string; end: string } {
   sunday.setDate(monday.getDate() + 6);
 
   return {
-    start: monday.toISOString().split("T")[0],
-    end: sunday.toISOString().split("T")[0],
+    start: formatLocalDate(monday),
+    end: formatLocalDate(sunday),
   };
 }
 
@@ -38,8 +42,8 @@ export function getMonthBounds(date: Date): { start: string; end: string } {
   last.setDate(0); // 0 will take the last date of the previous month
 
   return {
-    start: first.toISOString().split("T")[0],
-    end: last.toISOString().split("T")[0],
+    start: formatLocalDate(first),
+    end: formatLocalDate(last),
   };
 }
 
@@ -49,9 +53,12 @@ export function getWeekMonthBounds(date: Date) {
   return { weekStart, weekEnd, monthStart, monthEnd };
 }
 
-// annual helper function
-// the start date should be the closest monday 365 days ago
-// the end date should be today
+/**
+ * Start date should be the closest monday 365 days ago
+ * End date should be today
+ * @param date
+ * @returns start and end dates
+ */
 export function getYearBounds(date: Date): { start: string; end: string } {
   // calculate date 365 days ago
   const startDate = new Date(date);

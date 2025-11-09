@@ -105,6 +105,7 @@ export default function Index() {
         {/* CONTENT */}
         {!showHeatmap && currentHabitEntries && (
           <CurrentPeriodView
+            date={today}
             dailyHabits={currentHabitEntries.dailyHabits}
             weeklyHabits={currentHabitEntries.weeklyHabits}
             monthlyHabits={currentHabitEntries.monthlyHabits}
@@ -115,6 +116,7 @@ export default function Index() {
         {showHeatmap &&
           (heatmapData ? (
             <HeatmapView
+              date={today}
               daily={heatmapData.daily}
               weekly={heatmapData.weekly}
               monthly={heatmapData.monthly}

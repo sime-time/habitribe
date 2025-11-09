@@ -5,11 +5,13 @@ import HabitCard from "@/components/HabitCard";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import type { HabitWithEntry } from "@/validation/HabitSchema";
+import DateGroupTitle from "./DateGroupTitle";
 
 type ProofMethodId = Id<"proofMethods">;
 type ProofMethod = Doc<"proofMethods">;
 
 interface CurrentPeriodViewProps {
+  date: Date;
   dailyHabits: HabitWithEntry[];
   weeklyHabits: HabitWithEntry[];
   monthlyHabits: HabitWithEntry[];
@@ -17,6 +19,7 @@ interface CurrentPeriodViewProps {
 }
 
 export default function CurrentPeriodView({
+  date,
   dailyHabits,
   weeklyHabits,
   monthlyHabits,
@@ -29,11 +32,7 @@ export default function CurrentPeriodView({
     <ScrollView style={[s.flex1, s.px4]}>
       {dailyHabits.length > 0 && (
         <>
-          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-            <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-              Daily Habits
-            </Text>
-          </View>
+          <DateGroupTitle date={date} variant="daily" />
 
           {dailyHabits.map((d) => (
             <View key={d.habit._id}>
@@ -51,11 +50,7 @@ export default function CurrentPeriodView({
 
       {weeklyHabits.length > 0 && (
         <>
-          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-            <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-              Weekly Habits
-            </Text>
-          </View>
+          <DateGroupTitle date={date} variant="weekly" />
 
           {weeklyHabits.map((w) => (
             <View key={w.habit._id}>
@@ -73,11 +68,7 @@ export default function CurrentPeriodView({
 
       {monthlyHabits.length > 0 && (
         <>
-          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-            <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-              Monthly Habits
-            </Text>
-          </View>
+          <DateGroupTitle date={date} variant="monthly" />
 
           {monthlyHabits.map((m) => (
             <View key={m.habit._id}>

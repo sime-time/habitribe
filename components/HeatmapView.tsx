@@ -4,8 +4,10 @@ import { s } from "@/assets/styles/utility.styles";
 import HeatmapCard from "@/components/HeatmapCard";
 import useTheme from "@/hooks/useTheme";
 import type { HabitActivity } from "@/validation/HabitSchema";
+import DateGroupTitle from "./DateGroupTitle";
 
 interface HeatmapViewProps {
+  date: Date;
   daily: HabitActivity[];
   weekly: HabitActivity[];
   monthly: HabitActivity[];
@@ -14,6 +16,7 @@ interface HeatmapViewProps {
 }
 
 export default function HeatmapView({
+  date,
   daily,
   weekly,
   monthly,
@@ -27,11 +30,7 @@ export default function HeatmapView({
     <ScrollView style={[s.flex1, s.px4]} showsVerticalScrollIndicator={false}>
       {daily.length > 0 && (
         <>
-          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-            <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-              Daily Habits
-            </Text>
-          </View>
+          <DateGroupTitle date={date} variant="daily" />
           {daily.map((item) => (
             <HeatmapCard
               key={item.habit._id}
@@ -47,12 +46,8 @@ export default function HeatmapView({
 
       {weekly.length > 0 && (
         <>
-          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-            <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-              Weekly Habits
-            </Text>
-          </View>
-          {weekly.map((item) => (
+          <DateGroupTitle date={date} variant="weekly" />
+         {weekly.map((item) => (
             <HeatmapCard
               key={item.habit._id}
               variant="weekly"
@@ -67,12 +62,8 @@ export default function HeatmapView({
 
       {monthly.length > 0 && (
         <>
-          <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-            <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-              Monthly Habits
-            </Text>
-          </View>
-          {monthly.map((item) => (
+          <DateGroupTitle date={date} variant="monthly" />
+         {monthly.map((item) => (
             <HeatmapCard
               key={item.habit._id}
               variant="monthly"
