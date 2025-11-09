@@ -5,7 +5,7 @@
 
 import { useEffect, useRef } from "react";
 import { ScrollView, Text, type TextStyle, View } from "react-native";
-import { BarChart, PieChart } from "react-native-gifted-charts";
+import { BarChart, PieChart, PieChartPro } from "react-native-gifted-charts";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { borderRadius, spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
@@ -163,7 +163,7 @@ export default function HeatmapChart({
         },
         {
           value: 100 - proportion,
-          color: colors.border,
+          color: `${colors.border}80`,
         },
       ];
 
@@ -193,7 +193,7 @@ export default function HeatmapChart({
               key={index}
               data={chart.pieData}
               donut={true}
-              radius={spacing[12]}
+              radius={spacing[11]}
               innerRadius={spacing[8]}
               centerLabelComponent={() => (
                 <Text style={[c.textForeground, s.textSm, s.fontSemibold]}>
