@@ -5,7 +5,7 @@
 
 import { useEffect, useRef } from "react";
 import { ScrollView, Text, type TextStyle, View } from "react-native";
-import { BarChart, PieChart, PieChartPro } from "react-native-gifted-charts";
+import { BarChart, PieChart } from "react-native-gifted-charts";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { borderRadius, spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
@@ -167,18 +167,17 @@ export default function HeatmapChart({
         },
       ];
 
-
       return {
         month,
         pieData,
         isFirstMonth: index === 0,
         isEmpty: progressValue === 0,
-      }
+      };
     });
 
     // skip the first month if it's empty
     const charts = pieCharts.filter(
-      (chart) => !(chart.isFirstMonth && chart.isEmpty)
+      (chart) => !(chart.isFirstMonth && chart.isEmpty),
     );
 
     return (
