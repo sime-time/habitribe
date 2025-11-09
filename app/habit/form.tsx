@@ -128,6 +128,7 @@ export default function HabitForm() {
 
   // useCallback memoizes the function, so it's only recreated when its dependencies (id, deleteHabit) change.
   // This makes it safe to use in the useLayoutEffect dependency array.
+  // Might not be neccessary with React compiler
   const handleDelete = useCallback(async () => {
     Alert.alert(
       "Delete Habit",

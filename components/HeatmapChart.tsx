@@ -5,7 +5,7 @@
 
 import { useEffect, useRef } from "react";
 import { ScrollView, Text, type TextStyle, View } from "react-native";
-import { BarChart } from "react-native-gifted-charts";
+import { BarChart, PieChart } from "react-native-gifted-charts";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { borderRadius, spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
@@ -14,6 +14,7 @@ import {
   aggregateWeekValues,
   calculateIntensity,
   generateFullActivityRange,
+  generateMonthRange,
   getColorFromIntensity,
   groupActivityIntoWeeks,
 } from "@/utils/heatmapHelper";
@@ -144,6 +145,69 @@ export default function HeatmapChart({
     </View>
   );
 
+  /* Monthly variant (donut charts) */
+  const renderMonthlyVariant = () => {
+    const months = generateMonthRange(startDate, endDate);
+    const activityMap = new Map<string, number>(
+      activity.map((act) => [act.date.slice(0, 7), act.value]),
+    );
+
+    const pieCharts = months.map((month, index) => {
+      const progressValue: number = activityMap.get(month) || 0;
+      const proportion: number = (progressValue / maxValue) * 100;
+
+      const pieData = [
+        {
+          value: proportion,
+          color: accentColor,
+        },
+        {
+          value: 100 - proportion,
+          color: colors.border,
+        },
+      ];
+
+      return {
+        month,
+        pieData,
+        isFirstMonth: index === 0,
+        isEmpty: progressValue === 0,
+      }
+    });
+
+    // skip the first month if it's empty
+    const charts = pieCharts.filter(
+      (chart) => !(chart.isFirstMonth && chart.isEmpty)
+    );
+
+    return (
+      <ScrollView
+        ref={scrollViewRef}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+      >
+        <View style={[s.flexRow, s.gap4]}>
+          {charts.map((chart, index) => (
+            <PieChart
+              key={index}
+              data={chart.pieData}
+              donut={true}
+              radius={spacing[12]}
+              innerRadius={spacing[8]}
+              centerLabelComponent={() => (
+                <Text style={[c.textForeground, s.textSm, s.fontSemibold]}>
+                  {new Date(`${chart.month}-01`).toLocaleDateString("en-US", {
+                    month: "short",
+                  })}
+                </Text>
+              )}
+            />
+          ))}
+        </View>
+      </ScrollView>
+    );
+  };
+
   // useEffect required:
   // if you call `scrollToEnd()` before React Native has rendered/measured the ScrollView content,
   // it won't know how far to scroll.
@@ -159,5 +223,7 @@ export default function HeatmapChart({
       return renderDailyVariant();
     case "weekly":
       return renderWeeklyVariant();
+    case "monthly":
+      return renderMonthlyVariant();
   }
 }

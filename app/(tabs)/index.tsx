@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { s } from "@/assets/styles/utility.styles";
@@ -37,12 +37,11 @@ export default function Index() {
 
   // categorize by proof method
   const proofMethods = useQuery(api.exec.read.getProofMethods);
-  const proofMethodMap = useMemo(() => {
-    if (!proofMethods) return new Map<ProofMethodId, ProofMethod>();
-    return new Map(
-      proofMethods.map((pm) => [pm._id as ProofMethodId, pm as ProofMethod]),
-    );
-  }, [proofMethods]);
+  const proofMethodMap = proofMethods
+    ? new Map(
+        proofMethods.map((pm) => [pm._id as ProofMethodId, pm as ProofMethod]),
+      )
+    : new Map<ProofMethodId, ProofMethod>();
 
   // create missing entries before querying
   const createMissingEntries = useMutation(api.exec.create.addMissingEntries);

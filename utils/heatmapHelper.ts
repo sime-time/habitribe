@@ -71,6 +71,34 @@ export function aggregateWeekValues(weeks: Activity[][]): { value: number }[] {
 }
 
 /**
+ * Generate a string array of all the months between start date and end date
+ * @param start - string YYYY-MM-DD
+ * @param end - string YYYY-MM-DD
+ * @returns array of month strings in format YYYY-MM
+ */
+export function generateMonthRange(start: string, end: string): string[] {
+  const months: string[] = [];
+
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  const currentDate = new Date(
+    startDate.getFullYear(),
+    startDate.getMonth(),
+    1,
+  );
+
+  while (currentDate <= endDate) {
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    months.push(`${year}-${month}`);
+
+    currentDate.setMonth(currentDate.getMonth() + 1);
+  }
+  return months;
+}
+
+/**
  * Calculate intensity (0-1) based on value relative to max
  * @param value - current progress value
  * @param maxValue - max progress value in dataset
