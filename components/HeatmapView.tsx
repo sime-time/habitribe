@@ -1,8 +1,6 @@
-import { ScrollView, Text, View } from "react-native";
-import { createColorStyles } from "@/assets/styles/color.styles";
+import { ScrollView } from "react-native";
 import { s } from "@/assets/styles/utility.styles";
 import HeatmapCard from "@/components/HeatmapCard";
-import useTheme from "@/hooks/useTheme";
 import type { HabitActivity } from "@/validation/HabitSchema";
 import DateGroupTitle from "./DateGroupTitle";
 
@@ -23,9 +21,6 @@ export default function HeatmapView({
   startDate,
   endDate,
 }: HeatmapViewProps) {
-  const { colors } = useTheme();
-  const c = createColorStyles(colors);
-
   return (
     <ScrollView style={[s.flex1, s.px4]} showsVerticalScrollIndicator={false}>
       {daily.length > 0 && (
@@ -47,7 +42,7 @@ export default function HeatmapView({
       {weekly.length > 0 && (
         <>
           <DateGroupTitle date={date} variant="weekly" />
-         {weekly.map((item) => (
+          {weekly.map((item) => (
             <HeatmapCard
               key={item.habit._id}
               variant="weekly"
@@ -63,7 +58,7 @@ export default function HeatmapView({
       {monthly.length > 0 && (
         <>
           <DateGroupTitle date={date} variant="monthly" />
-         {monthly.map((item) => (
+          {monthly.map((item) => (
             <HeatmapCard
               key={item.habit._id}
               variant="monthly"

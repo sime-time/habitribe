@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
+import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import useTheme from "@/hooks/useTheme";
-import { createColorStyles } from "@/assets/styles/color.styles";
 import { getWeekMonthBounds } from "@/utils/dateHelper";
 
 interface DateGroupTitleProps {
@@ -34,12 +34,20 @@ function getDayLabel(date: Date): string {
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
 
-  const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const dateOnly = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
+  const todayOnly = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
   const yesterdayOnly = new Date(
     yesterday.getFullYear(),
     yesterday.getMonth(),
-    yesterday.getDate()
+    yesterday.getDate(),
   );
 
   if (dateOnly.getTime() === todayOnly.getTime()) {
@@ -60,11 +68,12 @@ export default function DateGroupTitle({ date, variant }: DateGroupTitleProps) {
   const bounds = getWeekMonthBounds(date);
 
   switch (variant) {
-    case "daily":
+    case "daily": {
       title = getDayLabel(date);
       const dateString = date.toISOString().split("T")[0];
       subtitle = formatShortDate(dateString);
       break;
+    }
     case "weekly": {
       title = "Week";
       const weekStartDate = parseLocalDate(bounds.weekStart);

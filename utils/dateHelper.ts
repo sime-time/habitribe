@@ -1,15 +1,14 @@
-  function formatLocalDate(d: Date) {
-    const year = d.getFullYear();
-    // January is 0, so we have to add 1
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-  
-  
+function formatLocalDate(d: Date) {
+  const year = d.getFullYear();
+  // January is 0, so we have to add 1
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export function getTodayDateString(): string {
   const today = new Date();
-  return formatLocalDate(today)
+  return formatLocalDate(today);
 }
 
 // weekly helper function

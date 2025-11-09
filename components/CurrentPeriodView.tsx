@@ -1,9 +1,7 @@
-import { ScrollView, Text, View } from "react-native";
-import { createColorStyles } from "@/assets/styles/color.styles";
+import { ScrollView, View } from "react-native";
 import { s } from "@/assets/styles/utility.styles";
 import HabitCard from "@/components/HabitCard";
 import type { Doc, Id } from "@/convex/_generated/dataModel";
-import useTheme from "@/hooks/useTheme";
 import type { HabitWithEntry } from "@/validation/HabitSchema";
 import DateGroupTitle from "./DateGroupTitle";
 
@@ -25,9 +23,6 @@ export default function CurrentPeriodView({
   monthlyHabits,
   proofMethodMap,
 }: CurrentPeriodViewProps) {
-  const { colors } = useTheme();
-  const c = createColorStyles(colors);
-
   return (
     <ScrollView style={[s.flex1, s.px4]}>
       {dailyHabits.length > 0 && (
