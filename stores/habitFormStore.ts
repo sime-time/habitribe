@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { iconColors } from "@/constants/colors";
 import { initialForm } from "@/constants/initialForm";
-import type { HabitFormData } from "@/validation/HabitSchema";
+import type { HabitFormData } from "@/validation/HabitFormSchema";
 
 interface ReminderState {
   id: string | null; // null means not in database yet

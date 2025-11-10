@@ -30,7 +30,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 import type { Frequency } from "@/utils/habitLabelHelper";
-import { HabitSchema } from "@/validation/HabitSchema";
+import { HabitFormSchema } from "@/validation/HabitFormSchema";
 
 type HabitId = Id<"habits">;
 
@@ -175,7 +175,7 @@ export default function HabitForm() {
   }, [isEditMode, navigation, colors, name, handleDelete]);
 
   const createSubmit = async () => {
-    const validHabitForm = HabitSchema.parse(habitForm);
+    const validHabitForm = HabitFormSchema.parse(habitForm);
     const habitId = await createHabit({
       ...validHabitForm,
       proofMethodId: validHabitForm.proofMethodId as Id<"proofMethods">,
@@ -195,7 +195,7 @@ export default function HabitForm() {
 
   const updateSubmit = async (id: string) => {
     const habitId = id as HabitId;
-    const validHabitForm = HabitSchema.parse(habitForm);
+    const validHabitForm = HabitFormSchema.parse(habitForm);
     await updateHabit({
       id: habitId,
       ...validHabitForm,

@@ -11,7 +11,7 @@ import type {
   HabitWithEntry,
   ProofMethod,
   ProofMethodId,
-} from "@/validation/HabitSchema";
+} from "@/types/HabitTypes";
 
 // Converts array of HabitActivity into a Map for O(1) lookup by habitId
 export function createActivityMap(

@@ -20,8 +20,9 @@ export default function HabitCheckbox({
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
+  console.log(entry, proofMethodType);
   // toggle habit entry completion
-  const toggleHabitEntry = useMutation(api.exec.update.toggleHabitEntry);
+  const _toggleHabitEntry = useMutation(api.exec.update.toggleHabitEntry);
 
   return (
     <Pressable>

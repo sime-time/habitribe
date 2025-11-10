@@ -1,6 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
-import type { HabitActivity, HabitWithEntry } from "@/validation/HabitSchema";
+import type { HabitActivity, HabitWithEntry } from "@/types/HabitTypes";
 import { internal } from "../_generated/api";
 import { query } from "../_generated/server";
 

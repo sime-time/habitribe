@@ -4,6 +4,7 @@ import { createColorStyles } from "@/assets/styles/color.styles";
 import { spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import useTheme from "@/hooks/useTheme";
+import type { Activity } from "@/types/HabitTypes";
 import {
   calculateIntensity,
   generateFullActivityRange,
@@ -17,7 +18,6 @@ import {
   formatLocalDate,
   parseLocalDate,
 } from "@/utils/dateHelper";
-import type { Activity } from "@/validation/HabitSchema";
 
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 

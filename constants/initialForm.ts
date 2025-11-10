@@ -1,5 +1,5 @@
 import { Frequency } from "@/utils/habitLabelHelper";
-import type { HabitFormData } from "@/validation/HabitSchema";
+import type { HabitFormData } from "@/validation/HabitFormSchema";
 import { iconColors } from "./colors";
 
 export const initialForm: HabitFormData = {

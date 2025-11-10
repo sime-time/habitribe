@@ -10,12 +10,12 @@ import HabitActivityView from "@/components/views/HabitActivityView";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { useHabitChartStore } from "@/stores/habitChartStore";
+import type { ProofMethod, ProofMethodId } from "@/types/HabitTypes";
 import {
   calculateStartDateFromNumDays,
   getWeekMonthBounds,
   parseLocalDate,
 } from "@/utils/dateHelper";
-import type { ProofMethod, ProofMethodId } from "@/validation/HabitSchema";
 
 export default function Index() {
   const { colors } = useTheme();
@@ -119,7 +119,6 @@ export default function Index() {
             weeklyHabits={currentHabitEntries.weeklyHabits}
             monthlyHabits={currentHabitEntries.monthlyHabits}
             proofMethodMap={proofMethodMap}
-            isLoadingCharts={false}
             dailyActivity={chartData?.dailyActivity}
             weeklyActivity={chartData?.weeklyActivity}
             monthlyActivity={chartData?.monthlyActivity}

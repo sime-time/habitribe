@@ -13,6 +13,7 @@ import { s } from "@/assets/styles/utility.styles";
 import HabitHeatmap from "@/components/habit/HabitHeatmap";
 import useTheme from "@/hooks/useTheme";
 import { useHabitChartStore } from "@/stores/habitChartStore";
+import type { Activity } from "@/types/HabitTypes";
 import {
   aggregateWeekValues,
   generateFullActivityRange,
@@ -20,7 +21,6 @@ import {
   groupActivityIntoWeeks,
 } from "@/utils/chartHelper";
 import { calculateStartDateFromNumDays } from "@/utils/dateHelper";
-import type { Activity } from "@/validation/HabitSchema";
 
 interface HabitChartProps {
   variant: "daily" | "weekly" | "monthly";

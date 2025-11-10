@@ -1,5 +1,6 @@
+import { router } from "expo-router";
 import type { ReactNode } from "react";
-import { Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import Emoji from "@/components/Emoji";
@@ -37,7 +38,10 @@ export default function HabitCard({
       ]}
     >
       {/* Header: Icon + Name + Streak/Description */}
-      <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
+      <Pressable
+        onPress={() => router.navigate(`/habit/form?id=${habit._id}`)}
+        style={[s.flexRow, s.justifyBetween, s.itemsCenter]}
+      >
         <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
           <View
             style={[
@@ -68,7 +72,7 @@ export default function HabitCard({
         </View>
 
         <HabitCheckbox entry={entry} proofMethodType={proofMethodType} />
-      </View>
+      </Pressable>
 
       {children}
     </View>

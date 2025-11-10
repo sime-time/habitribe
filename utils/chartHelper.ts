@@ -1,4 +1,4 @@
-import type { Activity } from "@/validation/HabitSchema";
+import type { Activity } from "@/types/HabitTypes";
 import { formatLocalDate, parseLocalDate } from "./dateHelper";
 
 /**
