@@ -10,8 +10,9 @@ import { BarChart, PieChart } from "react-native-gifted-charts";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { borderRadius, spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
-import HabitHeatmap from "@/components/HabitHeatmap";
+import HabitHeatmap from "@/components/habit/HabitHeatmap";
 import useTheme from "@/hooks/useTheme";
+import { useHabitChartStore } from "@/stores/habitChartStore";
 import { calculateStartDateFromNumDays } from "@/utils/dateHelper";
 import {
   aggregateWeekValues,
@@ -25,8 +26,6 @@ interface HabitChartProps {
   variant: "daily" | "weekly" | "monthly";
   maxValue: number;
   activity: Activity[];
-  endDate: string;
-  numDays: number;
   squareSize?: number;
   gutterSize?: number;
   color?: string;
@@ -36,8 +35,6 @@ export default function HabitChart({
   variant = "daily",
   maxValue,
   activity,
-  endDate,
-  numDays,
   squareSize = spacing[3],
   gutterSize = spacing[1],
   color,
@@ -46,6 +43,8 @@ export default function HabitChart({
   const c = createColorStyles(colors);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  const numDays = useHabitChartStore((state) => state.numDays);
+  const endDate = useHabitChartStore((state) => state.endDate);
   const startDate = calculateStartDateFromNumDays(endDate, numDays);
   const fullActivity = generateFullActivityRange(startDate, endDate, activity);
   const weeks = groupActivityIntoWeeks(fullActivity);
@@ -173,6 +172,7 @@ export default function HabitChart({
     return () => clearTimeout(timer);
   }, []);
 
+  // render the correct chart
   switch (variant) {
     case "daily":
       return renderDailyVariant();

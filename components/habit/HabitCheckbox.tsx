@@ -13,7 +13,10 @@ type HabitCheckboxProps = {
   proofMethodType: string;
 };
 
-export default function HabitCheckbox() {
+export default function HabitCheckbox({
+  entry,
+  proofMethodType,
+}: HabitCheckboxProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
@@ -28,12 +31,12 @@ export default function HabitCheckbox() {
           s.roundedFull,
           s.outline1,
           c.outlineDefault,
-          s.p3,
+          s.p2,
           s.itemsCenter,
           s.justifyCenter,
         ]}
       >
-        <Check size={24} color={colors.muted} />
+        <Check size={20} color={colors.muted} />
       </LinearGradient>
     </Pressable>
   );

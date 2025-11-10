@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Calendar, Cog } from "lucide-react-native";
-import HabitSelectSheet from "@/components/HabitSelectSheet";
+import HabitSelectSheet from "@/components/habit/HabitSelectSheet";
 import { useFirstTimeOpen } from "@/hooks/useFirstTimeOpen";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";

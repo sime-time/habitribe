@@ -1,38 +1,31 @@
-import { useMutation } from "convex/react";
-import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import { Camera, Check, X } from "lucide-react-native";
-import { Image, type ImageStyle, Pressable, Text, View } from "react-native";
+import type { ReactNode } from "react";
+import { Text, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import Emoji from "@/components/Emoji";
-import HabitCheckbox from "@/components/HabitCheckbox";
-import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import {
-  calculateIsCompleted,
-  type Frequency,
-  getScheduleLabel,
-} from "@/utils/habitLabelHelper";
+import { type Frequency, getScheduleLabel } from "@/utils/habitLabelHelper";
+import HabitCheckbox from "./HabitCheckbox";
 
-type HabitCardProps = {
+interface HabitCardProps {
   habit: Doc<"habits">;
-  // biome-ignore lint/suspicious/noExplicitAny: entry type comes from Convex query
   entry: Doc<"habitEntries"> | null;
   proofMethodType: string;
-};
+  children: ReactNode;
+}
 
 export default function HabitCard({
   habit,
   entry,
   proofMethodType,
+  children,
 }: HabitCardProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
   return (
-    <Pressable
+    <View
       style={[
         s.mb5,
         s.p4,
@@ -42,27 +35,30 @@ export default function HabitCard({
         c.borderDefault,
         s.border1,
       ]}
-      onPress={() => router.navigate(`/habit/form?id=${habit._id}`)}
     >
-      {/* Header: Icon + Name + Description */}
+      {/* Header: Icon + Name + Streak/Description */}
       <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
         <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
           <View
             style={[
-              s.p3,
-              s.roundedLg,
+              s.p2,
+              s.roundedMd,
               s.itemsCenter,
               s.justifyCenter,
               { backgroundColor: `${habit.color}30` },
             ]}
           >
-            <Emoji iconName={habit.icon} iconColor={habit.color} />
+            <Emoji
+              iconName={habit.icon}
+              iconColor={habit.color}
+              iconSize={20}
+            />
           </View>
           <View style={[s.flexCol, s.gap1]}>
-            <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+            <Text style={[s.textBase, s.fontMedium, c.textForeground]}>
               {habit.name}
             </Text>
-            <Text style={[s.textSm, c.textMuted]}>
+            <Text style={[s.textXs, c.textMuted]}>
               {getScheduleLabel(
                 habit.schedule.frequency as Frequency,
                 habit.schedule.pattern,
@@ -71,8 +67,10 @@ export default function HabitCard({
           </View>
         </View>
 
-        <HabitCheckbox />
+        <HabitCheckbox entry={entry} proofMethodType={proofMethodType} />
       </View>
-    </Pressable>
+
+      {children}
+    </View>
   );
 }

@@ -4,10 +4,10 @@ import { StatusBar, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
-import CameraMainRow from "@/components/CameraMainRow";
-import CameraSelectRow from "@/components/CameraSelectRow";
-import CameraTools from "@/components/CameraTools";
-import PictureView from "@/components/PictureView";
+import CameraMainRow from "@/components/camera/CameraMainRow";
+import CameraSelectRow from "@/components/camera/CameraSelectRow";
+import CameraTools from "@/components/camera/CameraTools";
+import PictureView from "@/components/views/PictureView";
 import useTheme from "@/hooks/useTheme";
 import { useCameraSettings } from "@/stores/cameraSettingsStore";
 

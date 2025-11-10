@@ -3,36 +3,47 @@ import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import { useEffect } from "react";
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { s } from "@/assets/styles/utility.styles";
-import CurrentPeriodView from "@/components/CurrentPeriodView";
-import HeatmapView from "@/components/HeatmapView";
+import HabitActivityView from "@/components/views/HabitActivityView";
 import { api } from "@/convex/_generated/api";
-import type { Doc, Id } from "@/convex/_generated/dataModel";
-import { useHabitActivityView } from "@/hooks/useHabitActivityView";
 import useTheme from "@/hooks/useTheme";
+import { useHabitChartStore } from "@/stores/habitChartStore";
 import {
-  getTodayDateString,
+  calculateStartDateFromNumDays,
   getWeekMonthBounds,
   parseLocalDate,
 } from "@/utils/dateHelper";
-
-type ProofMethod = Doc<"proofMethods">;
-type ProofMethodId = Id<"proofMethods">;
+import type { ProofMethod, ProofMethodId } from "@/validation/HabitSchema";
 
 export default function Index() {
   const { colors } = useTheme();
 
-  const habitDate = getTodayDateString();
-  const { currentHabitEntries, heatmapData, showHeatmap, setShowHeatmap } =
-    useHabitActivityView(habitDate);
+  const showCharts = useHabitChartStore((state) => state.showCharts);
+  const setShowCharts = useHabitChartStore((state) => state.setShowCharts);
+  const numDays = useHabitChartStore((state) => state.numDays);
+  const currentDate = useHabitChartStore((state) => state.endDate);
 
   // dates should be calculated on the client side
-  // this prevents timezone issues with client/server
-  const today = parseLocalDate(habitDate);
-  const weekday = today.getDay(); // 0-6 for daily habit pattern matching
+  // to prevent timezone issues with client/server
+  const today = parseLocalDate(currentDate);
+  const weekday = today.getDay();
   const bounds = getWeekMonthBounds(today);
+  const startDate = calculateStartDateFromNumDays(currentDate, numDays);
+
+  // current period entries (always loaded, grouped by frequency)
+  const currentHabitEntries = useQuery(api.exec.read.getGroupedHabitEntries, {
+    date: currentDate,
+    weekday,
+    bounds,
+  });
+
+  // skip this query when showCharts is false
+  const chartData = useQuery(
+    api.exec.read.getHabitActivity,
+    showCharts ? { startDate, endDate: currentDate } : "skip",
+  );
 
   // categorize by proof method
   const proofMethods = useQuery(api.exec.read.getProofMethods);
@@ -48,11 +59,11 @@ export default function Index() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: only re-run when date changes
   useEffect(() => {
     createMissingEntries({
-      date: habitDate,
+      date: currentDate,
       weekday,
       bounds,
     });
-  }, [habitDate]); // only re-run when date changes
+  }, [currentDate]); // only re-run when date changes
 
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
@@ -61,11 +72,11 @@ export default function Index() {
         <View style={[s.p4, s.pt8, s.flexRow, s.justifyBetween, s.itemsCenter]}>
           {/* TOGGLE VIEW BUTTON */}
           <TouchableOpacity
-            onPress={() => setShowHeatmap(!showHeatmap)}
+            onPress={() => setShowCharts(!showCharts)}
             style={[s.p2]}
           >
             <Ionicons
-              name={showHeatmap ? "calendar" : "stats-chart"}
+              name={showCharts ? "calendar" : "stats-chart"}
               size={24}
               color={colors.foreground}
             />
@@ -101,31 +112,19 @@ export default function Index() {
         </View>
 
         {/* CONTENT */}
-        {!showHeatmap && currentHabitEntries && (
-          <CurrentPeriodView
+        {currentHabitEntries && (
+          <HabitActivityView
             date={today}
             dailyHabits={currentHabitEntries.dailyHabits}
             weeklyHabits={currentHabitEntries.weeklyHabits}
             monthlyHabits={currentHabitEntries.monthlyHabits}
             proofMethodMap={proofMethodMap}
+            isLoadingCharts={!!chartData}
+            dailyActivity={chartData?.dailyActivity}
+            weeklyActivity={chartData?.weeklyActivity}
+            monthlyActivity={chartData?.monthlyActivity}
           />
         )}
-
-        {showHeatmap &&
-          (heatmapData ? (
-            <HeatmapView
-              date={today}
-              daily={heatmapData.daily}
-              weekly={heatmapData.weekly}
-              monthly={heatmapData.monthly}
-              endDate={habitDate}
-              numDays={365}
-            />
-          ) : (
-            <View style={[s.flex1, s.justifyCenter, s.itemsCenter]}>
-              <ActivityIndicator size="large" color={colors.muted} />
-            </View>
-          ))}
       </SafeAreaView>
     </LinearGradient>
   );

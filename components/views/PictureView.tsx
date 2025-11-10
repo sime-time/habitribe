@@ -27,7 +27,7 @@ import useTheme from "@/hooks/useTheme";
 import { useCameraSettings } from "@/stores/cameraSettingsStore";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
 import { getTodayDateString } from "@/utils/dateHelper";
-import CameraSelectRow from "./CameraSelectRow";
+import CameraSelectRow from "../camera/CameraSelectRow";
 
 export default function PictureView() {
   const { colors } = useTheme();
