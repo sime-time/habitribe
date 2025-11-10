@@ -4,10 +4,10 @@ import { Pressable, Text, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import Emoji from "@/components/Emoji";
+import HabitCheckbox from "@/components/habit/HabitCheckbox";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { type Frequency, getScheduleLabel } from "@/utils/habitLabelHelper";
-import HabitCheckbox from "./HabitCheckbox";
 
 interface HabitCardProps {
   habit: Doc<"habits">;
@@ -24,7 +24,6 @@ export default function HabitCard({
 }: HabitCardProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
-
   return (
     <View
       style={[

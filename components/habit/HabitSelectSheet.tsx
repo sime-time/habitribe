@@ -12,14 +12,11 @@ import { borderRadius } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import Emoji from "@/components/Emoji";
 import { api } from "@/convex/_generated/api";
-import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
+import type { Habit, HabitEntry } from "@/types/HabitTypes";
 import { getTodayDateString, getWeekMonthBounds } from "@/utils/dateHelper";
 import { type Frequency, getScheduleLabel } from "@/utils/habitLabelHelper";
-
-type Habit = Doc<"habits">;
-type HabitEntry = Doc<"habitEntries">;
 
 interface HabitSelectSheetProps {
   closeSheet: () => void;

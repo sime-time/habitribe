@@ -65,7 +65,7 @@ export default function HabitActivityView({
           {dailyHabits.map((d) => {
             const activity = dailyActivityMap
               ? dailyActivityMap.get(d.habit._id)
-              : [];
+              : null;
 
             return (
               <View key={d.habit._id}>
@@ -76,7 +76,7 @@ export default function HabitActivityView({
                     proofMethodMap.get(d.habit.proofMethodId)?.type as string
                   }
                 >
-                  {dailyActivityMap && activity && (
+                  {activity && (
                     <HabitChart
                       variant="daily"
                       activity={activity}
@@ -102,7 +102,7 @@ export default function HabitActivityView({
           {weeklyHabits.map((w) => {
             const activity = weeklyActivityMap
               ? weeklyActivityMap.get(w.habit._id)
-              : [];
+              : null;
 
             return (
               <View key={w.habit._id}>
@@ -113,7 +113,7 @@ export default function HabitActivityView({
                     proofMethodMap.get(w.habit.proofMethodId)?.type as string
                   }
                 >
-                  {weeklyActivityMap && activity && (
+                  {activity && (
                     <HabitChart
                       variant="weekly"
                       activity={activity}
@@ -139,7 +139,7 @@ export default function HabitActivityView({
           {monthlyHabits.map((m) => {
             const activity = monthlyActivityMap
               ? monthlyActivityMap.get(m.habit._id)
-              : [];
+              : null;
 
             return (
               <View key={m.habit._id}>
@@ -150,7 +150,7 @@ export default function HabitActivityView({
                     proofMethodMap.get(m.habit.proofMethodId)?.type as string
                   }
                 >
-                  {monthlyActivityMap && activity && (
+                  {activity && (
                     <HabitChart
                       variant="monthly"
                       activity={activity}

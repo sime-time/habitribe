@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { ScrollView, Text, type TextStyle, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { spacing } from "@/assets/styles/token.styles";
