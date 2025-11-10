@@ -106,7 +106,7 @@ export const getGroupedHabitEntries = query({
   },
 });
 
-export const getHabitHeatmaps = query({
+export const getHabitEntryActivity = query({
   args: {
     startDate: v.string(),
     endDate: v.string(),

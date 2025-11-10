@@ -12,16 +12,16 @@ import HabitCheckbox from "./HabitCheckbox";
 interface HeatmapHabitCardProps {
   habit: Doc<"habits">;
   activity: Activity[];
-  startDate: string;
   endDate: string;
+  numDays: number;
   variant: "daily" | "weekly" | "monthly";
 }
 
 export default function HeatmapHabitCard({
   habit,
   activity,
-  startDate,
   endDate,
+  numDays,
   variant,
 }: HeatmapHabitCardProps) {
   const { colors } = useTheme();
@@ -72,8 +72,8 @@ export default function HeatmapHabitCard({
 
       <HeatmapChart
         variant={variant}
-        startDate={startDate}
         endDate={endDate}
+        numDays={numDays}
         activity={activity}
         maxValue={
           Array.isArray(habit.schedule.pattern)

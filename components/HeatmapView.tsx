@@ -9,8 +9,8 @@ interface HeatmapViewProps {
   daily: HabitActivity[];
   weekly: HabitActivity[];
   monthly: HabitActivity[];
-  startDate: string;
   endDate: string;
+  numDays: number;
 }
 
 export default function HeatmapView({
@@ -18,8 +18,8 @@ export default function HeatmapView({
   daily,
   weekly,
   monthly,
-  startDate,
   endDate,
+  numDays,
 }: HeatmapViewProps) {
   return (
     <ScrollView style={[s.flex1, s.px4]} showsVerticalScrollIndicator={false}>
@@ -32,8 +32,8 @@ export default function HeatmapView({
               variant="daily"
               habit={item.habit}
               activity={item.activity}
-              startDate={startDate}
               endDate={endDate}
+              numDays={numDays}
             />
           ))}
         </>
@@ -48,8 +48,8 @@ export default function HeatmapView({
               variant="weekly"
               habit={item.habit}
               activity={item.activity}
-              startDate={startDate}
               endDate={endDate}
+              numDays={numDays}
             />
           ))}
         </>
@@ -64,8 +64,8 @@ export default function HeatmapView({
               variant="monthly"
               habit={item.habit}
               activity={item.activity}
-              startDate={startDate}
               endDate={endDate}
+              numDays={numDays}
             />
           ))}
         </>

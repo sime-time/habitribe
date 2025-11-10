@@ -160,3 +160,15 @@ export function getColorFromIntensity(
 
   return colorShades[index];
 }
+
+/**
+ * Shift a date forward or backward by a number of days.
+ * @param date - The starting date
+ * @param numDays - Number of days to shift (positive = forward, negative = backward)
+ * @returns A new Date object shifted by the specified number of days
+ */
+export function shiftDate(date: Date, numDays: number): Date {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + numDays);
+  return newDate;
+}

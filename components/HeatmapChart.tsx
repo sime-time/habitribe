@@ -1,33 +1,34 @@
 // take a date range and activity data,
-// then display a GitHub-style heatmap
-// where each small square represents a day,
-// colored by intensity of activity.
+// then display activity visualizations in different variants:
+// - daily: GitHub-style heatmap where each square represents a day
+// - weekly: bar chart showing weekly totals
+// - monthly: donut charts showing monthly progress
 
 import { useEffect, useRef } from "react";
-import { ScrollView, Text, type TextStyle, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { BarChart, PieChart } from "react-native-gifted-charts";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { borderRadius, spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import useTheme from "@/hooks/useTheme";
+import { calculateStartDateFromNumDays } from "@/utils/dateHelper";
 import {
   aggregateWeekValues,
-  calculateIntensity,
   generateFullActivityRange,
   generateMonthRange,
-  getColorFromIntensity,
   groupActivityIntoWeeks,
 } from "@/utils/heatmapHelper";
 import type { Activity } from "@/validation/HabitSchema";
-
-const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+import HeatmapGrid from "./HeatmapGrid";
 
 interface HeatmapChartProps {
   variant: "daily" | "weekly" | "monthly";
   maxValue: number;
   activity: Activity[];
-  startDate: string;
   endDate: string;
+  numDays: number;
+  squareSize?: number;
+  gutterSize?: number;
   color?: string;
 }
 
@@ -35,14 +36,17 @@ export default function HeatmapChart({
   variant = "daily",
   maxValue,
   activity,
-  startDate,
   endDate,
+  numDays,
+  squareSize = spacing[3],
+  gutterSize = spacing[1],
   color,
 }: HeatmapChartProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  const startDate = calculateStartDateFromNumDays(endDate, numDays);
   const fullActivity = generateFullActivityRange(startDate, endDate, activity);
   const weeks = groupActivityIntoWeeks(fullActivity);
   const valuePerWeek = aggregateWeekValues(weeks);
@@ -50,68 +54,19 @@ export default function HeatmapChart({
 
   /* Daily variant (heatmap grid) */
   const renderDailyVariant = () => (
-    <View style={[s.flexCol, s.gap1, s.pr1]}>
-      {/* Main row: static labels + scrollable content */}
-      <View style={[s.flexRow, s.gap2]}>
-        {/* Static weekday labels column (left side, never scrolls) */}
-        <View style={[s.flexCol, s.justifyEvenly, s.gap1]}>
-          {WEEKDAY_LABELS.map((day) => (
-            <Text
-              key={day}
-              style={
-                [
-                  c.textForeground,
-                  s.opacity50,
-                  s.h3,
-                  s.text2xs,
-                  s.textRight,
-                ] as TextStyle[]
-              }
-            >
-              {["Mon", "Wed", "Fri", "Sun"].includes(day) ? day : ""}
-            </Text>
-          ))}
-        </View>
-
-        <ScrollView
-          ref={scrollViewRef}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        >
-          <View style={[s.flexCol, s.gap1]}>
-            {/* Heatmap grid */}
-            <View style={[s.flexRow, s.gap1]}>
-              {weeks.map((activities, weekIndex) => (
-                <View key={weekIndex} style={[s.flexCol, s.gap1]}>
-                  {activities.map((currentActivity, activityIndex) => {
-                    const intensity = calculateIntensity(
-                      currentActivity.value,
-                      maxValue,
-                    );
-                    const cellColor = getColorFromIntensity(
-                      intensity,
-                      accentColor,
-                      colors.border,
-                    );
-                    return (
-                      <View
-                        key={activityIndex}
-                        style={[
-                          s.h3,
-                          s.w3,
-                          s.roundedSm,
-                          { backgroundColor: cellColor },
-                        ]}
-                      />
-                    );
-                  })}
-                </View>
-              ))}
-            </View>
-          </View>
-        </ScrollView>
-      </View>
-    </View>
+    <ScrollView
+      ref={scrollViewRef}
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+    >
+      <HeatmapGrid
+        data={activity}
+        maxValue={maxValue}
+        endDate={endDate}
+        numDays={numDays}
+        color={accentColor}
+      />
+    </ScrollView>
   );
 
   /* Weekly variant (bar chart) */
@@ -136,11 +91,11 @@ export default function HeatmapChart({
         rulesThickness={1}
         rulesColor={`${colors.border}`}
         barBorderRadius={borderRadius.sm}
-        barWidth={spacing[3]}
+        barWidth={squareSize}
         frontColor={accentColor}
         initialSpacing={0}
         endSpacing={0}
-        spacing={spacing[1]}
+        spacing={gutterSize}
       />
     </View>
   );

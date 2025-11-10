@@ -15,7 +15,6 @@ import useTheme from "@/hooks/useTheme";
 import {
   getTodayDateString,
   getWeekMonthBounds,
-  getYearBounds,
   parseLocalDate,
 } from "@/utils/dateHelper";
 
@@ -34,7 +33,6 @@ export default function Index() {
   const today = parseLocalDate(habitDate);
   const weekday = today.getDay(); // 0-6 for daily habit pattern matching
   const bounds = getWeekMonthBounds(today);
-  const { start: yearStart, end: yearEnd } = getYearBounds(today);
 
   // categorize by proof method
   const proofMethods = useQuery(api.exec.read.getProofMethods);
@@ -120,8 +118,8 @@ export default function Index() {
               daily={heatmapData.daily}
               weekly={heatmapData.weekly}
               monthly={heatmapData.monthly}
-              startDate={yearStart}
-              endDate={yearEnd}
+              endDate={habitDate}
+              numDays={365}
             />
           ) : (
             <View style={[s.flex1, s.justifyCenter, s.itemsCenter]}>
