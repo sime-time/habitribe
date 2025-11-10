@@ -50,19 +50,16 @@ export default function HabitChart({
 
   /* Daily variant (heatmap grid) */
   const renderDailyVariant = () => (
-    <ScrollView
-      ref={scrollViewRef}
-      horizontal={true}
-      showsHorizontalScrollIndicator={false}
-    >
+    <View>
       <HabitHeatmap
         data={activity}
         maxValue={maxValue}
         endDate={endDate}
         numDays={numDays}
         color={accentColor}
+        scrollRef={scrollViewRef}
       />
-    </ScrollView>
+    </View>
   );
 
   /* Weekly variant (bar chart) */
@@ -169,7 +166,7 @@ export default function HabitChart({
     );
   };
 
-  // useEffect required:
+  // useEffect required: auto-scroll to the end of the chart (most recent day)
   // if you call `scrollToEnd()` before React Native has rendered/measured the ScrollView content,
   // it won't know how far to scroll.
   useEffect(() => {

@@ -29,6 +29,7 @@ interface HabitHeatmap {
   squareSize?: number;
   gutterSize?: number;
   color?: string;
+  scrollRef?: React.RefObject<ScrollView | null>;
 }
 
 /**
@@ -51,11 +52,11 @@ export default function HabitHeatmap({
   squareSize = spacing[3],
   gutterSize = spacing[1],
   color,
+  scrollRef,
 }: HabitHeatmap) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
   const accentColor = color || colors.primary;
-  const scrollViewRef = useRef<ScrollView>(null);
 
   const startDate = calculateStartDateFromNumDays(endDate, numDays);
 
@@ -73,14 +74,6 @@ export default function HabitHeatmap({
   );
 
   const weekData = groupActivityIntoWeeks(fullActivity);
-
-  // Auto-scroll to the end to show the most recent data
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: false });
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <View style={[s.flexCol, s.gap2, s.pr2]}>
@@ -108,7 +101,7 @@ export default function HabitHeatmap({
 
         {/* Scrollable heatmap grid */}
         <ScrollView
-          ref={scrollViewRef}
+          ref={scrollRef}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={16}
