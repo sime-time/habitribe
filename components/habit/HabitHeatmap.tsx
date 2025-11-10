@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { ScrollView, Text, type TextStyle, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { spacing } from "@/assets/styles/token.styles";
@@ -21,7 +21,7 @@ import type { Activity } from "@/validation/HabitSchema";
 
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-interface HeatmapGridProps {
+interface HabitHeatmap {
   maxValue: number;
   data: Activity[];
   endDate: string;
@@ -32,7 +32,7 @@ interface HeatmapGridProps {
 }
 
 /**
- * ContributionGraph - GitHub-style contribution heatmap
+ * GitHub-style contribution heatmap
  *
  * Displays activity data as a grid of colored squares, where each square
  * represents a day. Color intensity indicates activity level.
@@ -43,7 +43,7 @@ interface HeatmapGridProps {
  * - Responsive to custom accent colors
  * - Dark/light theme support
  */
-export default function HeatmapGrid({
+export default function HabitHeatmap({
   maxValue,
   data,
   endDate,
@@ -51,7 +51,7 @@ export default function HeatmapGrid({
   squareSize = spacing[3],
   gutterSize = spacing[1],
   color,
-}: HeatmapGridProps) {
+}: HabitHeatmap) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
   const accentColor = color || colors.primary;

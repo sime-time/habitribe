@@ -10,6 +10,7 @@ import { BarChart, PieChart } from "react-native-gifted-charts";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { borderRadius, spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
+import HabitHeatmap from "@/components/HabitHeatmap";
 import useTheme from "@/hooks/useTheme";
 import { calculateStartDateFromNumDays } from "@/utils/dateHelper";
 import {
@@ -19,9 +20,8 @@ import {
   groupActivityIntoWeeks,
 } from "@/utils/heatmapHelper";
 import type { Activity } from "@/validation/HabitSchema";
-import HeatmapGrid from "./HeatmapGrid";
 
-interface HeatmapChartProps {
+interface HabitChartProps {
   variant: "daily" | "weekly" | "monthly";
   maxValue: number;
   activity: Activity[];
@@ -32,7 +32,7 @@ interface HeatmapChartProps {
   color?: string;
 }
 
-export default function HeatmapChart({
+export default function HabitChart({
   variant = "daily",
   maxValue,
   activity,
@@ -41,7 +41,7 @@ export default function HeatmapChart({
   squareSize = spacing[3],
   gutterSize = spacing[1],
   color,
-}: HeatmapChartProps) {
+}: HabitChartProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -59,7 +59,7 @@ export default function HeatmapChart({
       horizontal={true}
       showsHorizontalScrollIndicator={false}
     >
-      <HeatmapGrid
+      <HabitHeatmap
         data={activity}
         maxValue={maxValue}
         endDate={endDate}

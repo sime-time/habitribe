@@ -106,7 +106,7 @@ export const getGroupedHabitEntries = query({
   },
 });
 
-export const getHabitEntryActivity = query({
+export const getHabitActivity = query({
   args: {
     startDate: v.string(),
     endDate: v.string(),
@@ -115,9 +115,9 @@ export const getHabitEntryActivity = query({
     const userId = await getAuthUserId(ctx);
     if (userId === null) throw new ConvexError("Unauthorized");
 
-    const daily: HabitActivity[] = [];
-    const weekly: HabitActivity[] = [];
-    const monthly: HabitActivity[] = [];
+    const dailyActivity: HabitActivity[] = [];
+    const weeklyActivity: HabitActivity[] = [];
+    const monthlyActivity: HabitActivity[] = [];
 
     // get all user habits
     const habits = await ctx.db
@@ -142,8 +142,8 @@ export const getHabitEntryActivity = query({
 
         switch (habit.schedule.frequency) {
           case "daily":
-            daily.push({
-              habit: habit,
+            dailyActivity.push({
+              habitId: habit._id,
               activity: entries.map((entry) => ({
                 date: entry.date,
                 value: entry.progress,
@@ -151,8 +151,8 @@ export const getHabitEntryActivity = query({
             });
             break;
           case "weekly":
-            weekly.push({
-              habit: habit,
+            weeklyActivity.push({
+              habitId: habit._id,
               activity: entries.map((entry) => ({
                 date: entry.date,
                 value: entry.progress,
@@ -160,8 +160,8 @@ export const getHabitEntryActivity = query({
             });
             break;
           case "monthly":
-            monthly.push({
-              habit: habit,
+            monthlyActivity.push({
+              habitId: habit._id,
               activity: entries.map((entry) => ({
                 date: entry.date,
                 value: entry.progress,
@@ -172,6 +172,6 @@ export const getHabitEntryActivity = query({
       }),
     );
 
-    return { daily, weekly, monthly };
+    return { dailyActivity, weeklyActivity, monthlyActivity };
   },
 });

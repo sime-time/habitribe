@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Doc } from "@/convex/_generated/dataModel";
+import type { Doc, Id } from "@/convex/_generated/dataModel";
 import { Frequency } from "@/utils/habitLabelHelper";
 
 export const HabitSchema = z.object({
@@ -32,13 +32,16 @@ export const HabitSchema = z.object({
 
 export type HabitFormData = z.infer<typeof HabitSchema>;
 
+export type ProofMethodId = Id<"proofMethods">;
+export type ProofMethod = Doc<"proofMethods">;
+
 export type Activity = {
   date: string;
   value: number;
 };
 
 export type HabitActivity = {
-  habit: Doc<"habits">;
+  habitId: Id<"habits">;
   activity: Activity[];
 };
 

@@ -3,13 +3,13 @@ import { Text, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import Emoji from "@/components/Emoji";
-import HeatmapChart from "@/components/HeatmapChart";
+import HabitChart from "@/components/habit/HabitChart";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import type { Activity } from "@/validation/HabitSchema";
 import HabitCheckbox from "./HabitCheckbox";
 
-interface HeatmapHabitCardProps {
+interface HabitChartCardProps {
   habit: Doc<"habits">;
   activity: Activity[];
   endDate: string;
@@ -17,13 +17,13 @@ interface HeatmapHabitCardProps {
   variant: "daily" | "weekly" | "monthly";
 }
 
-export default function HeatmapHabitCard({
+export default function HabitChartCard({
   habit,
   activity,
   endDate,
   numDays,
   variant,
-}: HeatmapHabitCardProps) {
+}: HabitChartCardProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
@@ -70,7 +70,7 @@ export default function HeatmapHabitCard({
         <HabitCheckbox />
       </View>
 
-      <HeatmapChart
+      <HabitChart
         variant={variant}
         endDate={endDate}
         numDays={numDays}

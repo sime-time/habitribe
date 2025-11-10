@@ -1,8 +1,8 @@
 import { View } from "react-native";
 import { spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
+import IconButton from "@/components/IconButton";
 import { useCameraSettings } from "@/stores/cameraSettingsStore";
-import IconButton from "./IconButton";
 
 const ZOOM_VALUE = 0.2;
 

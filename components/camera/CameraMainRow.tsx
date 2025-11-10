@@ -1,9 +1,9 @@
 import { launchImageLibraryAsync } from "expo-image-picker";
 import { TouchableOpacity, View } from "react-native";
 import { s } from "@/assets/styles/utility.styles";
-import CameraRecordIcon from "@/components/CameraRecordIcon";
+import IconButton from "@/components//IconButton";
+import CameraRecordIcon from "@/components/camera/CameraRecordIcon";
 import { useCameraSettings } from "@/stores/cameraSettingsStore";
-import IconButton from "./IconButton";
 
 interface CameraMainRowProps {
   handleTakePicture: () => void;
