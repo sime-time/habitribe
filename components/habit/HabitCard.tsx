@@ -12,7 +12,7 @@ interface HabitCardProps {
   habit: Doc<"habits">;
   entry: Doc<"habitEntries"> | null;
   proofMethodType: string;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export default function HabitCard({

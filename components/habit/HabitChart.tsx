@@ -13,13 +13,13 @@ import { s } from "@/assets/styles/utility.styles";
 import HabitHeatmap from "@/components/habit/HabitHeatmap";
 import useTheme from "@/hooks/useTheme";
 import { useHabitChartStore } from "@/stores/habitChartStore";
-import { calculateStartDateFromNumDays } from "@/utils/dateHelper";
 import {
   aggregateWeekValues,
   generateFullActivityRange,
   generateMonthRange,
   groupActivityIntoWeeks,
-} from "@/utils/heatmapHelper";
+} from "@/utils/chartHelper";
+import { calculateStartDateFromNumDays } from "@/utils/dateHelper";
 import type { Activity } from "@/validation/HabitSchema";
 
 interface HabitChartProps {
@@ -42,14 +42,11 @@ export default function HabitChart({
   const { colors } = useTheme();
   const c = createColorStyles(colors);
   const scrollViewRef = useRef<ScrollView>(null);
+  const accentColor = color || colors.primary;
 
   const numDays = useHabitChartStore((state) => state.numDays);
   const endDate = useHabitChartStore((state) => state.endDate);
   const startDate = calculateStartDateFromNumDays(endDate, numDays);
-  const fullActivity = generateFullActivityRange(startDate, endDate, activity);
-  const weeks = groupActivityIntoWeeks(fullActivity);
-  const valuePerWeek = aggregateWeekValues(weeks);
-  const accentColor = color || colors.primary;
 
   /* Daily variant (heatmap grid) */
   const renderDailyVariant = () => (
@@ -69,35 +66,45 @@ export default function HabitChart({
   );
 
   /* Weekly variant (bar chart) */
-  const renderWeeklyVariant = () => (
-    <View style={[s.overflowHidden]}>
-      <BarChart
-        scrollRef={scrollViewRef}
-        data={valuePerWeek}
-        maxValue={maxValue}
-        stepValue={1}
-        height={spacing[28]}
-        xAxisLabelsHeight={0}
-        xAxisThickness={1}
-        xAxisColor={`${colors.border}`}
-        yAxisThickness={1}
-        yAxisColor={`${colors.border}`}
-        yAxisLabelContainerStyle={[s.w3, s.opacity50]}
-        yAxisTextStyle={[s.text2xs, c.textForeground]}
-        yAxisLabelWidth={0}
-        hideYAxisText={false}
-        rulesType="solid"
-        rulesThickness={1}
-        rulesColor={`${colors.border}`}
-        barBorderRadius={borderRadius.sm}
-        barWidth={squareSize}
-        frontColor={accentColor}
-        initialSpacing={0}
-        endSpacing={0}
-        spacing={gutterSize}
-      />
-    </View>
-  );
+  const renderWeeklyVariant = () => {
+    const fullActivity = generateFullActivityRange(
+      startDate,
+      endDate,
+      activity,
+    );
+    const weeks = groupActivityIntoWeeks(fullActivity);
+    const valuePerWeek = aggregateWeekValues(weeks);
+
+    return (
+      <View style={[s.overflowHidden]}>
+        <BarChart
+          scrollRef={scrollViewRef}
+          data={valuePerWeek}
+          maxValue={maxValue}
+          stepValue={1}
+          height={spacing[28]}
+          xAxisLabelsHeight={0}
+          xAxisThickness={1}
+          xAxisColor={`${colors.border}`}
+          yAxisThickness={1}
+          yAxisColor={`${colors.border}`}
+          yAxisLabelContainerStyle={[s.w3, s.opacity50]}
+          yAxisTextStyle={[s.text2xs, c.textForeground]}
+          yAxisLabelWidth={0}
+          hideYAxisText={false}
+          rulesType="solid"
+          rulesThickness={1}
+          rulesColor={`${colors.border}`}
+          barBorderRadius={borderRadius.sm}
+          barWidth={squareSize}
+          frontColor={accentColor}
+          initialSpacing={0}
+          endSpacing={0}
+          spacing={gutterSize}
+        />
+      </View>
+    );
+  };
 
   /* Monthly variant (donut charts) */
   const renderMonthlyVariant = () => {

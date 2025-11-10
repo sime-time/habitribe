@@ -119,7 +119,7 @@ export default function Index() {
             weeklyHabits={currentHabitEntries.weeklyHabits}
             monthlyHabits={currentHabitEntries.monthlyHabits}
             proofMethodMap={proofMethodMap}
-            isLoadingCharts={!!chartData}
+            isLoadingCharts={false}
             dailyActivity={chartData?.dailyActivity}
             weeklyActivity={chartData?.weeklyActivity}
             monthlyActivity={chartData?.monthlyActivity}

@@ -5,18 +5,18 @@ import { spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import useTheme from "@/hooks/useTheme";
 import {
-  calculatePaddingForWeekAlignment,
-  calculateStartDateFromNumDays,
-  formatLocalDate,
-  parseLocalDate,
-} from "@/utils/dateHelper";
-import {
   calculateIntensity,
   generateFullActivityRange,
   getColorFromIntensity,
   groupActivityIntoWeeks,
   shiftDate,
-} from "@/utils/heatmapHelper";
+} from "@/utils/chartHelper";
+import {
+  calculatePaddingForWeekAlignment,
+  calculateStartDateFromNumDays,
+  formatLocalDate,
+  parseLocalDate,
+} from "@/utils/dateHelper";
 import type { Activity } from "@/validation/HabitSchema";
 
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
