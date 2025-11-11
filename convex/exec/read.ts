@@ -14,15 +14,6 @@ export const getHabit = query({
   },
 });
 
-export const getHabitEntry = query({
-  args: {
-    id: v.id("habitEntries"),
-  },
-  handler: async (ctx, args) => {
-    return await ctx.db.get(args.id);
-  },
-});
-
 export const getHabitReminders = query({
   args: {
     habitId: v.id("habits"),

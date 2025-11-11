@@ -15,10 +15,10 @@ import { isComplete } from "@/utils/habitLabelHelper";
 type HabitCheckboxProps = {
   habit: Doc<"habits">;
   entry: Doc<"habitEntries"> | null;
-  proofMethodType: string;
+  proofMethodType?: string;
 };
 
-function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
+function HabitCheckbox({ habit, entry }: HabitCheckboxProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
