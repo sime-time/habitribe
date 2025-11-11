@@ -2,14 +2,12 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { ConvexError } from "convex/values";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   ActivityIndicator,
-  Pressable,
   StatusBar,
   Text,
   TextInput,
-  type TextStyle,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -29,37 +27,8 @@ export default function SignIn() {
 
   const [step, setStep] = useState<"signIn" | { email: string }>("signIn");
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [isFocused, setIsFocused] = useState(false);
-
-  // Refs for OTP inputs
-  const hiddenInputRef = useRef<TextInput | null>(null);
-
-  const handleOTPChange = (text: string) => {
-    // Only allow numbers
-    const numericText = text.replace(/[^0-9]/g, "");
-
-    if (numericText.length === 0) {
-      setCode(["", "", "", "", "", ""]);
-      return;
-    }
-
-    const digits = numericText.slice(0, 6).split("");
-    const newCode = [...code];
-
-    // Fill in the digits
-    digits.forEach((digit, i) => {
-      newCode[i] = digit;
-    });
-
-    // Clear remaining digits if paste was shorter than 6
-    for (let i = digits.length; i < 6; i++) {
-      newCode[i] = "";
-    }
-
-    setCode(newCode);
-  };
 
   const handleSignIn = async () => {
     setLoading(true);
@@ -89,10 +58,9 @@ export default function SignIn() {
   const handleVerifyCode = async () => {
     setLoading(true);
     try {
-      const codeString = code.join("");
       await signIn("resend-otp", {
         email: email,
-        code: codeString,
+        code: code,
         flow: "email-verification",
       });
     } catch (err: unknown) {
@@ -208,72 +176,20 @@ export default function SignIn() {
         {/* VERIFY OTP */}
         <View style={[s.flex1, s.gap6]}>
           <View style={[s.gap4]}>
-            {/* OTP Input Boxes */}
-            <View>
-              {/* Hidden input for capturing all input/paste */}
+            <View style={[s.input, c.borderDefault]}>
               <TextInput
-                ref={hiddenInputRef}
-                value={code.join("")}
-                onChangeText={handleOTPChange}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                keyboardType="number-pad"
-                maxLength={6}
-                autoFocus
-                style={
-                  [
-                    s.absolute,
-                    { opacity: 0, width: 1, height: 1 },
-                  ] as TextStyle[]
-                }
+                style={[c.textForeground, s.textBase]}
+                placeholder="Code"
+                placeholderTextColor={colors.muted}
+                onChangeText={setCode}
+                inputMode={"numeric"}
+                value={code}
               />
-
-              {/* Visual OTP boxes */}
-              <Pressable
-                style={[s.flexRow, s.gap3, s.justifyCenter]}
-                onPress={() => hiddenInputRef.current?.focus()}
-              >
-                {code.map((digit, index) => {
-                  // Determine which box should be focused (first empty box, or last if all filled)
-                  const firstEmptyIndex = code.findIndex((d) => !d);
-                  const focusedIndex =
-                    firstEmptyIndex === -1 ? 5 : firstEmptyIndex;
-                  const isCurrentFocused = isFocused && index === focusedIndex;
-
-                  return (
-                    <View
-                      key={index}
-                      style={[
-                        s.itemsCenter,
-                        s.justifyCenter,
-                        s.roundedLg,
-                        {
-                          width: 50,
-                          height: 60,
-                        },
-                        c.bgCard,
-                        isCurrentFocused
-                          ? [c.borderPrimary, s.border3]
-                          : digit
-                            ? [c.borderPrimary, s.border2]
-                            : [c.borderDefault, s.border2],
-                      ]}
-                    >
-                      <Text style={[s.text2xl, s.fontBold, c.textForeground]}>
-                        {digit}
-                      </Text>
-                    </View>
-                  );
-                })}
-              </Pressable>
             </View>
-            <TouchableOpacity
-              onPress={handleVerifyCode}
-              disabled={loading || code.some((digit) => !digit)}
-            >
+            <TouchableOpacity onPress={handleVerifyCode} disabled={loading}>
               <LinearGradient
                 colors={colors.gradients.primary}
-                style={[s.button, code.some((digit) => !digit) && s.opacity50]}
+                style={s.button}
               >
                 {loading ? (
                   <ActivityIndicator size="small" color={colors.muted} />
@@ -286,10 +202,7 @@ export default function SignIn() {
             </TouchableOpacity>
             <TouchableOpacity
               style={[s.button, c.bgTransparent]}
-              onPress={() => {
-                setStep("signIn");
-                setCode(["", "", "", "", "", ""]);
-              }}
+              onPress={() => setStep("signIn")}
             >
               {loading ? (
                 <ActivityIndicator size="small" color={colors.muted} />

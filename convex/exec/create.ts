@@ -101,7 +101,11 @@ export const addMissingEntries = mutation({
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
-    if (userId === null) throw new ConvexError("No user ID found");
+    if (userId === null) {
+      // User is not authenticated
+      // return early since there are no habits to create entries for
+      return { created: 0, date: args.date };
+    }
 
     // get all the user habits
     const habits = await ctx.db
