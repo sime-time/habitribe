@@ -110,39 +110,34 @@ export const addMissingEntries = mutation({
     // get all the user habits
     const habits = await ctx.db
       .query("habits")
-      .filter((q) => q.eq(q.field("userId"), userId))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .collect();
 
     // get all habit entries in this current period
     const todayEntries = await ctx.db
       .query("habitEntries")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), userId),
-          q.eq(q.field("date"), args.date),
-        ),
+      .withIndex("by_user_date", (q) =>
+        q.eq("userId", userId).eq("date", args.date),
       )
       .collect();
 
     const weekEntries = await ctx.db
       .query("habitEntries")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), userId),
-          q.gte(q.field("date"), args.bounds.weekStart),
-          q.lte(q.field("date"), args.bounds.weekEnd),
-        ),
+      .withIndex("by_user_date", (q) =>
+        q
+          .eq("userId", userId)
+          .gte("date", args.bounds.weekStart)
+          .lte("date", args.bounds.weekEnd),
       )
       .collect();
 
     const monthEntries = await ctx.db
       .query("habitEntries")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), userId),
-          q.gte(q.field("date"), args.bounds.monthStart),
-          q.lte(q.field("date"), args.bounds.monthEnd),
-        ),
+      .withIndex("by_user_date", (q) =>
+        q
+          .eq("userId", userId)
+          .gte("date", args.bounds.monthStart)
+          .lte("date", args.bounds.monthEnd),
       )
       .collect();
 

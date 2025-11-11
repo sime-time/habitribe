@@ -10,13 +10,13 @@ export const createDailyHabitEntries = internalMutation({
     // get all the daily habits in the database
     const dailyHabits = await ctx.db
       .query("habits")
-      .filter((q) => q.eq(q.field("schedule.frequency"), "daily"))
+      .withIndex("by_frequency", (q) => q.eq("schedule.frequency", "daily"))
       .collect();
 
     // get today's habit entries
     const entries = await ctx.db
       .query("habitEntries")
-      .filter((q) => q.eq(q.field("date"), date))
+      .withIndex("by_date", (q) => q.eq("date", date))
       .collect();
 
     let created: number = 0;
@@ -67,7 +67,7 @@ export const createWeeklyHabitEntries = internalMutation({
 
     const weeklyHabits = await ctx.db
       .query("habits")
-      .filter((q) => q.eq(q.field("schedule.frequency"), "weekly"))
+      .withIndex("by_frequency", (q) => q.eq("schedule.frequency", "weekly"))
       .collect();
 
     const { start, end } = getWeekBounds(today);
@@ -75,9 +75,7 @@ export const createWeeklyHabitEntries = internalMutation({
     // get entries within this week's bounds (monday and sunday)
     const entries = await ctx.db
       .query("habitEntries")
-      .filter((q) =>
-        q.and(q.gte(q.field("date"), start), q.lte(q.field("date"), end)),
-      )
+      .withIndex("by_date", (q) => q.gte("date", start).lte("date", end))
       .collect();
 
     let created = 0;
@@ -112,7 +110,7 @@ export const createMonthlyHabitEntries = internalMutation({
 
     const monthlyHabits = await ctx.db
       .query("habits")
-      .filter((q) => q.eq(q.field("schedule.frequency"), "monthly"))
+      .withIndex("by_frequency", (q) => q.eq("schedule.frequency", "monthly"))
       .collect();
 
     const { start, end } = getMonthBounds(today);
@@ -120,9 +118,7 @@ export const createMonthlyHabitEntries = internalMutation({
     // get entries created on the first of the month
     const entries = await ctx.db
       .query("habitEntries")
-      .filter((q) =>
-        q.and(q.gte(q.field("date"), start), q.lte(q.field("date"), end)),
-      )
+      .withIndex("by_date", (q) => q.gte("date", start).lte("date", end))
       .collect();
 
     let created = 0;

@@ -8,7 +8,7 @@ export const deleteHabit = mutation({
     // delete all reminders linked to this habit
     const reminders = await ctx.db
       .query("reminders")
-      .filter((q) => q.eq(q.field("habitId"), args.id))
+      .withIndex("by_habit", (q) => q.eq("habitId", args.id))
       .collect();
 
     for (const reminder of reminders) {
@@ -18,7 +18,7 @@ export const deleteHabit = mutation({
     // delete all habit entries linked to this habit
     const entries = await ctx.db
       .query("habitEntries")
-      .filter((q) => q.eq(q.field("habitId"), args.id))
+      .withIndex("by_habit", (q) => q.eq("habitId", args.id))
       .collect();
 
     for (const entry of entries) {
@@ -28,7 +28,7 @@ export const deleteHabit = mutation({
     // delete all proofs linked to this habit
     const proofs = await ctx.db
       .query("proofs")
-      .filter((q) => q.eq(q.field("habitId"), args.id))
+      .withIndex("by_habit", (q) => q.eq("habitId", args.id))
       .collect();
 
     for (const proof of proofs) {

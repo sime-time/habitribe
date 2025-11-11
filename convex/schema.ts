@@ -25,14 +25,21 @@ export default defineSchema({
         v.array(v.number()), // 0=Sunday, 1=Monday, etc.
       ),
     }),
-  }),
+  })
+    .index("by_user", ["userId"])
+    .index("by_frequency", ["schedule.frequency"]),
 
   habitEntries: defineTable({
     habitId: v.id("habits"),
     userId: v.id("users"),
     date: v.string(), // "YYYY-MM-DD" format
     progress: v.number(),
-  }),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_date", ["userId", "date"])
+    .index("by_habit", ["habitId"])
+    .index("by_habit_date", ["habitId", "date"])
+    .index("by_date", ["date"]),
 
   proofs: defineTable({
     userId: v.id("users"),
@@ -42,6 +49,7 @@ export default defineSchema({
     key: v.string(), // R2 storage key
     caption: v.optional(v.string()),
   })
+    .index("by_habit", ["habitId"])
     .index("by_user_date", ["userId", "date"])
     .index("by_habit_entry", ["habitEntryId"]),
 
@@ -49,7 +57,7 @@ export default defineSchema({
     habitId: v.id("habits"),
     userId: v.id("users"),
     time: v.string(), // "HH:mm" format (24-hour)
-  }),
+  }).index("by_habit", ["habitId"]),
 
   proofMethods: defineTable({
     name: v.string(),

@@ -21,7 +21,7 @@ export const getHabitReminders = query({
   handler: async (ctx, args) => {
     const reminders = await ctx.db
       .query("reminders")
-      .filter((q) => q.eq(q.field("habitId"), args.habitId))
+      .withIndex("by_habit", (q) => q.eq("habitId", args.habitId))
       .order("desc")
       .collect();
     return reminders;
@@ -122,7 +122,7 @@ export const getHabitActivity = query({
     // get all user habits
     const habits = await ctx.db
       .query("habits")
-      .filter((q) => q.eq(q.field("userId"), userId))
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .collect();
 
     // fetch heatmap data for each habit in parallel
@@ -130,13 +130,11 @@ export const getHabitActivity = query({
       habits.map(async (habit) => {
         const entries = await ctx.db
           .query("habitEntries")
-          .filter((q) =>
-            q.and(
-              q.eq(q.field("userId"), userId),
-              q.eq(q.field("habitId"), habit._id),
-              q.gte(q.field("date"), args.startDate),
-              q.lte(q.field("date"), args.endDate),
-            ),
+          .withIndex("by_habit_date", (q) =>
+            q
+              .eq("habitId", habit._id)
+              .gte("date", args.startDate)
+              .lte("date", args.endDate),
           )
           .collect();
 

@@ -17,41 +17,39 @@ export const groupHabitEntriesByFrequency = internalQuery({
     // get all the user habits
     const habits = await ctx.db
       .query("habits")
-      .filter((q) => q.eq(q.field("userId"), args.userId))
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
       .collect();
 
-    // get all habit entries in this current period
-    const todayEntries = await ctx.db
+    // determine the widest range needed to fetch one time
+    const rangeStart = // check if week begins before month starts
+      args.bounds.weekStart < args.bounds.monthStart
+        ? args.bounds.weekStart
+        : args.bounds.monthStart;
+
+    const rangeEnd = // check if week ends after month ends
+      args.bounds.weekEnd > args.bounds.monthEnd
+        ? args.bounds.weekEnd
+        : args.bounds.monthEnd;
+
+    const currentEntries = await ctx.db
       .query("habitEntries")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), args.userId),
-          q.eq(q.field("date"), args.date),
-        ),
+      .withIndex("by_user_date", (q) =>
+        q
+          .eq("userId", args.userId)
+          .gte("date", rangeStart)
+          .lte("date", rangeEnd),
       )
       .collect();
 
-    const weekEntries = await ctx.db
-      .query("habitEntries")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), args.userId),
-          q.gte(q.field("date"), args.bounds.weekStart),
-          q.lte(q.field("date"), args.bounds.weekEnd),
-        ),
-      )
-      .collect();
+    // filter all habit entries in this current period
+    const todayEntries = currentEntries.filter((e) => e.date === args.date);
 
-    const monthEntries = await ctx.db
-      .query("habitEntries")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("userId"), args.userId),
-          q.gte(q.field("date"), args.bounds.monthStart),
-          q.lte(q.field("date"), args.bounds.monthEnd),
-        ),
-      )
-      .collect();
+    const weekEntries = currentEntries.filter(
+      (e) => e.date >= args.bounds.weekStart && e.date <= args.bounds.weekEnd,
+    );
+    const monthEntries = currentEntries.filter(
+      (e) => e.date >= args.bounds.monthStart && e.date <= args.bounds.monthEnd,
+    );
 
     // use maps for quick lookups in habit loop
     const todayEntryMap = new Map(todayEntries.map((e) => [e.habitId, e]));
