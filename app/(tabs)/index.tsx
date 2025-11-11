@@ -76,7 +76,7 @@ export default function Index() {
             style={[s.p2]}
           >
             <Ionicons
-              name={showCharts ? "calendar" : "stats-chart"}
+              name={showCharts ? "list" : "bar-chart"}
               size={24}
               color={colors.foreground}
             />

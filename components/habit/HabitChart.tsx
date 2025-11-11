@@ -64,11 +64,7 @@ export default function HabitChart({
 
   /* Weekly variant (bar chart) */
   const renderWeeklyVariant = () => {
-    const fullActivity = generateFullActivityRange(
-      startDate,
-      endDate,
-      activity,
-    );
+    const fullActivity = generateFullActivityRange(endDate, numDays, activity);
     const weeks = groupActivityIntoWeeks(fullActivity);
     const valuePerWeek = aggregateWeekValues(weeks);
 
@@ -152,6 +148,7 @@ export default function HabitChart({
               donut={true}
               radius={spacing[11]}
               innerRadius={spacing[8]}
+              innerCircleColor={colors.card}
               centerLabelComponent={() => (
                 <Text style={[c.textForeground, s.textSm, s.fontSemibold]}>
                   {new Date(`${chart.month}-02`).toLocaleDateString("en-US", {

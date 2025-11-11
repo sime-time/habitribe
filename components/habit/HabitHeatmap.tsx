@@ -9,14 +9,7 @@ import {
   generateFullActivityRange,
   getColorFromIntensity,
   groupActivityIntoWeeks,
-  shiftDate,
 } from "@/utils/chartHelper";
-import {
-  calculatePaddingForWeekAlignment,
-  calculateStartDateFromNumDays,
-  formatLocalDate,
-  parseLocalDate,
-} from "@/utils/dateHelper";
 
 const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -57,20 +50,7 @@ export default function HabitHeatmap({
   const c = createColorStyles(colors);
   const accentColor = color || colors.primary;
 
-  const startDate = calculateStartDateFromNumDays(endDate, numDays);
-
-  const paddingDays = calculatePaddingForWeekAlignment(startDate);
-
-  // shift back to padded start date (for alignment to Monday)
-  const paddedStartDate = formatLocalDate(
-    shiftDate(parseLocalDate(startDate), -paddingDays),
-  );
-
-  const fullActivity = generateFullActivityRange(
-    paddedStartDate,
-    endDate,
-    data,
-  );
+  const fullActivity = generateFullActivityRange(endDate, numDays, data);
 
   const weekData = groupActivityIntoWeeks(fullActivity);
 

@@ -2,20 +2,41 @@ import type { Activity } from "@/types/HabitTypes";
 import { formatLocalDate, parseLocalDate } from "./dateHelper";
 
 /**
- * Generate array of activities from startDate to endDate (inclusive)
- * Fills in missing dates with value of 0
- * @param startDate - YYYY-MM-DD format
+ * Generate array of activities from the first Monday within numDays to endDate.
+ * Fills in the missing dates with a value of 0 to complete the date range.
+ * This ensures all weeks are complete (Mon-Sun) without padding extra empty days.
+ * @param numDays - Number of days to look back
  * @param endDate - YYYY-MM-DD format
  * @param activity - Array of existing activity items
- * @returns array of activities for all dates in range
+ * @returns array of activities for all dates in range, starting from first monday in numDays
  */
 export function generateFullActivityRange(
-  startDate: string,
   endDate: string,
+  numDays: number,
   activity: Activity[],
 ): Activity[] {
-  const startingDate = parseLocalDate(startDate);
   const endingDate = parseLocalDate(endDate);
+
+  const tempStartDate = new Date(endingDate);
+  tempStartDate.setDate(endingDate.getDate() - (numDays - 1));
+
+  // find the first monday on or after the temporary start date
+  const dayOfWeek = tempStartDate.getDay();
+  const daysUntilMonday = () => {
+    if (dayOfWeek === 1) {
+      // if monday, no date change
+      return 0;
+    } else if (dayOfWeek === 0) {
+      // if sunday, tomorrow is monday
+      return 1;
+    } else {
+      // if tuesday, next monday is in 6 days, etc.
+      return 8 - dayOfWeek;
+    }
+  };
+
+  const startingDate = new Date(tempStartDate);
+  startingDate.setDate(tempStartDate.getDate() + daysUntilMonday());
 
   const dayDifference =
     Math.ceil(
