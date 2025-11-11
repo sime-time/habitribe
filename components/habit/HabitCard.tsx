@@ -37,11 +37,11 @@ export default function HabitCard({
       ]}
     >
       {/* Header: Icon + Name + Streak/Description */}
-      <Pressable
-        onPress={() => router.navigate(`/habit/form?id=${habit._id}`)}
-        style={[s.flexRow, s.justifyBetween, s.itemsCenter]}
-      >
-        <View style={[s.flexRow, s.itemsCenter, s.gap3]}>
+      <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
+        <Pressable
+          onPress={() => router.navigate(`/habit/form?id=${habit._id}`)}
+          style={[s.flexRow, s.itemsCenter, s.gap3]}
+        >
           <View
             style={[
               s.p2,
@@ -68,14 +68,14 @@ export default function HabitCard({
               )}
             </Text>
           </View>
-        </View>
+        </Pressable>
 
         <HabitCheckbox
           habit={habit}
           entry={entry}
           proofMethodType={proofMethodType}
         />
-      </Pressable>
+      </View>
 
       {children}
     </View>

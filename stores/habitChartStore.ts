@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { formatLocalDate, getTodayDateString } from "@/utils/dateHelper";
 
+const DEFAULT_NUM_DAYS = 253;
+
 interface HabitChartStore {
   endDate: string;
   numDays: number;
@@ -12,7 +14,7 @@ interface HabitChartStore {
 
 export const useHabitChartStore = create<HabitChartStore>((set) => ({
   endDate: getTodayDateString(),
-  numDays: 365,
+  numDays: DEFAULT_NUM_DAYS,
   showCharts: false,
   setShowCharts: (show: boolean) => {
     set({
@@ -30,7 +32,7 @@ export const useHabitChartStore = create<HabitChartStore>((set) => ({
   reset: () => {
     set({
       endDate: getTodayDateString(),
-      numDays: 365,
+      numDays: DEFAULT_NUM_DAYS,
       showCharts: false,
     });
   },

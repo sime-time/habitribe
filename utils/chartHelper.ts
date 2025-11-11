@@ -39,7 +39,7 @@ export function generateFullActivityRange(
   startingDate.setDate(tempStartDate.getDate() + daysUntilMonday());
 
   const dayDifference =
-    Math.ceil(
+    Math.floor(
       (endingDate.getTime() - startingDate.getTime()) / (1000 * 60 * 60 * 24),
     ) + 1; // add 1 to include the ending date
 

@@ -63,38 +63,9 @@ export function getWeekMonthBounds(date: Date) {
 }
 
 /**
- * Start date should be the closest monday 365 days ago
- * End date should be today
- * @param date
- * @returns start and end dates
- */
-export function getYearBounds(date: Date): { start: string; end: string } {
-  // calculate date 365 days ago
-  const startDate = new Date(date);
-  startDate.setDate(date.getDate() - 365);
-
-  // find the closest monday to 365 days ago
-  const dayOfWeek = startDate.getDay();
-
-  // calculate offset to previous monday
-  // dayOfWeek: 0=Sunday, 1=Monday, 2=Tuesday, ..., 6=Saturday
-  // to get to monday: if we're on monday (1), offset is 0
-  // if we're on sunday (0), offset is -6 (go back to previous monday)
-  // otherwise, offset is (dayOfWeek - 1) to go back to the previous monday
-  const mondayOffset = dayOfWeek === 0 ? -6 : dayOfWeek - 1;
-
-  startDate.setDate(startDate.getDate() - mondayOffset);
-
-  return {
-    start: formatLocalDate(startDate),
-    end: formatLocalDate(date),
-  };
-}
-
-/**
  * Calculate start date from end date and number of days
  * @param endDate - The end date (inclusive)
- * @param numDays - Number of days to include (365 = 365 days)
+ * @param numDays - Number of days to include
  * @returns Start date as YYYY-MM-DD string
  */
 export function calculateStartDateFromNumDays(
