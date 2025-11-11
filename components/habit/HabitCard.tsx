@@ -70,7 +70,11 @@ export default function HabitCard({
           </View>
         </View>
 
-        <HabitCheckbox entry={entry} proofMethodType={proofMethodType} />
+        <HabitCheckbox
+          habit={habit}
+          entry={entry}
+          proofMethodType={proofMethodType}
+        />
       </Pressable>
 
       {children}

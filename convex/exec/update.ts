@@ -32,24 +32,6 @@ export const editHabit = mutation({
   },
 });
 
-export const toggleHabitEntry = mutation({
-  args: { id: v.id("habitEntries") },
-  handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-    if (!userId) throw new ConvexError("Unauthorized");
-
-    const entry = await ctx.db.get(args.id);
-    if (!entry) throw new ConvexError("Entry not found");
-
-    // toggle between 0 and 1 for selfVerify habits
-    const newProgress = entry.progress === 0 ? 1 : 0;
-
-    await ctx.db.patch(args.id, {
-      progress: newProgress,
-    });
-  },
-});
-
 export const editReminder = mutation({
   args: { id: v.id("reminders"), time: v.string() },
   handler: async (ctx, args) => {
@@ -59,6 +41,36 @@ export const editReminder = mutation({
     }
     await ctx.db.patch(args.id, {
       time: args.time,
+    });
+  },
+});
+
+export const incrementHabitEntryProgress = mutation({
+  args: { id: v.id("habitEntries") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("Unauthorized");
+
+    const entry = await ctx.db.get(args.id);
+    if (!entry) throw new ConvexError("Entry not found");
+
+    await ctx.db.patch(args.id, {
+      progress: entry.progress + 1,
+    });
+  },
+});
+
+export const resetHabitEntryProgress = mutation({
+  args: { id: v.id("habitEntries") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) throw new ConvexError("Unauthorized");
+
+    const entry = await ctx.db.get(args.id);
+    if (!entry) throw new ConvexError("Entry not found");
+
+    await ctx.db.patch(args.id, {
+      progress: 0,
     });
   },
 });

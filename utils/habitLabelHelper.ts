@@ -56,12 +56,14 @@ export function getProofMethodRequirements(
   return proofMethod?.requirements || "Requires Method of Proof";
 }
 
-export function calculateIsCompleted(progress: number, habit: Habit) {
+export function isComplete(progress: number | undefined, habit: Habit) {
+  if (!progress) return false;
+
   // get the target count from habit schedule pattern
   const target: number = Array.isArray(habit?.schedule.pattern)
     ? habit.schedule.pattern.length
     : habit.schedule.pattern;
 
-  const isCompleted = progress >= target;
-  return isCompleted;
+  const isComplete = progress >= target;
+  return isComplete;
 }

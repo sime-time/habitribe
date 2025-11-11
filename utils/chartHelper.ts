@@ -168,7 +168,7 @@ export function getColorFromIntensity(
 ): string {
   const colorShades = [
     `${borderColor}80`,
-    `${accentColor}20`,
+    `${accentColor}40`,
     `${accentColor}60`,
     `${accentColor}80`,
     `${accentColor}`,
