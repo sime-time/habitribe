@@ -61,7 +61,7 @@ export function isComplete(progress: number | undefined, habit: Habit) {
 
   // get the target count from habit schedule pattern
   const target: number = Array.isArray(habit?.schedule.pattern)
-    ? habit.schedule.pattern.length
+    ? 1
     : habit.schedule.pattern;
 
   const isComplete = progress >= target;

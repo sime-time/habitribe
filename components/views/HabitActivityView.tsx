@@ -82,7 +82,7 @@ export default function HabitActivityView({
                       activity={activity}
                       maxValue={
                         Array.isArray(d.habit.schedule.pattern)
-                          ? d.habit.schedule.pattern.length
+                          ? 1
                           : Number(d.habit.schedule.pattern)
                       }
                       color={d.habit.color}
