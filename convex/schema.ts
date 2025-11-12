@@ -41,6 +41,12 @@ export default defineSchema({
     .index("by_habit_date", ["habitId", "date"])
     .index("by_date", ["date"]),
 
+  reminders: defineTable({
+    habitId: v.id("habits"),
+    userId: v.id("users"),
+    time: v.string(), // "HH:mm" format (24-hour)
+  }).index("by_habit", ["habitId"]),
+
   proofs: defineTable({
     userId: v.id("users"),
     habitId: v.id("habits"),
@@ -52,12 +58,6 @@ export default defineSchema({
     .index("by_habit", ["habitId"])
     .index("by_user_date", ["userId", "date"]),
 
-  reminders: defineTable({
-    habitId: v.id("habits"),
-    userId: v.id("users"),
-    time: v.string(), // "HH:mm" format (24-hour)
-  }).index("by_habit", ["habitId"]),
-
   proofMethods: defineTable({
     name: v.string(),
     type: v.union(v.literal("selfVerify"), v.literal("camera")),
@@ -65,4 +65,16 @@ export default defineSchema({
     description: v.string(),
     requirements: v.string(),
   }),
+
+  streaks: defineTable({
+    habitId: v.id("habits"),
+    userId: v.id("users"),
+    startDate: v.string(),
+    endDate: v.string(),
+    length: v.number(),
+    active: v.boolean(),
+  })
+    .index("by_habit", ["habitId"])
+    .index("by_user", ["userId"])
+    .index("by_user_habit", ["userId", "habitId"]),
 });

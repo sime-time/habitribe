@@ -55,7 +55,7 @@ export const getFlatHabitEntries = query({
       weeklyHabits: HabitWithEntry[];
       monthlyHabits: HabitWithEntry[];
     } = await ctx.runQuery(
-      internal.entries.helpers.groupHabitEntriesByFrequency,
+      internal.utils.entryHelper.groupHabitEntriesByFrequency,
       {
         date: args.date,
         weekday: args.weekday,
@@ -93,7 +93,7 @@ export const getGroupedHabitEntries = query({
       weeklyHabits: HabitWithEntry[];
       monthlyHabits: HabitWithEntry[];
     } = await ctx.runQuery(
-      internal.entries.helpers.groupHabitEntriesByFrequency,
+      internal.utils.entryHelper.groupHabitEntriesByFrequency,
       {
         date: args.date,
         weekday: args.weekday,

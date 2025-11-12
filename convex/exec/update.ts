@@ -27,31 +27,8 @@ export const editHabit = mutation({
   },
   handler: async (ctx, args) => {
     // destructure the args to separate habit id
-    const { id, ...updateHabit } = args;
-
-    // If frequency is being changed, delete all existing entries to avoid conflicts
-    // For example: weekly habit with entry on "2025-11-10" (Monday)
-    // If switched to daily, daily entries are created on individual dates
-    // If switched back to weekly, we'd have both the original weekly entry and new daily entries in the same week
-    if (updateHabit.schedule) {
-      const habit = await ctx.db.get(id);
-      if (
-        habit &&
-        habit.schedule.frequency !== updateHabit.schedule.frequency
-      ) {
-        // frequency is changing, delete all entries for this habit
-        const entries = await ctx.db
-          .query("habitEntries")
-          .withIndex("by_habit", (q) => q.eq("habitId", id))
-          .collect();
-
-        for (const entry of entries) {
-          await ctx.db.delete(entry._id);
-        }
-      }
-    }
-
-    await ctx.db.patch(id, updateHabit);
+    const { id, ...updateData } = args;
+    await ctx.db.patch(id, updateData);
   },
 });
 
@@ -77,6 +54,7 @@ export const incrementHabitEntryProgress = mutation({
     const entry = await ctx.db.get(args.id);
     if (!entry) throw new ConvexError("Entry not found");
 
+    // increment progress
     await ctx.db.patch(args.id, {
       progress: entry.progress + 1,
     });

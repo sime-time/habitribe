@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import { useEffect } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { Switch, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { s } from "@/assets/styles/utility.styles";
 import HabitActivityView from "@/components/views/HabitActivityView";
@@ -71,16 +71,23 @@ export default function Index() {
         {/* HEADER */}
         <View style={[s.p4, s.pt8, s.flexRow, s.justifyBetween, s.itemsCenter]}>
           {/* TOGGLE VIEW BUTTON */}
-          <TouchableOpacity
-            onPress={() => setShowCharts(!showCharts)}
-            style={[s.p2]}
-          >
+          <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
+            <Switch
+              value={showCharts}
+              onChange={() => setShowCharts(!showCharts)}
+              thumbColor={colors.primaryForeground}
+              trackColor={{
+                false: colors.border,
+                true: colors.primary,
+              }}
+              ios_backgroundColor={colors.border}
+            />
             <Ionicons
-              name={showCharts ? "list" : "bar-chart"}
+              name={showCharts ? "bar-chart" : "list"}
               size={24}
               color={colors.foreground}
             />
-          </TouchableOpacity>
+          </View>
 
           {/* ADD HABIT BUTTON */}
           <View style={[s.flexRow, s.itemsCenter, s.gap4]}>

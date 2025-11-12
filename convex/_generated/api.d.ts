@@ -11,14 +11,14 @@
 import type * as auth from "../auth.js";
 import type * as bucket from "../bucket.js";
 import type * as crons from "../crons.js";
-import type * as entries_cron from "../entries/cron.js";
-import type * as entries_helpers from "../entries/helpers.js";
 import type * as exec_create from "../exec/create.js";
 import type * as exec_delete from "../exec/delete.js";
 import type * as exec_read from "../exec/read.js";
 import type * as exec_update from "../exec/update.js";
 import type * as http from "../http.js";
-import type * as resendOTP from "../resendOTP.js";
+import type * as utils_cronHelper from "../utils/cronHelper.js";
+import type * as utils_emailHelper from "../utils/emailHelper.js";
+import type * as utils_entryHelper from "../utils/entryHelper.js";
 
 import type {
   ApiFromModules,
@@ -38,14 +38,14 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   bucket: typeof bucket;
   crons: typeof crons;
-  "entries/cron": typeof entries_cron;
-  "entries/helpers": typeof entries_helpers;
   "exec/create": typeof exec_create;
   "exec/delete": typeof exec_delete;
   "exec/read": typeof exec_read;
   "exec/update": typeof exec_update;
   http: typeof http;
-  resendOTP: typeof resendOTP;
+  "utils/cronHelper": typeof utils_cronHelper;
+  "utils/emailHelper": typeof utils_emailHelper;
+  "utils/entryHelper": typeof utils_entryHelper;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

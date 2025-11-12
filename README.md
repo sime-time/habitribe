@@ -77,7 +77,7 @@ Habitribe solves the **timezone problem** that plagues most habit trackers with 
              ▼
 ┌─────────────────────────────────────────────────┐
 │ Cron Jobs (Backup Safety Net)                   │
-│ • Runs at UTC 00:05 (daily, weekly, monthly)    │
+│ • Runs at UTC 00:01 (daily, weekly, monthly)    │
 │ • Idempotent: prevents duplicates               │
 │ • Ensures consistency across timezones          │
 └─────────────────────────────────────────────────┘
