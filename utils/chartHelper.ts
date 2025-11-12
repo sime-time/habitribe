@@ -96,7 +96,7 @@ export function groupActivityIntoWeeks(activity: Activity[]): Activity[][] {
 export function aggregateWeekValues(weeks: Activity[][]): { value: number }[] {
   const weekValues = weeks.map((weekActivity) => {
     // sum up all the values of the week
-    const weekTotal = weekActivity.reduce((sum, a) => {
+    const weekTotal = weekActivity.reduce<number>((sum, a) => {
       return sum + a.value;
     }, 0);
     return { value: weekTotal };
@@ -143,15 +143,6 @@ export function calculateIntensity(value: number, maxValue: number): number {
   if (maxValue === 0) return 0; // edge case when no activity exists
   if (maxValue === value) return 1;
   return value / maxValue;
-}
-
-/**
- * Get max value from activity array
- * @param activity - array of dates and progress values
- * @returns maxium progress value in activity
- */
-export function getMaxActivityValue(activity: Activity[]): number {
-  return activity.reduce((a, b) => Math.max(a, b.value), -Infinity) || 0;
 }
 
 /**

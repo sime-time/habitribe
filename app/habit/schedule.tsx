@@ -27,6 +27,7 @@ export default function HabitSchedule() {
   const PATTERN_RANGE = Array.from({ length: 30 }, (_, i) => i + 2);
 
   const updateSchedule = useHabitFormStore((state) => state.updateSchedule);
+  const isEditMode = useHabitFormStore((state) => state.isEditMode);
 
   const frequency = useHabitFormStore(
     (state) => state.habitForm.schedule.frequency,
@@ -113,7 +114,10 @@ export default function HabitSchedule() {
                         s.justifyBetween,
                         s.itemsCenter,
                         s.h13,
+                        // editing a habit's frequency causes many issues, don't allow it to change
+                        isEditMode && item.data !== frequency && s.opacity25,
                       ]}
+                      disabled={isEditMode}
                       onPress={() => {
                         // set frequency and pattern simultaneously
                         updateSchedule({

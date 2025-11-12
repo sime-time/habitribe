@@ -50,8 +50,7 @@ export default defineSchema({
     caption: v.optional(v.string()),
   })
     .index("by_habit", ["habitId"])
-    .index("by_user_date", ["userId", "date"])
-    .index("by_habit_entry", ["habitEntryId"]),
+    .index("by_user_date", ["userId", "date"]),
 
   reminders: defineTable({
     habitId: v.id("habits"),

@@ -42,8 +42,14 @@ export default function HabitForm() {
   // "edit" mode when id is defined,
   // "create" mode when id is undefined
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const isEditMode = id !== undefined;
   const navigation = useNavigation();
+
+  // set isEditMode in store
+  const isEditMode = id !== undefined;
+  const setIsEditMode = useHabitFormStore((state) => state.setIsEditMode);
+  useEffect(() => {
+    setIsEditMode(isEditMode);
+  }, [isEditMode, setIsEditMode]);
 
   // Habit state
   const habitForm = useHabitFormStore((state) => state.habitForm);

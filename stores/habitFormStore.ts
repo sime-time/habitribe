@@ -47,6 +47,8 @@ interface HabitFormStore {
   setInitialForm: (habitData: HabitFormData) => void;
   resetForm: () => void;
   isDraftSaved: boolean;
+  isEditMode: boolean;
+  setIsEditMode: (value: boolean) => void;
 }
 
 export const useHabitFormStore = create<HabitFormStore>()(
@@ -61,6 +63,7 @@ export const useHabitFormStore = create<HabitFormStore>()(
       selectedIcon: "💪",
       selectedColor: iconColors[0],
       isDraftSaved: false,
+      isEditMode: false,
 
       // Core form actions
       updateForm(field, value) {
@@ -174,6 +177,12 @@ export const useHabitFormStore = create<HabitFormStore>()(
       setInitialForm(habitData: HabitFormData) {
         set({
           initialForm: habitData,
+        });
+      },
+
+      setIsEditMode(value: boolean) {
+        set({
+          isEditMode: value,
         });
       },
 
