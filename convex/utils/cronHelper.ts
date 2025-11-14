@@ -3,8 +3,8 @@ import { internalMutation } from "../_generated/server";
 
 export const createDailyHabitEntries = internalMutation({
   handler: async (ctx) => {
-    const today = new Date();
-    const date = today.toISOString().split("T")[0];
+    const date = new Date();
+    const today = date.toISOString().split("T")[0];
     const weekday = new Date(date).getDay(); // 0 = Sunday
 
     // get all the daily habits in the database
@@ -16,7 +16,7 @@ export const createDailyHabitEntries = internalMutation({
     // get today's habit entries
     const entries = await ctx.db
       .query("habitEntries")
-      .withIndex("by_date", (q) => q.eq("date", date))
+      .withIndex("by_date", (q) => q.eq("date", today))
       .collect();
 
     let created: number = 0;
@@ -24,7 +24,7 @@ export const createDailyHabitEntries = internalMutation({
     // decide which habits are "active" today
     for (const habit of dailyHabits) {
       // skip habits that haven't started yet
-      if (habit.startDate > date) continue;
+      if (habit.startDate > today) continue;
 
       let shouldCreate = false;
 
@@ -48,7 +48,7 @@ export const createDailyHabitEntries = internalMutation({
         await ctx.db.insert("habitEntries", {
           habitId: habit._id,
           userId: habit.userId,
-          date: date,
+          date: today,
           progress: 0,
         });
         created++;
@@ -62,15 +62,15 @@ export const createDailyHabitEntries = internalMutation({
 
 export const createWeeklyHabitEntries = internalMutation({
   handler: async (ctx) => {
-    const today = new Date();
-    const date = today.toISOString().split("T")[0];
+    const date = new Date();
+    const today = date.toISOString().split("T")[0];
 
     const weeklyHabits = await ctx.db
       .query("habits")
       .withIndex("by_frequency", (q) => q.eq("schedule.frequency", "weekly"))
       .collect();
 
-    const { start, end } = getWeekBounds(today);
+    const { start, end } = getWeekBounds(date);
 
     // get entries within this week's bounds (monday and sunday)
     const entries = await ctx.db
@@ -82,7 +82,7 @@ export const createWeeklyHabitEntries = internalMutation({
 
     for (const habit of weeklyHabits) {
       // skip habits that haven't started yet
-      if (habit.startDate > date) continue;
+      if (habit.startDate > today) continue;
 
       // check if entry already exists within the week's bounds
       const existingEntry = entries.find((e) => e.habitId === habit._id);
@@ -99,21 +99,21 @@ export const createWeeklyHabitEntries = internalMutation({
     }
     // logging
     console.log(`Created ${created} weekly habit entries for ${date}`);
-    return { created, date: date };
+    return { created, date: today };
   },
 });
 
 export const createMonthlyHabitEntries = internalMutation({
   handler: async (ctx) => {
-    const today = new Date();
-    const date = today.toISOString().split("T")[0];
+    const date = new Date();
+    const today = date.toISOString().split("T")[0];
 
     const monthlyHabits = await ctx.db
       .query("habits")
       .withIndex("by_frequency", (q) => q.eq("schedule.frequency", "monthly"))
       .collect();
 
-    const { start, end } = getMonthBounds(today);
+    const { start, end } = getMonthBounds(date);
 
     // get entries created on the first of the month
     const entries = await ctx.db
@@ -125,7 +125,7 @@ export const createMonthlyHabitEntries = internalMutation({
 
     for (const habit of monthlyHabits) {
       // skip habits that haven't started yet
-      if (habit.startDate > date) continue;
+      if (habit.startDate > today) continue;
 
       const existingEntry = entries.find((e) => e.habitId === habit._id);
 
@@ -140,7 +140,7 @@ export const createMonthlyHabitEntries = internalMutation({
       }
     }
     // logging
-    console.log(`Created ${created} monthly habit entries for ${date}`);
-    return { created, date: date };
+    console.log(`Created ${created} monthly habit entries for ${today}`);
+    return { created, date: today };
   },
 });

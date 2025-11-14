@@ -70,11 +70,12 @@ export default defineSchema({
     habitId: v.id("habits"),
     userId: v.id("users"),
     startDate: v.string(),
-    endDate: v.string(),
+    endDate: v.optional(v.string()),
     length: v.number(),
     active: v.boolean(),
   })
     .index("by_habit", ["habitId"])
     .index("by_user", ["userId"])
-    .index("by_user_habit", ["userId", "habitId"]),
+    .index("by_user_habit", ["userId", "habitId"])
+    .index("by_active_habit", ["habitId", "active"]),
 });

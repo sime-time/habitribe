@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
+import { internal } from "../_generated/api";
 import { mutation } from "../_generated/server";
 
 export const editHabit = mutation({
@@ -54,10 +55,27 @@ export const incrementHabitEntryProgress = mutation({
     const entry = await ctx.db.get(args.id);
     if (!entry) throw new ConvexError("Entry not found");
 
+    const newProgress = entry.progress + 1;
+
     // increment progress
     await ctx.db.patch(args.id, {
-      progress: entry.progress + 1,
+      progress: newProgress,
     });
+
+    const habit = await ctx.db.get(entry.habitId);
+    if (!habit) throw new ConvexError("Habit not found");
+
+    // determine target goal based on habit pattern
+    const target: number = Array.isArray(habit.schedule.pattern)
+      ? 1 // daily habit on specific weekdays needs only 1 completion
+      : habit.schedule.pattern; // for numeric pattern, use the pattern value as target
+
+    // if entry is completed (progress >= target), create or update streak
+    if (newProgress >= target) {
+      await ctx.runMutation(internal.utils.streakHelper.createOrUpdateStreak, {
+        entryId: args.id,
+      });
+    }
   },
 });
 
