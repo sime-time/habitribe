@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
+import { isComplete } from "@/utils/habitLabelHelper";
 import { mutation } from "../_generated/server";
 
 export const deleteHabit = mutation({
@@ -33,6 +34,16 @@ export const deleteHabit = mutation({
 
     for (const proof of proofs) {
       await ctx.db.delete(proof._id);
+    }
+
+    // delete all streaks linked to this habit
+    const streaks = await ctx.db
+      .query("streaks")
+      .withIndex("by_habit", (q) => q.eq("habitId", args.id))
+      .collect();
+
+    for (const streak of streaks) {
+      await ctx.db.delete(streak._id);
     }
 
     // delete the habit
@@ -74,15 +85,38 @@ export const deleteProof = mutation({
       throw new ConvexError("Proof does not belong to this user");
     }
 
+    const entry = await ctx.db.get(proof.habitEntryId);
+    if (!entry) throw new ConvexError("Entry not found");
+
+    const habit = await ctx.db.get(entry.habitId);
+    if (!habit) throw new ConvexError("Habit not found");
+
+    // if entry is currently complete, before decreasing the progress
+    if (isComplete(entry.progress, habit)) {
+      // decrement the streak, while keeping it active
+      const activeStreak = await ctx.db
+        .query("streaks")
+        .withIndex("by_active_habit", (q) =>
+          q.eq("habitId", habit._id).eq("active", true),
+        )
+        .first();
+
+      // check if this entry is part of the active streak
+      if (activeStreak && entry.date === activeStreak.endDate) {
+        // decrement but keep the streak active
+        await ctx.db.patch(activeStreak._id, {
+          length: Math.max(0, activeStreak.length - 1),
+          endDate: activeStreak.endDate,
+        });
+      }
+    }
+
+    // decrement entry progress
+    await ctx.db.patch(proof.habitEntryId, {
+      progress: Math.max(0, entry.progress - 1),
+    });
+
     // Delete the proof
     await ctx.db.delete(args.proofId);
-
-    // Decrement progress on the entry
-    const entry = await ctx.db.get(proof.habitEntryId);
-    if (entry) {
-      await ctx.db.patch(proof.habitEntryId, {
-        progress: Math.max(0, entry.progress - 1),
-      });
-    }
   },
 });

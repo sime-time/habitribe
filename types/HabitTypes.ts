@@ -13,7 +13,8 @@ export type HabitActivity = {
   habitId: Id<"habits">;
   activity: Activity[];
 };
-export type HabitWithEntry = {
+export type HabitWithEntryAndStreak = {
   habit: Doc<"habits">;
   entry: Doc<"habitEntries"> | null;
+  streak: Doc<"streaks"> | null;
 };

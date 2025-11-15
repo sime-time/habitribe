@@ -12,6 +12,7 @@ import { type Frequency, getScheduleLabel } from "@/utils/habitLabelHelper";
 interface HabitCardProps {
   habit: Doc<"habits">;
   entry: Doc<"habitEntries"> | null;
+  streak: Doc<"streaks"> | null;
   proofMethodType: string;
   children?: ReactNode;
 }
@@ -19,6 +20,7 @@ interface HabitCardProps {
 export default function HabitCard({
   habit,
   entry,
+  streak,
   proofMethodType,
   children,
 }: HabitCardProps) {
@@ -59,7 +61,7 @@ export default function HabitCard({
           </View>
           <View style={[s.flexCol, s.gap1]}>
             <Text style={[s.textBase, s.fontMedium, c.textForeground]}>
-              {habit.name}
+              {habit.name} ({streak?.length})
             </Text>
             <Text style={[s.textXs, c.textMuted]}>
               {getScheduleLabel(

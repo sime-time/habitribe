@@ -51,7 +51,7 @@ export default function HabitSelectSheet({
   }, [habitDate]); // only re-run when date changes
 
   // get today's habit entries
-  const flatHabitEntries = useQuery(api.exec.read.getFlatHabitEntries, {
+  const flatHabitEntries = useQuery(api.exec.read.getFlatHabitData, {
     date: habitDate,
     weekday,
     bounds,

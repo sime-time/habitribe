@@ -1,4 +1,5 @@
 import { getMonthBounds, getWeekBounds } from "@/utils/dateHelper";
+import { internal } from "../_generated/api";
 import { internalMutation } from "../_generated/server";
 
 export const createDailyHabitEntries = internalMutation({
@@ -45,18 +46,24 @@ export const createDailyHabitEntries = internalMutation({
       }
 
       if (shouldCreate) {
-        await ctx.db.insert("habitEntries", {
+        const entryId = await ctx.db.insert("habitEntries", {
           habitId: habit._id,
           userId: habit.userId,
           date: today,
           progress: 0,
         });
         created++;
+
+        // check if we need to break the streak
+        await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
+          entryId,
+          date: today,
+        });
       }
     }
     // logging
-    console.log(`Created ${created} daily habit entries for ${date}`);
-    return { created, date: date };
+    console.log(`Created ${created} daily habit entries for ${today}`);
+    return { created, date: today };
   },
 });
 
@@ -88,17 +95,23 @@ export const createWeeklyHabitEntries = internalMutation({
       const existingEntry = entries.find((e) => e.habitId === habit._id);
 
       if (!existingEntry) {
-        await ctx.db.insert("habitEntries", {
+        const entryId = await ctx.db.insert("habitEntries", {
           habitId: habit._id,
           userId: habit.userId,
           date: start, // Monday's date
           progress: 0,
         });
         created++;
+
+        // check if we need to break the streak
+        await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
+          entryId,
+          date: start,
+        });
       }
     }
     // logging
-    console.log(`Created ${created} weekly habit entries for ${date}`);
+    console.log(`Created ${created} weekly habit entries for ${today}`);
     return { created, date: today };
   },
 });
@@ -130,13 +143,19 @@ export const createMonthlyHabitEntries = internalMutation({
       const existingEntry = entries.find((e) => e.habitId === habit._id);
 
       if (!existingEntry) {
-        await ctx.db.insert("habitEntries", {
+        const entryId = await ctx.db.insert("habitEntries", {
           habitId: habit._id,
           userId: habit.userId,
           date: start, // start of the month
           progress: 0,
         });
         created++;
+
+        // check if we need to break the streak
+        await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
+          entryId,
+          date: start,
+        });
       }
     }
     // logging

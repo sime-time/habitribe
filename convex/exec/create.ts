@@ -1,5 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
+import { internal } from "../_generated/api";
 import { mutation } from "../_generated/server";
 
 export const addHabit = mutation({
@@ -163,13 +164,19 @@ export const addMissingEntries = mutation({
               habit.schedule.pattern.includes(args.weekday));
 
           if (!entry && shouldExist) {
-            await ctx.db.insert("habitEntries", {
+            const entryId = await ctx.db.insert("habitEntries", {
               habitId: habit._id,
               userId: userId,
               date: args.date,
               progress: 0,
             });
             created++;
+
+            // check if we need to break the streak
+            await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
+              entryId,
+              date: args.date,
+            });
           }
           break;
         }
@@ -178,13 +185,19 @@ export const addMissingEntries = mutation({
           const weekEntry = weeklyEntryMap.get(habit._id);
           if (!weekEntry) {
             // create habit entry on the current week's start date (monday)
-            await ctx.db.insert("habitEntries", {
+            const entryId = await ctx.db.insert("habitEntries", {
               habitId: habit._id,
               userId: userId,
               date: args.bounds.weekStart,
               progress: 0,
             });
             created++;
+
+            // check if we need to break the streak
+            await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
+              entryId,
+              date: args.bounds.weekStart,
+            });
           }
           break;
         }
@@ -192,13 +205,19 @@ export const addMissingEntries = mutation({
           // check if today is in a month that already has an entry
           const monthEntry = monthlyEntryMap.get(habit._id);
           if (!monthEntry) {
-            await ctx.db.insert("habitEntries", {
+            const entryId = await ctx.db.insert("habitEntries", {
               habitId: habit._id,
               userId: userId,
               date: args.bounds.monthStart,
               progress: 0,
             });
             created++;
+
+            // check if we need to break the streak
+            await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
+              entryId,
+              date: args.bounds.monthStart,
+            });
           }
           break;
         }
@@ -233,9 +252,29 @@ export const addProof = mutation({
     });
 
     // increment progress on the habit entry
+    const newProgress = entry.progress + 1;
+
     await ctx.db.patch(args.habitEntryId, {
-      progress: entry.progress + 1,
+      progress: newProgress,
     });
+
+    const habit = await ctx.db.get(entry.habitId);
+    if (habit) {
+      // determine target goal based on habit pattern
+      const target: number = Array.isArray(habit.schedule.pattern)
+        ? 1 // daily habit on specific weekdays needs only 1 completion
+        : habit.schedule.pattern;
+
+      // if entry is completed (progress >= target), create or update streak
+      if (newProgress >= target) {
+        await ctx.runMutation(
+          internal.utils.streakHelper.createOrIncrementStreak,
+          {
+            entryId: args.habitEntryId,
+          },
+        );
+      }
+    }
 
     console.log(`inserted proof: ${proofId}`);
     return proofId;

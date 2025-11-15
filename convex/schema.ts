@@ -70,7 +70,7 @@ export default defineSchema({
     habitId: v.id("habits"),
     userId: v.id("users"),
     startDate: v.string(),
-    endDate: v.optional(v.string()),
+    endDate: v.string(),
     length: v.number(),
     active: v.boolean(),
   })

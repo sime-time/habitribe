@@ -33,7 +33,7 @@ export default function Index() {
   const startDate = calculateStartDateFromNumDays(currentDate, numDays);
 
   // current period entries (always loaded, grouped by frequency)
-  const currentHabitEntries = useQuery(api.exec.read.getGroupedHabitEntries, {
+  const currentHabitEntries = useQuery(api.exec.read.getGroupedHabitData, {
     date: currentDate,
     weekday,
     bounds,

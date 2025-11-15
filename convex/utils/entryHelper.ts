@@ -65,29 +65,50 @@ export const groupHabitEntriesByFrequency = internalQuery({
       // skip if habit hasn't started yet
       if (habit.startDate > args.date) continue;
 
+      // get the active streak for this habit
+      const activeStreak = await ctx.db
+        .query("streaks")
+        .withIndex("by_active_habit", (q) =>
+          q.eq("habitId", habit._id).eq("active", true),
+        )
+        .first();
+
       switch (habit.schedule.frequency) {
         case "daily": {
           // check if today aligns with the habit's pattern
           const entry = todayEntryMap.get(habit._id);
+
           if (
             Number.isInteger(habit.schedule.pattern) ||
             (Array.isArray(habit.schedule.pattern) &&
               habit.schedule.pattern.includes(args.weekday))
           ) {
-            dailyHabits.push({ habit: habit, entry: entry || null });
+            dailyHabits.push({
+              habit: habit,
+              entry: entry || null,
+              streak: activeStreak || null,
+            });
           }
           break;
         }
         case "weekly": {
           // check if today is in a week that already has an entry
           const weekEntry = weeklyEntryMap.get(habit._id);
-          weeklyHabits.push({ habit, entry: weekEntry || null });
+          weeklyHabits.push({
+            habit,
+            entry: weekEntry || null,
+            streak: activeStreak || null,
+          });
           break;
         }
         case "monthly": {
           // check if today is in a month that already has an entry
           const monthEntry = monthlyEntryMap.get(habit._id);
-          monthlyHabits.push({ habit, entry: monthEntry || null });
+          monthlyHabits.push({
+            habit,
+            entry: monthEntry || null,
+            streak: activeStreak || null,
+          });
           break;
         }
       }

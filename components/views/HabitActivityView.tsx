@@ -8,7 +8,7 @@ import type { Id } from "@/convex/_generated/dataModel";
 import type {
   Activity,
   HabitActivity,
-  HabitWithEntry,
+  HabitWithEntryAndStreak,
   ProofMethod,
   ProofMethodId,
 } from "@/types/HabitTypes";
@@ -22,9 +22,9 @@ export function createActivityMap(
 
 interface HabitActivityViewProps {
   date: Date;
-  dailyHabits: HabitWithEntry[];
-  weeklyHabits: HabitWithEntry[];
-  monthlyHabits: HabitWithEntry[];
+  dailyHabits: HabitWithEntryAndStreak[];
+  weeklyHabits: HabitWithEntryAndStreak[];
+  monthlyHabits: HabitWithEntryAndStreak[];
   proofMethodMap: Map<ProofMethodId, ProofMethod>;
 
   // Chart-specific data
@@ -72,6 +72,7 @@ export default function HabitActivityView({
                 <HabitCard
                   habit={d.habit}
                   entry={d.entry}
+                  streak={d.streak}
                   proofMethodType={
                     proofMethodMap.get(d.habit.proofMethodId)?.type as string
                   }
@@ -109,6 +110,7 @@ export default function HabitActivityView({
                 <HabitCard
                   habit={w.habit}
                   entry={w.entry}
+                  streak={w.streak}
                   proofMethodType={
                     proofMethodMap.get(w.habit.proofMethodId)?.type as string
                   }
@@ -146,6 +148,7 @@ export default function HabitActivityView({
                 <HabitCard
                   habit={m.habit}
                   entry={m.entry}
+                  streak={m.streak}
                   proofMethodType={
                     proofMethodMap.get(m.habit.proofMethodId)?.type as string
                   }

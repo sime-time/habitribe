@@ -1,6 +1,9 @@
+import type { GenericMutationCtx } from "convex/server";
 import { ConvexError, v } from "convex/values";
-import { getWeekBounds } from "@/utils/dateHelper";
+import { isComplete } from "@/utils/habitLabelHelper";
+import type { Id } from "../_generated/dataModel";
 import { internalMutation } from "../_generated/server";
+
 /**
  * Creates or updates a streak session for a habit entry.
  * This mutation manages streak tracking by either extending an active streak,
@@ -20,7 +23,7 @@ import { internalMutation } from "../_generated/server";
  *    - **Broken streak**: Deactivates old streak and creates new one with length = 1
  *    - **New streak**: Creates initial streak with length = 1
  */
-export const createOrUpdateStreak = internalMutation({
+export const createOrIncrementStreak = internalMutation({
   args: {
     entryId: v.id("habitEntries"),
   },
@@ -50,91 +53,20 @@ export const createOrUpdateStreak = internalMutation({
       });
     }
 
-    // get all entries ordered by creation time (newest first)
-    const orderedEntries = await ctx.db
-      .query("habitEntries")
-      .withIndex("by_habit", (q) => q.eq("habitId", habit._id))
-      .order("desc")
-      .collect();
+    const previousEntry = await getPreviousEntry(ctx, habit._id, entry._id);
 
-    // find the index of current entry and get the previous one
-    const currentIndexEntry = orderedEntries.findIndex(
-      (e) => e._id === args.entryId,
-    );
-    if (currentIndexEntry === -1) {
-      throw new ConvexError(
-        "Current entry not found in ordered habit entries list",
-      );
-    }
-
-    // use index to find previous entry
-    const previousEntry =
-      currentIndexEntry < orderedEntries.length - 1
-        ? orderedEntries[currentIndexEntry + 1]
-        : null;
-
-    // determine if previous entry is in the previous period
-    let isPreviousContinuous = false;
-
-    if (previousEntry) {
-      switch (habit.schedule.frequency) {
-        case "daily": {
-          // check if previous entry is created within 24 hours of current entry
-          const currentDate = new Date(entry.date);
-          const previousDate = new Date(previousEntry.date);
-          const dayDiff =
-            (currentDate.getTime() - previousDate.getTime()) /
-            (1000 * 60 * 60 * 24);
-
-          console.log("daily streak diff", dayDiff);
-
-          isPreviousContinuous = dayDiff === 1;
-          break;
-        }
-        case "weekly": {
-          // check if previous entry is within 1 week of current entry
-          const currentDate = new Date(entry.date);
-          const previousDate = new Date(previousEntry.date);
-
-          const { start: currentWeekStart } = getWeekBounds(currentDate);
-          const { start: previousWeekStart } = getWeekBounds(previousDate);
-
-          const weekDiff =
-            (new Date(currentWeekStart).getTime() -
-              new Date(previousWeekStart).getTime()) /
-            (1000 * 60 * 60 * 24 * 7);
-
-          console.log("weekly streak diff", weekDiff);
-
-          isPreviousContinuous = weekDiff <= 1 && weekDiff > 0;
-          break;
-        }
-        case "monthly": {
-          // check if previous entry is in the month before current entry's month
-          const currentDate = new Date(entry.date);
-          const previousDate = new Date(previousEntry.date);
-
-          // year * 12 gives you a unique integer for each month across all years
-          // subtracting two of these integers tells you exactly how many months apart they are
-          const currentMonth =
-            currentDate.getFullYear() * 12 + currentDate.getMonth();
-          const previousMonth =
-            previousDate.getFullYear() * 12 + previousDate.getMonth();
-
-          isPreviousContinuous = currentMonth - previousMonth === 1;
-          break;
-        }
-      }
-    }
-
-    if (isPreviousContinuous) {
+    if (previousEntry && isComplete(previousEntry.progress, habit)) {
       // continue the streak
       return await ctx.db.patch(activeStreak._id, {
         endDate: entry.date,
         length: activeStreak.length + 1,
       });
+    } else if (!previousEntry && entry.date === activeStreak.endDate) {
+      // this is the first entry in the streak being re-completed
+      // keep the current streak
+      return activeStreak._id;
     } else {
-      // gap detected - end old streak and create new one
+      // gap detected, end old streak and start a new one
       await ctx.db.patch(activeStreak._id, {
         endDate: previousEntry?.date,
         active: false,
@@ -151,3 +83,70 @@ export const createOrUpdateStreak = internalMutation({
     }
   },
 });
+
+// check if a streak needs to be broken
+export const checkStreak = internalMutation({
+  args: {
+    entryId: v.id("habitEntries"),
+    date: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const entry = await ctx.db.get(args.entryId);
+    if (!entry) throw new ConvexError("Entry not found");
+
+    const habit = await ctx.db.get(entry.habitId);
+    if (!habit) throw new ConvexError("Habit not found");
+
+    const activeStreak = await ctx.db
+      .query("streaks")
+      .withIndex("by_active_habit", (q) =>
+        q.eq("habitId", habit._id).eq("active", true),
+      )
+      .first();
+
+    const previousEntry = await getPreviousEntry(ctx, habit._id, entry._id);
+
+    if (
+      activeStreak &&
+      activeStreak.endDate < args.date &&
+      previousEntry &&
+      isComplete(previousEntry.progress, habit)
+    ) {
+      // new period already started, but previous wasn't completed
+      // break the streak
+      await ctx.db.patch(activeStreak._id, {
+        active: false,
+      });
+    }
+  },
+});
+
+async function getPreviousEntry(
+  // biome-ignore lint: use any because ctx is dynamic
+  ctx: GenericMutationCtx<any>,
+  habitId: Id<"habits">,
+  entryId: Id<"habitEntries">,
+) {
+  // get all entries ordered by creation time (newest first)
+  const orderedEntries = await ctx.db
+    .query("habitEntries")
+    .withIndex("by_habit", (q) => q.eq("habitId", habitId))
+    .order("desc")
+    .collect();
+
+  // find the index of current entry and get the previous one
+  const currentIndexEntry = orderedEntries.findIndex((e) => e._id === entryId);
+  if (currentIndexEntry === -1) {
+    throw new ConvexError(
+      "Current entry not found in ordered habit entries list",
+    );
+  }
+
+  // use index to find previous entry
+  const previousEntry =
+    currentIndexEntry < orderedEntries.length - 1
+      ? orderedEntries[currentIndexEntry + 1]
+      : null;
+
+  return previousEntry;
+}

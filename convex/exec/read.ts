@@ -1,6 +1,9 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
-import type { HabitActivity, HabitWithEntry } from "@/types/HabitTypes";
+import type {
+  HabitActivity,
+  HabitWithEntryAndStreak,
+} from "@/types/HabitTypes";
 import { internal } from "../_generated/api";
 import { query } from "../_generated/server";
 
@@ -35,7 +38,7 @@ export const getProofMethods = query({
   },
 });
 
-export const getFlatHabitEntries = query({
+export const getFlatHabitData = query({
   args: {
     date: v.string(), // YYYY-MM-DD
     weekday: v.number(),
@@ -51,9 +54,9 @@ export const getFlatHabitEntries = query({
     if (userId === null) throw new ConvexError("Unauthorized");
 
     const groups: {
-      dailyHabits: HabitWithEntry[];
-      weeklyHabits: HabitWithEntry[];
-      monthlyHabits: HabitWithEntry[];
+      dailyHabits: HabitWithEntryAndStreak[];
+      weeklyHabits: HabitWithEntryAndStreak[];
+      monthlyHabits: HabitWithEntryAndStreak[];
     } = await ctx.runQuery(
       internal.utils.entryHelper.groupHabitEntriesByFrequency,
       {
@@ -73,7 +76,7 @@ export const getFlatHabitEntries = query({
   },
 });
 
-export const getGroupedHabitEntries = query({
+export const getGroupedHabitData = query({
   args: {
     date: v.string(), // YYYY-MM-DD
     weekday: v.number(),
@@ -89,9 +92,9 @@ export const getGroupedHabitEntries = query({
     if (userId === null) throw new ConvexError("Unauthorized");
 
     const groups: {
-      dailyHabits: HabitWithEntry[];
-      weeklyHabits: HabitWithEntry[];
-      monthlyHabits: HabitWithEntry[];
+      dailyHabits: HabitWithEntryAndStreak[];
+      weeklyHabits: HabitWithEntryAndStreak[];
+      monthlyHabits: HabitWithEntryAndStreak[];
     } = await ctx.runQuery(
       internal.utils.entryHelper.groupHabitEntriesByFrequency,
       {
