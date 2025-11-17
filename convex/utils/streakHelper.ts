@@ -55,18 +55,26 @@ export const createOrIncrementStreak = internalMutation({
 
     const previousEntry = await getPreviousEntry(ctx, habit._id, entry._id);
 
-    if (previousEntry && isComplete(previousEntry.progress, habit)) {
+    if (!previousEntry && activeStreak.endDate === entry.date) {
+      // this is the very first entry of this habit
+      return await ctx.db.patch(activeStreak._id, {
+        endDate: entry.date,
+        length: activeStreak.length + 1,
+      });
+    }
+
+    const previousComplete = isComplete(previousEntry.progress, habit);
+
+    if (previousComplete) {
+      // streak is active, has previous entry, and previous entry is completed
       // continue the streak
       return await ctx.db.patch(activeStreak._id, {
         endDate: entry.date,
         length: activeStreak.length + 1,
       });
-    } else if (!previousEntry && entry.date === activeStreak.endDate) {
-      // this is the first entry in the streak being re-completed
-      // keep the current streak
-      return activeStreak._id;
     } else {
-      // gap detected, end old streak and start a new one
+      // streak is active, has previous entry, but previous entry is incomplete
+      // end old streak and start a new one
       await ctx.db.patch(activeStreak._id, {
         endDate: previousEntry?.date,
         active: false,
@@ -110,7 +118,7 @@ export const checkStreak = internalMutation({
       activeStreak &&
       activeStreak.endDate < args.date &&
       previousEntry &&
-      isComplete(previousEntry.progress, habit)
+      !isComplete(previousEntry.progress, habit)
     ) {
       // new period already started, but previous wasn't completed
       // break the streak

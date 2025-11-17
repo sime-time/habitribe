@@ -61,6 +61,7 @@ export const createDailyHabitEntries = internalMutation({
         });
       }
     }
+
     // logging
     console.log(`Created ${created} daily habit entries for ${today}`);
     return { created, date: today };
