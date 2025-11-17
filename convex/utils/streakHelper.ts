@@ -55,7 +55,10 @@ export const createOrIncrementStreak = internalMutation({
 
     const previousEntry = await getPreviousEntry(ctx, habit._id, entry._id);
 
-    if (!previousEntry && activeStreak.endDate === entry.date) {
+    if (
+      (!previousEntry && activeStreak.endDate === entry.date) ||
+      activeStreak.startDate === activeStreak.endDate
+    ) {
       // this is the very first entry of this habit
       return await ctx.db.patch(activeStreak._id, {
         endDate: entry.date,
@@ -79,7 +82,6 @@ export const createOrIncrementStreak = internalMutation({
         endDate: previousEntry?.date,
         active: false,
       });
-
       return await ctx.db.insert("streaks", {
         userId: entry.userId,
         habitId: entry.habitId,

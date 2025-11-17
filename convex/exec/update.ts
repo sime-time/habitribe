@@ -112,7 +112,7 @@ export const resetHabitEntryProgress = mutation({
       // decrement but keep the streak active
       await ctx.db.patch(activeStreak._id, {
         length: Math.max(0, activeStreak.length - 1),
-        endDate: activeStreak.endDate,
+        endDate: entry.date,
       });
     }
   },

@@ -176,3 +176,15 @@ export const getHabitActivity = query({
     return { dailyActivity, weeklyActivity, monthlyActivity };
   },
 });
+
+export const getLongestStreak = query({
+  args: { habitId: v.id("habits") },
+  handler: async (ctx, args) => {
+    const streaks = await ctx.db
+      .query("streaks")
+      .withIndex("by_habit", (q) => q.eq("habitId", args.habitId))
+      .collect();
+
+    return streaks.reduce((max, streak) => Math.max(max, streak.length), 0);
+  },
+});
