@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
@@ -60,9 +61,26 @@ export default function HabitCard({
             />
           </View>
           <View style={[s.flexCol, s.gap1]}>
-            <Text style={[s.textBase, s.fontMedium, c.textForeground]}>
-              {habit.name} ({streak?.length})
-            </Text>
+            <View style={[s.flexRow, s.gap1, s.itemsCenter]}>
+              <Text style={[s.textBase, s.fontMedium, c.textForeground]}>
+                {habit.name}
+              </Text>
+              {streak && streak.length > 1 && (
+                <View style={[s.flexRow, s.itemsCenter]}>
+                  <Ionicons
+                    name="flame-outline"
+                    size={16}
+                    color={habit.color}
+                  />
+                  <Text
+                    style={[s.textSm, s.fontNormal, { color: habit.color }]}
+                  >
+                    {streak.length}
+                  </Text>
+                </View>
+              )}
+            </View>
+
             <Text style={[s.textXs, c.textMuted]}>
               {getScheduleLabel(
                 habit.schedule.frequency as Frequency,
