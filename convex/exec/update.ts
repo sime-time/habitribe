@@ -57,7 +57,7 @@ export const incrementHabitEntryProgress = mutation({
 
     const newProgress = entry.progress + 1;
 
-    // increment progress
+    // increment habit entry progress
     await ctx.db.patch(args.id, {
       progress: newProgress,
     });

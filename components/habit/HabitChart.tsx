@@ -144,7 +144,7 @@ export default function HabitChart({
           {charts.map((chart, index) => (
             <PieChart
               key={index}
-              data={chart.pieData}
+              data={chart.pieData || []}
               donut={true}
               radius={spacing[11]}
               innerRadius={spacing[8]}

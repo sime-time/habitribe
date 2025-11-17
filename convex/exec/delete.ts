@@ -91,7 +91,7 @@ export const deleteProof = mutation({
     const habit = await ctx.db.get(entry.habitId);
     if (!habit) throw new ConvexError("Habit not found");
 
-    // if entry is currently complete, before decreasing the progress
+    // check if current entry is complete before decreasing the progress
     if (isComplete(entry.progress, habit)) {
       // decrement the streak, while keeping it active
       const activeStreak = await ctx.db

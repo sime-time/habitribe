@@ -1,5 +1,4 @@
 import { getMonthBounds, getWeekBounds } from "@/utils/dateHelper";
-import { internal } from "../_generated/api";
 import { internalMutation } from "../_generated/server";
 
 export const createDailyHabitEntries = internalMutation({
@@ -46,19 +45,13 @@ export const createDailyHabitEntries = internalMutation({
       }
 
       if (shouldCreate) {
-        const entryId = await ctx.db.insert("habitEntries", {
+        await ctx.db.insert("habitEntries", {
           habitId: habit._id,
           userId: habit.userId,
           date: today,
           progress: 0,
         });
         created++;
-
-        // check if we need to break the streak
-        await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
-          entryId,
-          date: today,
-        });
       }
     }
 
@@ -96,19 +89,13 @@ export const createWeeklyHabitEntries = internalMutation({
       const existingEntry = entries.find((e) => e.habitId === habit._id);
 
       if (!existingEntry) {
-        const entryId = await ctx.db.insert("habitEntries", {
+        await ctx.db.insert("habitEntries", {
           habitId: habit._id,
           userId: habit.userId,
           date: start, // Monday's date
           progress: 0,
         });
         created++;
-
-        // check if we need to break the streak
-        await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
-          entryId,
-          date: start,
-        });
       }
     }
     // logging
@@ -144,19 +131,13 @@ export const createMonthlyHabitEntries = internalMutation({
       const existingEntry = entries.find((e) => e.habitId === habit._id);
 
       if (!existingEntry) {
-        const entryId = await ctx.db.insert("habitEntries", {
+        await ctx.db.insert("habitEntries", {
           habitId: habit._id,
           userId: habit.userId,
           date: start, // start of the month
           progress: 0,
         });
         created++;
-
-        // check if we need to break the streak
-        await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
-          entryId,
-          date: start,
-        });
       }
     }
     // logging

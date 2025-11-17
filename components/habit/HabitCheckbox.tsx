@@ -79,7 +79,7 @@ function HabitCheckbox({ habit, entry }: HabitCheckboxProps) {
         ) : (
           <View pointerEvents="none">
             <PieChart
-              data={pieData}
+              data={pieData || []}
               donut={true}
               radius={18}
               innerRadius={spacing[3]}
