@@ -46,6 +46,19 @@ export const editReminder = mutation({
   },
 });
 
+export const editProofCaption = mutation({
+  args: { id: v.id("proofs"), caption: v.string() },
+  handler: async (ctx, args) => {
+    const proof = await ctx.db.get(args.id);
+    if (!proof) {
+      throw new ConvexError("Proof not found");
+    }
+    await ctx.db.patch(args.id, {
+      caption: args.caption,
+    });
+  },
+});
+
 export const incrementHabitEntryProgress = mutation({
   args: { id: v.id("habitEntries") },
   handler: async (ctx, args) => {

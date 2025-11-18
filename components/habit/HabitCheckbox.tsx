@@ -1,5 +1,6 @@
 import { useMutation } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import { Check } from "lucide-react-native";
 import { memo, useMemo } from "react";
 import { Pressable, Text, View } from "react-native";
@@ -10,7 +11,6 @@ import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import { useProofSelectStore } from "@/stores/proofSelectStore";
 import { isComplete } from "@/utils/habitLabelHelper";
 
 type HabitCheckboxProps = {
@@ -22,8 +22,6 @@ type HabitCheckboxProps = {
 function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
-
-  const { openSheet, setEntryId } = useProofSelectStore();
 
   const incrementProgress = useMutation(
     api.exec.update.incrementHabitEntryProgress,
@@ -52,8 +50,7 @@ function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
   const handlePress = () => {
     if (!entry) return;
     if (proofMethodType === "camera") {
-      setEntryId(entry._id);
-      return openSheet();
+      return router.navigate(`/proof-select?entryId=${entry._id}`);
     }
 
     if (isComplete(entry.progress, habit)) {

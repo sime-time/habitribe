@@ -266,7 +266,8 @@ export const addProof = mutation({
         : habit.schedule.pattern;
 
       // if entry is completed (progress >= target), create or update streak
-      if (newProgress >= target) {
+      // do not increment streak if newProgress goes past the target
+      if (newProgress === target) {
         await ctx.runMutation(
           internal.utils.streakHelper.createOrIncrementStreak,
           {

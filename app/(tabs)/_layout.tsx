@@ -3,19 +3,14 @@ import { Redirect, Tabs } from "expo-router";
 import { SymbolView } from "expo-symbols";
 import { Calendar, Cog } from "lucide-react-native";
 import HabitSelectSheet from "@/components/sheets/HabitSelectSheet";
-import ProofSelectSheet from "@/components/sheets/ProofSelectSheet";
 import { useFirstTimeOpen } from "@/hooks/useFirstTimeOpen";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
-import { useProofSelectStore } from "@/stores/proofSelectStore";
 
 export default function TabsLayout() {
   const { colors } = useTheme();
 
-  const { isOpen: proofSheetIsOpen, closeSheet: closeProofSheet } =
-    useProofSelectStore();
-  const { isOpen: habitSheetIsOpen, closeSheet: closeHabitSheet } =
-    useHabitSelectStore();
+  const { isOpen, closeSheet } = useHabitSelectStore();
 
   // for camera permissions
   const { isFirstTime, isLoading } = useFirstTimeOpen();
@@ -73,8 +68,7 @@ export default function TabsLayout() {
           }}
         />
       </Tabs>
-      {habitSheetIsOpen && <HabitSelectSheet closeSheet={closeHabitSheet} />}
-      {proofSheetIsOpen && <ProofSelectSheet closeSheet={closeProofSheet} />}
+      {isOpen && <HabitSelectSheet closeSheet={closeSheet} />}
     </>
   );
 }

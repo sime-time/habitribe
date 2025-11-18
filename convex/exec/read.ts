@@ -209,7 +209,6 @@ export const getProofs = query({
         }),
       })),
     );
-    console.log("proofsUrls", proofsWithUrls);
 
     return proofsWithUrls;
   },

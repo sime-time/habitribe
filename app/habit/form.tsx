@@ -147,14 +147,9 @@ export default function HabitForm() {
           onPress: async () => {
             try {
               await deleteHabit({ id: id as HabitId });
-              Toast.show({
-                type: "success",
-                text1: "Habit deleted successfully",
-              });
               router.dismissTo("/(tabs)");
             } catch (err) {
               console.error(err);
-              Toast.show({ type: "error", text1: "Failed to delete habit" });
             }
           },
         },
@@ -196,7 +191,6 @@ export default function HabitForm() {
         });
       }
     }
-    Toast.show({ type: "success", text1: "New habit added" });
   };
 
   const updateSubmit = async (id: string) => {
@@ -240,8 +234,6 @@ export default function HabitForm() {
         await deleteReminder({ id: deleted.id as Id<"reminders"> });
       }
     }
-
-    Toast.show({ type: "success", text1: "Habit updated" });
   };
 
   const handleSubmit = async () => {

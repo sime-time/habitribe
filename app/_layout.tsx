@@ -57,6 +57,14 @@ function InitialLayout() {
         }}
       />
       <Stack.Screen
+        name="proof-select"
+        options={{
+          presentation: "modal",
+          animation: "slide_from_bottom",
+          gestureDirection: "vertical",
+        }}
+      />
+      <Stack.Screen
         name="onboarding"
         options={{
           presentation: "fullScreenModal",

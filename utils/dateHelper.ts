@@ -81,29 +81,14 @@ export function calculateStartDateFromNumDays(
   return startDate;
 }
 
-/**
- * Calculate how many days to prepend for week alignment
- * Returns the number of days needed to pad back to the previous Monday
- *
- * @param startDate - The start date in YYYY-MM-DD format
- * @returns Number of padding days needed (0-6, where 0 = already Monday)
- *
- * @example
- * // If startDate is Wednesday (day 3)
- * calculatePaddingForWeekAlignment("2025-11-12") // Returns 2 (back to Monday)
- *
- * // If startDate is Monday (day 1)
- * calculatePaddingForWeekAlignment("2025-11-10") // Returns 0 (no padding needed)
- */
-export function calculatePaddingForWeekAlignment(startDate: string): number {
-  const date = parseLocalDate(startDate);
-  const dayOfWeek = date.getDay();
-  // Monday is 1, so:
-  // If Monday (1): padding = 0
-  // If Tuesday (2): padding = 1
-  // If Wednesday (3): padding = 2
-  // ...
-  // If Sunday (0): padding = 6 (go back to previous Monday)
-  const paddingDays = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-  return paddingDays;
+export function formatCreationTime(creationTimeMs: number): string {
+  const date = new Date(creationTimeMs);
+  const month = date.toLocaleDateString("en-US", { month: "short" });
+  const day = date.getDate();
+  const time = date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+  return `${month} ${day}, ${time}`;
 }

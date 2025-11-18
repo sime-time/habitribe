@@ -54,6 +54,7 @@ const CustomToast = ({
         s.border2,
         c.bgCard,
         s.wFull,
+        s.zTop,
         {
           borderColor: details.borderColor,
         },

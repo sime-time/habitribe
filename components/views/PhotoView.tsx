@@ -73,7 +73,7 @@ export default function PhotoView() {
       });
 
       // Reset state and close view
-      Toast.show({ type: "success", text1: "Image uploaded successfully!" });
+      Toast.show({ type: "success", text1: "Proof uploaded successfully!" });
       reset();
       setPicture("");
       setCaption("");
