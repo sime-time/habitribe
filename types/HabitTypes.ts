@@ -4,6 +4,7 @@ export type Habit = Doc<"habits">;
 export type HabitEntry = Doc<"habitEntries">;
 export type ProofMethodId = Id<"proofMethods">;
 export type ProofMethod = Doc<"proofMethods">;
+export type Proof = Doc<"proofs">;
 
 export type Activity = {
   date: string;
@@ -18,3 +19,5 @@ export type HabitWithEntryAndStreak = {
   entry: Doc<"habitEntries"> | null;
   streak: Doc<"streaks"> | null;
 };
+
+export type ProofWithUrl = Proof & { url?: string };

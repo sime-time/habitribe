@@ -4,6 +4,7 @@ import { ConvexError, v } from "convex/values";
 import type {
   HabitActivity,
   HabitWithEntryAndStreak,
+  ProofWithUrl,
 } from "@/types/HabitTypes";
 import { components, internal } from "../_generated/api";
 import { query } from "../_generated/server";
@@ -201,7 +202,7 @@ export const getProofs = query({
       .collect();
 
     // generate image urls for all proofs
-    const proofsWithUrls = await Promise.all(
+    const proofsWithUrls: ProofWithUrl[] = await Promise.all(
       proofs.map(async (proof) => ({
         ...proof,
         url: await r2.getUrl(proof.key, {

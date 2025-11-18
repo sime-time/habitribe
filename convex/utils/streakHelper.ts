@@ -132,7 +132,7 @@ export const checkStreak = internalMutation({
 });
 
 async function getPreviousEntry(
-  // biome-ignore lint: use any because ctx is dynamic
+  // biome-ignore lint/suspicious/noExplicitAny: Convex context is dynamic
   ctx: GenericMutationCtx<any>,
   habitId: Id<"habits">,
   entryId: Id<"habitEntries">,
