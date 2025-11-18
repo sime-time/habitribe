@@ -201,6 +201,7 @@ export default function HabitSelectSheet({
                 data={flatHabitEntries}
                 renderItem={renderHabitOption}
                 keyExtractor={(item) => item.habit._id}
+                showsVerticalScrollIndicator={false}
               />
             </View>
           </Animated.View>

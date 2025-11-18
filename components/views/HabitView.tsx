@@ -57,7 +57,7 @@ export default function HabitView({
     [monthlyActivity],
   );
   return (
-    <ScrollView style={[s.flex1, s.px4]}>
+    <ScrollView style={[s.flex1, s.px4]} showsVerticalScrollIndicator={false}>
       {dailyHabits.length > 0 && (
         <>
           <DateGroupTitle date={date} variant="daily" />
