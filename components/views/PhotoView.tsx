@@ -29,7 +29,7 @@ import { useHabitSelectStore } from "@/stores/habitSelectStore";
 import { getTodayDateString } from "@/utils/dateHelper";
 import CameraSelectRow from "../camera/CameraSelectRow";
 
-export default function PictureView() {
+export default function PhotoView() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 

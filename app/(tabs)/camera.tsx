@@ -7,7 +7,7 @@ import { s } from "@/assets/styles/utility.styles";
 import CameraMainRow from "@/components/camera/CameraMainRow";
 import CameraSelectRow from "@/components/camera/CameraSelectRow";
 import CameraTools from "@/components/camera/CameraTools";
-import PictureView from "@/components/views/PictureView";
+import PhotoView from "@/components/views/PhotoView";
 import useTheme from "@/hooks/useTheme";
 import { useCameraSettings } from "@/stores/cameraSettingsStore";
 
@@ -29,7 +29,7 @@ export default function CameraScreen() {
     }
   };
 
-  if (picture) return <PictureView />;
+  if (picture) return <PhotoView />;
 
   return (
     <SafeAreaView

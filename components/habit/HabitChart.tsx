@@ -81,7 +81,7 @@ export default function HabitChart({
           xAxisColor={`${colors.border}`}
           yAxisThickness={1}
           yAxisColor={`${colors.border}`}
-          yAxisLabelContainerStyle={[s.w3, s.opacity50]}
+          yAxisLabelContainerStyle={maxValue < 11 ? [s.w3, s.opacity50] : null}
           yAxisTextStyle={[s.text2xs, c.textForeground]}
           yAxisLabelWidth={0}
           hideYAxisText={false}

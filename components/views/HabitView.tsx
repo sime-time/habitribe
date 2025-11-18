@@ -20,7 +20,7 @@ export function createActivityMap(
   return new Map(habitActivities.map((ha) => [ha.habitId, ha.activity]));
 }
 
-interface HabitActivityViewProps {
+interface HabitViewProps {
   date: Date;
   dailyHabits: HabitWithEntryAndStreak[];
   weeklyHabits: HabitWithEntryAndStreak[];
@@ -33,7 +33,7 @@ interface HabitActivityViewProps {
   monthlyActivity?: HabitActivity[];
 }
 
-export default function HabitActivityView({
+export default function HabitView({
   date,
   dailyHabits,
   weeklyHabits,
@@ -42,7 +42,7 @@ export default function HabitActivityView({
   dailyActivity,
   weeklyActivity,
   monthlyActivity,
-}: HabitActivityViewProps) {
+}: HabitViewProps) {
   // create maps for O(1) lookup
   const dailyActivityMap = useMemo(
     () => (dailyActivity ? createActivityMap(dailyActivity) : null),

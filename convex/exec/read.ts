@@ -1,11 +1,14 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { R2 } from "@convex-dev/r2";
 import { ConvexError, v } from "convex/values";
 import type {
   HabitActivity,
   HabitWithEntryAndStreak,
 } from "@/types/HabitTypes";
-import { internal } from "../_generated/api";
+import { components, internal } from "../_generated/api";
 import { query } from "../_generated/server";
+
+const r2 = new R2(components.r2);
 
 export const getHabit = query({
   args: {
@@ -186,5 +189,28 @@ export const getLongestStreak = query({
       .collect();
 
     return streaks.reduce((max, streak) => Math.max(max, streak.length), 0);
+  },
+});
+
+export const getProofs = query({
+  args: { entryId: v.id("habitEntries") },
+  handler: async (ctx, args) => {
+    const proofs = await ctx.db
+      .query("proofs")
+      .withIndex("by_entry", (q) => q.eq("habitEntryId", args.entryId))
+      .collect();
+
+    // generate image urls for all proofs
+    const proofsWithUrls = await Promise.all(
+      proofs.map(async (proof) => ({
+        ...proof,
+        url: await r2.getUrl(proof.key, {
+          expiresIn: 60 * 60 * 24, // 1 day
+        }),
+      })),
+    );
+    console.log("proofsUrls", proofsWithUrls);
+
+    return proofsWithUrls;
   },
 });

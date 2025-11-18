@@ -10,6 +10,7 @@ import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
+import { useProofSelectStore } from "@/stores/proofSelectStore";
 import { isComplete } from "@/utils/habitLabelHelper";
 
 type HabitCheckboxProps = {
@@ -18,9 +19,11 @@ type HabitCheckboxProps = {
   proofMethodType?: string;
 };
 
-function HabitCheckbox({ habit, entry }: HabitCheckboxProps) {
+function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
+
+  const { openSheet, setEntryId } = useProofSelectStore();
 
   const incrementProgress = useMutation(
     api.exec.update.incrementHabitEntryProgress,
@@ -48,6 +51,11 @@ function HabitCheckbox({ habit, entry }: HabitCheckboxProps) {
 
   const handlePress = () => {
     if (!entry) return;
+    if (proofMethodType === "camera") {
+      setEntryId(entry._id);
+      return openSheet();
+    }
+
     if (isComplete(entry.progress, habit)) {
       resetProgress({ id: entry._id });
     } else {
@@ -72,6 +80,7 @@ function HabitCheckbox({ habit, entry }: HabitCheckboxProps) {
         ]}
       >
         {/* Pie Chart is pressable so remove pointerEvents from it */}
+        {/* Show checkmark if there is no progress or habit is complete */}
         {entry?.progress === 0 || isComplete(entry?.progress, habit) ? (
           <View style={s.m2}>
             <Check size={20} color={colors.card} />

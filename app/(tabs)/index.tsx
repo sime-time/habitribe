@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { Switch, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { s } from "@/assets/styles/utility.styles";
-import HabitActivityView from "@/components/views/HabitActivityView";
+import HabitView from "@/components/views/HabitView";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { useHabitChartStore } from "@/stores/habitChartStore";
@@ -120,7 +120,7 @@ export default function Index() {
 
         {/* CONTENT */}
         {currentHabitEntries && (
-          <HabitActivityView
+          <HabitView
             date={today}
             dailyHabits={currentHabitEntries.dailyHabits}
             weeklyHabits={currentHabitEntries.weeklyHabits}
