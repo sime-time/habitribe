@@ -1,8 +1,10 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Image, type ImageStyle } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Pressable,
   Text,
   TextInput,
   TouchableOpacity,
@@ -14,6 +16,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { createColorStyles } from "@/assets/styles/color.styles";
+import { spacing } from "@/assets/styles/token.styles";
 import { s } from "@/assets/styles/utility.styles";
 import type { ColorScheme } from "@/constants/colors";
 import type { Id } from "@/convex/_generated/dataModel";
@@ -26,6 +29,7 @@ export default function ProofCard({
   cardSize,
   colors,
   updateCaption,
+  handleDelete,
 }: {
   item: ProofWithUrl;
   index: number;
@@ -33,6 +37,7 @@ export default function ProofCard({
   cardSize: number;
   colors: ColorScheme;
   updateCaption: (proofId: Id<"proofs">, caption: string | undefined) => void;
+  handleDelete: (proofId: Id<"proofs">) => void;
 }) {
   const c = createColorStyles(colors);
 
@@ -75,6 +80,22 @@ export default function ProofCard({
                 <ActivityIndicator size="small" color={colors.muted} />
               </View>
             )}
+            <Pressable
+              onPress={() => handleDelete(item._id)}
+              style={[
+                s.z10,
+                s.roundedFull,
+                c.bgDestructive,
+                s.w8,
+                s.h8,
+                s.justifyCenter,
+                s.itemsCenter,
+                s.absolute,
+                { top: spacing[2], right: spacing[2] },
+              ]}
+            >
+              <Ionicons name="close" size={24} color={colors.background} />
+            </Pressable>
             <Image
               source={{ uri: item.url }}
               style={

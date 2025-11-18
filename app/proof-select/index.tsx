@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
 import {
+  Alert,
   Text,
   TouchableOpacity,
   useWindowDimensions,
@@ -55,8 +56,41 @@ export default function ProofSelect() {
       Toast.show({
         type: "error",
         text1: "Caption is empty",
+        text2: "Failed to update",
       });
     }
+  };
+
+  const deleteProof = useMutation(api.exec.delete.deleteProof);
+
+  const handleDelete = async (proofId: Id<"proofs">) => {
+    Alert.alert(
+      "Delete Proof",
+      "This will remove the current proof and decrease the habit's progress.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteProof({ proofId });
+              Toast.show({
+                type: "success",
+                text1: "Proof deleted successfully",
+                text2: "Habit progress decreased",
+              });
+            } catch (err) {
+              console.error(err);
+              Toast.show({
+                type: "error",
+                text1: "Failed to delete proof",
+              });
+            }
+          },
+        },
+      ],
+    );
   };
 
   const { width } = useWindowDimensions();
@@ -83,6 +117,7 @@ export default function ProofSelect() {
       cardSize={CARD_SIZE}
       colors={colors}
       updateCaption={editCaption}
+      handleDelete={handleDelete}
     />
   );
 
