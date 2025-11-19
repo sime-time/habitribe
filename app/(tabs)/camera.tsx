@@ -44,22 +44,21 @@ export default function CameraScreen() {
         flash={flash}
         facing={facing}
         style={s.flex1}
+      />
+      <CameraTools />
+      <View
+        style={[
+          s.wFull,
+          s.gap4,
+          {
+            position: "absolute",
+            bottom: spacing[6],
+          },
+        ]}
       >
-        <CameraTools />
-        <View
-          style={[
-            s.wFull,
-            s.gap4,
-            {
-              position: "absolute",
-              bottom: spacing[6],
-            },
-          ]}
-        >
-          <CameraSelectRow />
-          <CameraMainRow handleTakePicture={handleTakePicture} />
-        </View>
-      </CameraView>
+        <CameraSelectRow />
+        <CameraMainRow handleTakePicture={handleTakePicture} />
+      </View>
     </SafeAreaView>
   );
 }

@@ -17,7 +17,8 @@ export default function CameraTools() {
       style={[
         s.gap4,
         s.z10,
-        { position: "absolute", top: spacing[2], right: spacing[2] },
+        s.absolute,
+        { top: spacing[16], right: spacing[2] },
       ]}
     >
       <IconButton
