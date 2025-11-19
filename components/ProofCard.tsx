@@ -21,6 +21,7 @@ import { s } from "@/assets/styles/utility.styles";
 import type { ColorScheme } from "@/constants/colors";
 import type { Id } from "@/convex/_generated/dataModel";
 import type { ProofWithUrl } from "@/types/HabitTypes";
+import { formatCreationTime } from "@/utils/dateHelper";
 
 export default function ProofCard({
   item,
@@ -122,6 +123,10 @@ export default function ProofCard({
             <Text style={c.textForeground}>No Image URL</Text>
           </View>
         )}
+
+        <Text style={[s.textCenter, c.textMuted]}>
+          {formatCreationTime(item._creationTime)}
+        </Text>
 
         <View style={[s.input, c.borderDefault]}>
           <TextInput
