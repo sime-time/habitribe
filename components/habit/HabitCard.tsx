@@ -42,7 +42,7 @@ export default function HabitCard({
       {/* Header: Icon + Name + Streak/Description */}
       <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
         <Pressable
-          onPress={() => router.navigate(`/habit/form?id=${habit._id}`)}
+          onPress={() => router.navigate(`/calendar`)}
           style={[s.flexRow, s.itemsCenter, s.gap3]}
         >
           <View

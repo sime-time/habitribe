@@ -57,7 +57,7 @@ function InitialLayout() {
         }}
       />
       <Stack.Screen
-        name="proof-select"
+        name="proof"
         options={{
           presentation: "modal",
           animation: "slide_from_bottom",
@@ -65,10 +65,16 @@ function InitialLayout() {
         }}
       />
       <Stack.Screen
+        name="calendar"
+        options={{
+          headerShown: true,
+          animation: "slide_from_left",
+        }}
+      />
+      <Stack.Screen
         name="onboarding"
         options={{
           presentation: "fullScreenModal",
-          headerShown: false,
           animation: "fade",
         }}
       />

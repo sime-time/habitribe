@@ -50,7 +50,7 @@ function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
   const handlePress = () => {
     if (!entry) return;
     if (proofMethodType === "camera") {
-      return router.navigate(`/proof-select?entryId=${entry._id}`);
+      return router.navigate(`/proof/select?entryId=${entry._id}`);
     }
 
     if (isComplete(entry.progress, habit)) {

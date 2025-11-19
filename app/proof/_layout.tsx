@@ -18,7 +18,7 @@ export default function CreateProofSelectLayout() {
   return (
     <Stack screenOptions={{ headerShown: true }}>
       <Stack.Screen
-        name="index"
+        name="select"
         options={{
           headerTitle: "Proof",
           headerTitleStyle: combine(s.fontMedium, s.textLg, c.textForeground),
