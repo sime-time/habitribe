@@ -28,16 +28,15 @@ export default function ProofSelect() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
-  const { entryId } = useLocalSearchParams<{ entryId?: string }>();
+  const { habitId, date } = useLocalSearchParams<{
+    habitId: string;
+    date: string;
+  }>();
 
-  const proofs = useQuery(
-    api.exec.read.getProofs,
-    entryId
-      ? {
-          entryId: entryId as Id<"habitEntries">,
-        }
-      : "skip",
-  );
+  const proofs = useQuery(api.exec.read.getProofs, {
+    habitId: habitId as Id<"habits">,
+    date,
+  });
 
   const editProofCaption = useMutation(api.exec.update.editProofCaption);
 

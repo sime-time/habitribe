@@ -3,20 +3,46 @@ import {
   type CalendarTheme,
   toDateId,
 } from "@marceloterreiro/flash-calendar";
-import { StatusBar } from "react-native";
+import { useQuery } from "convex/react";
+import { router, useLocalSearchParams } from "expo-router";
+import { StatusBar, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
-import { borderRadius, spacing } from "@/assets/styles/token.styles";
+import { spacing } from "@/assets/styles/token.styles";
 import { combine, s } from "@/assets/styles/utility.styles";
+import { ProofCalendar } from "@/components/calendar/ProofCalendar";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 
 export default function CalendarScreen() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
+  const { habitId } = useLocalSearchParams<{ habitId?: string }>();
+
+  const data = useQuery(
+    api.exec.read.getHabitWithStreaksAndProofs,
+    habitId
+      ? {
+          habitId: habitId as Id<"habits">,
+        }
+      : "skip",
+  );
+
+  const proofMap = data?.proofDateUrl
+    ? new Map(Object.entries(data.proofDateUrl))
+    : undefined;
+
+  const handleCalendarDayPress = (dateId: string) => {
+    if (data) {
+      router.navigate(
+        `/proof/select?habitId=${data?.habit._id}&date=${dateId}`,
+      );
+    }
+  };
 
   const calTheme: CalendarTheme = {
     rowMonth: {
-      container:s.h10,
       content: combine(s.textLeft, c.textForeground, s.fontSemibold, s.text2xl),
     },
     rowWeek: {
@@ -24,19 +50,22 @@ export default function CalendarScreen() {
     },
     itemWeekName: { content: c.textMuted },
     itemDay: {
-      idle: ({ isPressed }) => ({
-        container: combine(s.rounded, isPressed ? c.bgPrimary : c.bgCard),
-        content: c.textForeground,
+      disabled: () => ({
+        content: combine(c.textMuted, s.fontSemibold),
       }),
-      today: ({ isPressed }) => ({
-        container: combine(
-          s.rounded,
-          s.border0,
-          s.outline1,
-          c.outlinePrimary,
-          isPressed ? c.bgForeground : c.bgTransparent,
+      idle: () => ({
+        container: combine(s.rounded, c.bgTransparent),
+        content: combine(c.textForeground, s.fontSemibold),
+      }),
+      today: () => ({
+        container: combine(s.rounded, s.border0, c.bgTransparent),
+        content: combine(
+          c.textBackground,
+          s.fontSemibold,
+          c.bgForeground,
+          s.p2,
+          s.roundedFull,
         ),
-        content: c.textPrimary,
       }),
     },
   };
@@ -44,19 +73,31 @@ export default function CalendarScreen() {
   return (
     <SafeAreaView style={[s.flex1, c.bgBackground]}>
       <StatusBar barStyle={colors.statusBarStyle} />
+      <View style={[s.mb4]}>
+        <Text>header</Text>
+      </View>
       <Calendar.List
-        calendarFutureScrollRangeInMonths={1}
         calendarInitialMonthId={toDateId(new Date())}
         calendarMaxDateId={toDateId(new Date())}
-        calendarMinDateId="2024-01-01"
-        calendarPastScrollRangeInMonths={50}
+        calendarMinDateId={data?.habit.startDate || "2025-01-01"}
+        calendarPastScrollRangeInMonths={12}
         calendarDayHeight={spacing[16]}
+        calendarMonthHeaderHeight={spacing[6]}
         calendarWeekHeaderHeight={spacing[10]}
         calendarFirstDayOfWeek="monday"
         calendarRowVerticalSpacing={spacing[4]}
         calendarRowHorizontalSpacing={spacing[2]}
-        onCalendarDayPress={(dateId) => console.log(`Pressed date ${dateId}`)}
+        onCalendarDayPress={(dateId) => handleCalendarDayPress(dateId)}
         theme={calTheme}
+        renderItem={({ item }) => (
+          <View style={[s.pb8, s.px2]}>
+            <ProofCalendar
+              calendarMonthId={item.id}
+              {...item.calendarProps}
+              proofMap={proofMap}
+            />
+          </View>
+        )}
       />
     </SafeAreaView>
   );

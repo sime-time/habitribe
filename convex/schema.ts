@@ -55,8 +55,9 @@ export default defineSchema({
     key: v.string(), // R2 storage key
     caption: v.optional(v.string()),
   })
-    .index("by_habit", ["habitId"])
     .index("by_entry", ["habitEntryId"])
+    .index("by_habit", ["habitId"])
+    .index("by_habit_date", ["habitId", "date"])
     .index("by_user_date", ["userId", "date"]),
 
   proofMethods: defineTable({

@@ -92,3 +92,7 @@ export function formatCreationTime(creationTimeMs: number): string {
   });
   return `${month} ${day}, ${time}`;
 }
+
+export function uppercaseFirstLetter(word: string): string {
+  return word.toUpperCase().charAt(0);
+}

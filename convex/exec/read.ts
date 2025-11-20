@@ -21,6 +21,22 @@ export const getHabit = query({
   },
 });
 
+export const getHabitEntry = query({
+  args: {
+    habitId: v.id("habits"),
+    date: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const entry = await ctx.db
+      .query("habitEntries")
+      .withIndex("by_habit_date", (q) =>
+        q.eq("habitId", args.habitId).eq("date", args.date),
+      )
+      .first();
+    return entry;
+  },
+});
+
 export const getHabitReminders = query({
   args: {
     habitId: v.id("habits"),
@@ -194,11 +210,13 @@ export const getLongestStreak = query({
 });
 
 export const getProofs = query({
-  args: { entryId: v.id("habitEntries") },
+  args: { habitId: v.id("habits"), date: v.string() },
   handler: async (ctx, args) => {
     const proofs = await ctx.db
       .query("proofs")
-      .withIndex("by_entry", (q) => q.eq("habitEntryId", args.entryId))
+      .withIndex("by_habit_date", (q) =>
+        q.eq("habitId", args.habitId).eq("date", args.date),
+      )
       .collect();
 
     // generate image urls for all proofs
@@ -212,5 +230,54 @@ export const getProofs = query({
     );
 
     return proofsWithUrls;
+  },
+});
+
+export const getHabitWithStreaksAndProofs = query({
+  args: { habitId: v.id("habits") },
+  handler: async (ctx, args) => {
+    const habit = await ctx.db.get(args.habitId);
+    if (!habit) throw new ConvexError("No habit found");
+
+    // get all the streaks
+    const streaks = await ctx.db
+      .query("streaks")
+      .withIndex("by_habit", (q) => q.eq("habitId", args.habitId))
+      .collect();
+
+    // retrieve the length of the current and longest streaks
+    const longestStreak = streaks.reduce(
+      (max, streak) => Math.max(max, streak.length),
+      0,
+    );
+    const activeStreak = streaks.find((streak) => streak.active === true);
+    const currentStreak = activeStreak?.length || 0;
+
+    // get all the proofs for the habit
+    const proofs = await ctx.db
+      .query("proofs")
+      .withIndex("by_habit", (q) => q.eq("habitId", args.habitId))
+      .collect();
+
+    // generate image urls for all proofs
+    const proofsWithUrls: ProofWithUrl[] = await Promise.all(
+      proofs.map(async (proof) => ({
+        ...proof,
+        url: await r2.getUrl(proof.key, {
+          expiresIn: 60 * 60 * 24, // 1 day
+        }),
+      })),
+    );
+
+    // record: date -> url
+    const proofDateUrl = proofsWithUrls.reduce(
+      (acc, proof) => {
+        acc[proof.date] = proof.url;
+        return acc;
+      },
+      {} as Record<string, string | undefined>,
+    );
+
+    return { habit, proofDateUrl, currentStreak, longestStreak };
   },
 });
