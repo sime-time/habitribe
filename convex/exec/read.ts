@@ -58,7 +58,7 @@ export const getProofMethods = query({
   },
 });
 
-export const getFlatHabitData = query({
+export const getCameraBasedHabits = query({
   args: {
     date: v.string(), // YYYY-MM-DD
     weekday: v.number(),
@@ -88,11 +88,25 @@ export const getFlatHabitData = query({
     );
 
     // flat array of habit+entry objects
-    return [
+    const flatHabitData = [
       ...groups.dailyHabits,
       ...groups.weeklyHabits,
       ...groups.monthlyHabits,
     ];
+
+    // get all the proof methods
+    const proofMethods = await ctx.db.query("proofMethods").collect();
+    const cameraProofMethod = proofMethods.find(
+      (method) => method.name.toLowerCase() === "camera",
+    );
+    if (!cameraProofMethod) return [];
+
+    // filter the habits with camera-only proof methods
+    const cameraHabits = flatHabitData.filter(
+      (data) => data.habit.proofMethodId === cameraProofMethod._id,
+    );
+
+    return cameraHabits;
   },
 });
 

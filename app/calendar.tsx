@@ -5,18 +5,13 @@ import {
 } from "@marceloterreiro/flash-calendar";
 import { useQuery } from "convex/react";
 import { router, useLocalSearchParams } from "expo-router";
-import { SquarePen } from "lucide-react-native";
+import { ChevronRight, SquarePen } from "lucide-react-native";
 import { StatusBar, Text, TouchableOpacity, View } from "react-native";
 import {
   Directions,
   Gesture,
   GestureDetector,
 } from "react-native-gesture-handler";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
 import { createColorStyles } from "@/assets/styles/color.styles";
@@ -86,7 +81,10 @@ export default function CalendarScreen() {
         <View
           style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.px4, s.py3]}
         >
-          <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
+          <TouchableOpacity
+            onPress={() => router.navigate(`/habit/form?id=${habit?._id}`)}
+            style={[s.flexRow, s.itemsCenter, s.gap4]}
+          >
             <View
               style={[
                 s.p3,
@@ -104,15 +102,14 @@ export default function CalendarScreen() {
                 {habit?.name}
               </Text>
               <Text style={[s.textSm, c.textMuted]}>
-                {`streak: ${currentStreak}, longest: ${longestStreak}`}
+                {`Streak: ${currentStreak}, Longest: ${longestStreak}`}
               </Text>
             </View>
-          </View>
+            <SquarePen size={24} color={colors.primary} />
+          </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => router.navigate(`/habit/form?id=${habit?._id}`)}
-          >
-            <SquarePen size={26} color={colors.primary} />
+          <TouchableOpacity onPress={() => router.back()}>
+            <ChevronRight size={26} color={colors.primary} />
           </TouchableOpacity>
         </View>
 
