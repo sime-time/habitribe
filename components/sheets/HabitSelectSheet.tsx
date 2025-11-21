@@ -92,11 +92,7 @@ export default function HabitSelectSheet({
           { backgroundColor: `${item.habit.color}30` },
         ]}
       >
-        <Emoji
-          iconName={item.habit.icon}
-          iconColor={item.habit.color}
-          iconSize={18}
-        />
+        <Emoji name={item.habit.icon} size={18} />
       </View>
       <View style={[s.gap1]}>
         <Text

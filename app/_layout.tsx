@@ -4,6 +4,7 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 import { Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "@/assets/styles/toast.config";
 import { ThemeProvider } from "@/hooks/useTheme";
@@ -67,7 +68,6 @@ function InitialLayout() {
       <Stack.Screen
         name="calendar"
         options={{
-          headerShown: true,
           animation: "slide_from_left",
         }}
       />
@@ -92,10 +92,12 @@ export default function RootLayout() {
           : undefined
       }
     >
-      <ThemeProvider>
-        <InitialLayout />
-        <Toast config={toastConfig} topOffset={60} />
-      </ThemeProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ThemeProvider>
+          <InitialLayout />
+          <Toast config={toastConfig} topOffset={60} />
+        </ThemeProvider>
+      </GestureHandlerRootView>
     </ConvexAuthProvider>
   );
 }

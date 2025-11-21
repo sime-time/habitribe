@@ -1,11 +1,10 @@
 import { Text } from "react-native";
 
 interface EmojiProps {
-  iconName: string | undefined;
-  iconColor?: string;
-  iconSize?: number;
+  name: string | undefined;
+  size?: number;
 }
 
-export default function Emoji({ iconName, iconSize = 24 }: EmojiProps) {
-  return <Text style={{ fontSize: iconSize }}>{iconName}</Text>;
+export default function Emoji({ name, size = 24 }: EmojiProps) {
+  return <Text style={{ fontSize: size }}>{name}</Text>;
 }

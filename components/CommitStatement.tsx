@@ -99,15 +99,15 @@ export default function CommitStatement() {
     );
   }
 
-  // Default format: I'll [proofMethod] that I'll [description] every [frequency]
+  // Default format: I [proofMethod] to [description] every [frequency]
   return (
     <View style={styles.commitContainer}>
       <View style={styles.commitRow}>
-        <Text style={styles.commitText}>I'll</Text>
+        <Text style={styles.commitText}>I</Text>
         {renderProofMethodButton()}
       </View>
       <View style={styles.commitRow}>
-        <Text style={styles.commitText}>that I'll</Text>
+        <Text style={styles.commitText}>to</Text>
         {renderDescriptionInput()}
       </View>
       <View style={styles.commitRow}>

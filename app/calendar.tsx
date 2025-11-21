@@ -5,12 +5,25 @@ import {
 } from "@marceloterreiro/flash-calendar";
 import { useQuery } from "convex/react";
 import { router, useLocalSearchParams } from "expo-router";
-import { StatusBar, Text, View } from "react-native";
+import { SquarePen } from "lucide-react-native";
+import { StatusBar, Text, TouchableOpacity, View } from "react-native";
+import {
+  Directions,
+  Gesture,
+  GestureDetector,
+} from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { scheduleOnRN } from "react-native-worklets";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { spacing } from "@/assets/styles/token.styles";
 import { combine, s } from "@/assets/styles/utility.styles";
 import { ProofCalendar } from "@/components/calendar/ProofCalendar";
+import Emoji from "@/components/Emoji";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
@@ -18,32 +31,28 @@ import useTheme from "@/hooks/useTheme";
 export default function CalendarScreen() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
-  const { habitId } = useLocalSearchParams<{ habitId?: string }>();
+  const { habitId } = useLocalSearchParams<{ habitId: string }>();
 
-  const data = useQuery(
-    api.exec.read.getHabitWithStreaksAndProofs,
-    habitId
-      ? {
-          habitId: habitId as Id<"habits">,
-        }
-      : "skip",
-  );
+  const { habit, proofDateUrl, longestStreak, currentStreak } =
+    useQuery(api.exec.read.getHabitWithStreaksAndProofs, {
+      habitId: habitId as Id<"habits">,
+    }) || {};
 
-  const proofMap = data?.proofDateUrl
-    ? new Map(Object.entries(data.proofDateUrl))
+  const proofMap = proofDateUrl
+    ? new Map(Object.entries(proofDateUrl))
     : undefined;
 
   const handleCalendarDayPress = (dateId: string) => {
-    if (data) {
-      router.navigate(
-        `/proof/select?habitId=${data?.habit._id}&date=${dateId}`,
-      );
-    }
+    router.navigate(`/proof/select?habitId=${habit?._id}&date=${dateId}`);
   };
+
+  const flingGesture = Gesture.Fling()
+    .direction(Directions.LEFT)
+    .onEnd(() => scheduleOnRN(() => router.back()));
 
   const calTheme: CalendarTheme = {
     rowMonth: {
-      content: combine(s.textLeft, c.textForeground, s.fontSemibold, s.text2xl),
+      content: combine(s.textLeft, c.textForeground, s.fontSemibold, s.textXl),
     },
     rowWeek: {
       container: combine(s.borderB1, c.borderDefault),
@@ -71,34 +80,66 @@ export default function CalendarScreen() {
   };
 
   return (
-    <SafeAreaView style={[s.flex1, c.bgBackground]}>
-      <StatusBar barStyle={colors.statusBarStyle} />
-      <View style={[s.mb4]}>
-        <Text>header</Text>
-      </View>
-      <Calendar.List
-        calendarInitialMonthId={toDateId(new Date())}
-        calendarMaxDateId={toDateId(new Date())}
-        calendarMinDateId={data?.habit.startDate || "2025-01-01"}
-        calendarPastScrollRangeInMonths={12}
-        calendarDayHeight={spacing[16]}
-        calendarMonthHeaderHeight={spacing[6]}
-        calendarWeekHeaderHeight={spacing[10]}
-        calendarFirstDayOfWeek="monday"
-        calendarRowVerticalSpacing={spacing[4]}
-        calendarRowHorizontalSpacing={spacing[2]}
-        onCalendarDayPress={(dateId) => handleCalendarDayPress(dateId)}
-        theme={calTheme}
-        renderItem={({ item }) => (
-          <View style={[s.pb8, s.px2]}>
-            <ProofCalendar
-              calendarMonthId={item.id}
-              {...item.calendarProps}
-              proofMap={proofMap}
-            />
+    <GestureDetector gesture={flingGesture}>
+      <SafeAreaView style={[s.flex1, c.bgBackground]}>
+        <StatusBar barStyle={colors.statusBarStyle} />
+        <View
+          style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.px4, s.py3]}
+        >
+          <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
+            <View
+              style={[
+                s.p3,
+                s.roundedMd,
+                s.itemsCenter,
+                s.justifyCenter,
+                { backgroundColor: `${habit?.color}30` },
+              ]}
+            >
+              <Emoji name={habit?.icon} size={30} />
+            </View>
+
+            <View style={[s.flexCol, s.gap1]}>
+              <Text style={[s.textXl, s.fontSemibold, c.textForeground]}>
+                {habit?.name}
+              </Text>
+              <Text style={[s.textSm, c.textMuted]}>
+                {`streak: ${currentStreak}, longest: ${longestStreak}`}
+              </Text>
+            </View>
           </View>
-        )}
-      />
-    </SafeAreaView>
+
+          <TouchableOpacity
+            onPress={() => router.navigate(`/habit/form?id=${habit?._id}`)}
+          >
+            <SquarePen size={26} color={colors.primary} />
+          </TouchableOpacity>
+        </View>
+
+        <Calendar.List
+          calendarInitialMonthId={toDateId(new Date())}
+          calendarMaxDateId={toDateId(new Date())}
+          calendarMinDateId={habit?.startDate || "2025-01-01"}
+          calendarPastScrollRangeInMonths={12}
+          calendarDayHeight={spacing[16]}
+          calendarMonthHeaderHeight={spacing[6]}
+          calendarWeekHeaderHeight={spacing[10]}
+          calendarFirstDayOfWeek="monday"
+          calendarRowVerticalSpacing={spacing[4]}
+          calendarRowHorizontalSpacing={spacing[2]}
+          onCalendarDayPress={(dateId) => handleCalendarDayPress(dateId)}
+          theme={calTheme}
+          renderItem={({ item }) => (
+            <View style={[s.pb8, s.px2]}>
+              <ProofCalendar
+                calendarMonthId={item.id}
+                {...item.calendarProps}
+                proofMap={proofMap}
+              />
+            </View>
+          )}
+        />
+      </SafeAreaView>
+    </GestureDetector>
   );
 }

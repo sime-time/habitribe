@@ -27,6 +27,13 @@ export default function HabitCard({
 }: HabitCardProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
+  const handleHeaderPress = () => {
+    if (proofMethodType === "camera") {
+      router.navigate(`/calendar?habitId=${habit._id}`);
+    } else {
+      router.navigate(`/habit/form?id=${habit._id}`);
+    }
+  };
   return (
     <View
       style={[
@@ -42,7 +49,7 @@ export default function HabitCard({
       {/* Header: Icon + Name + Streak/Description */}
       <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
         <Pressable
-          onPress={() => router.navigate(`/calendar?habitId=${habit._id}`)}
+          onPress={handleHeaderPress}
           style={[s.flexRow, s.itemsCenter, s.gap3]}
         >
           <View
@@ -54,11 +61,7 @@ export default function HabitCard({
               { backgroundColor: `${habit.color}30` },
             ]}
           >
-            <Emoji
-              iconName={habit.icon}
-              iconColor={habit.color}
-              iconSize={20}
-            />
+            <Emoji name={habit.icon} size={20} />
           </View>
           <View style={[s.flexCol, s.gap1]}>
             <View style={[s.flexRow, s.gap1, s.itemsCenter]}>

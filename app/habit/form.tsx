@@ -337,7 +337,7 @@ export default function HabitForm() {
                         },
                       ]}
                     >
-                      <Emoji iconName={icon} iconSize={18} />
+                      <Emoji name={icon} size={18} />
                     </View>
                     <Ionicons
                       name="chevron-forward"

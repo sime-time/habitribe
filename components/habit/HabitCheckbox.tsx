@@ -11,6 +11,7 @@ import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
+import { getTodayDateString } from "@/utils/dateHelper";
 import { isComplete } from "@/utils/habitLabelHelper";
 
 type HabitCheckboxProps = {
@@ -50,8 +51,9 @@ function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
   const handlePress = () => {
     if (!entry) return;
     if (proofMethodType === "camera") {
+      const today = getTodayDateString();
       return router.navigate(
-        `/proof/select?habitId=${habit._id}&date=${entry.date}`,
+        `/proof/select?habitId=${habit._id}&date=${today}`,
       );
     }
 

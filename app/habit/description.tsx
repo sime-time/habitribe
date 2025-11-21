@@ -44,7 +44,7 @@ export default function HabitDescription() {
         };
       default:
         return {
-          label: "I'll self-verify that I'll",
+          label: "I trust myself to",
           placeholder: "E.g., go to the gym, read for 30 minutes, meditate...",
         };
     }
