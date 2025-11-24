@@ -1,5 +1,6 @@
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import { ConvexReactClient, useConvexAuth } from "convex/react";
+import * as Notifications from "expo-notifications";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
@@ -15,6 +16,16 @@ if (!convexUrl) {
 }
 const convex = new ConvexReactClient(convexUrl, {
   unsavedChangesWarning: false,
+});
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
 });
 
 const secureStorage = {

@@ -30,6 +30,10 @@ import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
 import type { Frequency } from "@/utils/habitLabelHelper";
+import {
+  cancelReminder,
+  scheduleHabitReminder,
+} from "@/utils/notificationHelper";
 import { HabitFormSchema } from "@/validation/HabitFormSchema";
 
 type HabitId = Id<"habits">;
@@ -51,7 +55,7 @@ export default function HabitForm() {
     setIsEditMode(isEditMode);
   }, [isEditMode, setIsEditMode]);
 
-  // Habit state
+  // habit form state
   const habitForm = useHabitFormStore((state) => state.habitForm);
   const name = useHabitFormStore((state) => state.habitForm.name);
   const icon = useHabitFormStore((state) => state.habitForm.icon);
@@ -59,8 +63,6 @@ export default function HabitForm() {
   const reminders = useHabitFormStore((state) => state.reminders);
   const remindersEnabled = useHabitFormStore((state) => state.remindersEnabled);
   const initialReminders = useHabitFormStore((state) => state.initialReminders);
-
-  // in "edit" mode the initial form becomes populated with the data of the habit being updated
   const setInitialForm = useHabitFormStore((state) => state.setInitialForm);
   const updateForm = useHabitFormStore((state) => state.updateForm);
   const resetForm = useHabitFormStore((state) => state.resetForm);
@@ -88,6 +90,7 @@ export default function HabitForm() {
     isEditMode ? { habitId: id as HabitId } : "skip",
   );
 
+  // in "edit" mode the initial form becomes populated with the data of the habit being updated
   // set the initialForm & initialReminders to be the current habit data
   // so when a user resets the form, it returns to the original habit data
   useEffect(() => {
@@ -146,6 +149,12 @@ export default function HabitForm() {
           style: "destructive",
           onPress: async () => {
             try {
+              // cancel all reminders on device related to this habit
+              for (const reminder of initialReminders) {
+                if (reminder.id !== null) {
+                  await cancelReminder(reminder.id);
+                }
+              }
               await deleteHabit({ id: id as HabitId });
               router.dismissTo("/(tabs)");
             } catch (err) {
@@ -155,7 +164,7 @@ export default function HabitForm() {
         },
       ],
     );
-  }, [id, deleteHabit]);
+  }, [id, deleteHabit, initialReminders]);
 
   // override header buttons if in edit mode
   useLayoutEffect(() => {
@@ -185,10 +194,18 @@ export default function HabitForm() {
     if (remindersEnabled) {
       for (const reminder of reminders) {
         const timeString = reminder.time.toTimeString().slice(0, 5); // "HH:mm"
-        await createReminder({
+
+        const reminderId = await createReminder({
           habitId,
           time: timeString,
         });
+
+        // schedule local notification on device
+        await scheduleHabitReminder(
+          validHabitForm.name,
+          reminderId,
+          timeString,
+        );
       }
     }
   };
@@ -208,19 +225,36 @@ export default function HabitForm() {
 
         if (reminder.id === null) {
           // null id = NEW reminder to create in database
-          await createReminder({
+          const reminderId = await createReminder({
             habitId,
             time: timeString,
           });
+          await scheduleHabitReminder(
+            validHabitForm.name,
+            reminderId,
+            timeString,
+          );
         } else {
           // reminder id EXISTS in database, update it
+
+          // first, cancel the old scheduled notification on device
+          await cancelReminder(reminder.id);
+
+          // update the reminder time
           await editReminder({
             id: reminder.id as Id<"reminders">,
             time: timeString,
           });
+
+          // create new scheduled notification
+          await scheduleHabitReminder(
+            validHabitForm.name,
+            reminder.id,
+            timeString,
+          );
         }
       }
-    } // always check for deleted reminders, esp if reminders are disabled
+    }
     // find deleted reminders (in initialReminders but not in current reminders)
     const reminderIds = reminders.map((r) => r.id);
     const currentIds = reminderIds.filter((id) => id !== null);
@@ -231,6 +265,7 @@ export default function HabitForm() {
     // delete removed reminders from database
     for (const deleted of deletedReminders) {
       if (deleted.id) {
+        await cancelReminder(deleted.id);
         await deleteReminder({ id: deleted.id as Id<"reminders"> });
       }
     }

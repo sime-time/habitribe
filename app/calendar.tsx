@@ -15,7 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
 import { createColorStyles } from "@/assets/styles/color.styles";
-import { spacing } from "@/assets/styles/token.styles";
+import { fontSize, spacing } from "@/assets/styles/token.styles";
 import { combine, s } from "@/assets/styles/utility.styles";
 import { ProofCalendar } from "@/components/calendar/ProofCalendar";
 import Emoji from "@/components/Emoji";
@@ -98,14 +98,17 @@ export default function CalendarScreen() {
             </View>
 
             <View style={[s.flexCol, s.gap1]}>
-              <Text style={[s.textXl, s.fontSemibold, c.textForeground]}>
-                {habit?.name}
-              </Text>
+              <View style={[s.flexRow, s.gap2, s.itemsCenter]}>
+                <Text style={[s.textXl, s.fontSemibold, c.textForeground]}>
+                  {habit?.name}
+                </Text>
+                <SquarePen size={fontSize.xl} color={colors.primary} />
+              </View>
+
               <Text style={[s.textSm, c.textMuted]}>
                 {`Streak: ${currentStreak}, Longest: ${longestStreak}`}
               </Text>
             </View>
-            <SquarePen size={24} color={colors.primary} />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => router.back()}>

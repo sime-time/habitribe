@@ -91,11 +91,16 @@ export default function Index() {
 
           {/* ADD HABIT BUTTON */}
           <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
-            <Ionicons
-              name="notifications-outline"
-              size={24}
-              color={colors.foreground}
-            />
+            <Link href="/reminders" asChild>
+              <TouchableOpacity>
+                <Ionicons
+                  name="notifications-outline"
+                  size={24}
+                  color={colors.foreground}
+                />
+              </TouchableOpacity>
+            </Link>
+
             <Link href="/habit/form" asChild>
               <TouchableOpacity>
                 <LinearGradient
