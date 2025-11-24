@@ -37,7 +37,7 @@ export default function HabitCard({
   return (
     <View
       style={[
-        s.mb5,
+        s.mb4,
         s.p4,
         s.gap3,
         s.roundedLg,

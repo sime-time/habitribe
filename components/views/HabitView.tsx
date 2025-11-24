@@ -12,6 +12,7 @@ import type {
   ProofMethod,
   ProofMethodId,
 } from "@/types/HabitTypes";
+import ProgressBar from "../ProgressBar";
 
 // Converts array of HabitActivity into a Map for O(1) lookup by habitId
 export function createActivityMap(
@@ -60,7 +61,10 @@ export default function HabitView({
     <ScrollView style={[s.flex1, s.px4]} showsVerticalScrollIndicator={false}>
       {dailyHabits.length > 0 && (
         <>
-          <DateGroupTitle date={date} variant="daily" />
+          <View style={s.mb3}>
+            <DateGroupTitle date={date} variant="daily" />
+            <ProgressBar habitData={dailyHabits} />
+          </View>
 
           {dailyHabits.map((d) => {
             const activity = dailyActivityMap
@@ -98,7 +102,10 @@ export default function HabitView({
 
       {weeklyHabits.length > 0 && (
         <>
-          <DateGroupTitle date={date} variant="weekly" />
+          <View style={s.mb3}>
+            <DateGroupTitle date={date} variant="weekly" />
+            <ProgressBar habitData={weeklyHabits} />
+          </View>
 
           {weeklyHabits.map((w) => {
             const activity = weeklyActivityMap
@@ -136,8 +143,10 @@ export default function HabitView({
 
       {monthlyHabits.length > 0 && (
         <>
-          <DateGroupTitle date={date} variant="monthly" />
-
+          <View style={s.mb3}>
+            <DateGroupTitle date={date} variant="monthly" />
+            <ProgressBar habitData={monthlyHabits} />
+          </View>
           {monthlyHabits.map((m) => {
             const activity = monthlyActivityMap
               ? monthlyActivityMap.get(m.habit._id)

@@ -102,7 +102,7 @@ export default function DateGroupTitle({ date, variant }: DateGroupTitleProps) {
   }
 
   return (
-    <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
+    <View style={[s.flexRow, s.justifyBetween, s.itemsCenter]}>
       <Text style={[s.fontBold, s.text2xl, c.textForeground]}>{title}</Text>
       <Text style={[s.fontNormal, s.textBase, c.textMuted]}>{subtitle}</Text>
     </View>
