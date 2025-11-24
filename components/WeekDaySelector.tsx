@@ -1,92 +1,81 @@
-import { Check } from "lucide-react-native";
-import { Text, type TextStyle, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
-import { CHECKMARK_SIZE } from "@/constants/sizes";
 import useTheme from "@/hooks/useTheme";
+import { getWeekBounds } from "@/utils/dateHelper";
 
-interface WeeklyDaySelectorProps {
-  pattern: number | number[];
-  setPattern: (pattern: number | number[]) => void;
+interface WeekDaySelectorProps {
+  selectedDate: Date;
+  onSelectDate?: (date: Date) => void;
 }
 
+const DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
 export default function WeekDaySelector({
-  pattern,
-  setPattern,
-}: WeeklyDaySelectorProps) {
+  selectedDate,
+  onSelectDate,
+}: WeekDaySelectorProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
-  const days = [
-    { label: "Su", value: 0 },
-    { label: "Mo", value: 1 },
-    { label: "Tu", value: 2 },
-    { label: "We", value: 3 },
-    { label: "Th", value: 4 },
-    { label: "Fr", value: 5 },
-    { label: "Sa", value: 6 },
-  ];
+  // Get Monday of the week containing selectedDate
+  const weekBounds = getWeekBounds(selectedDate);
+  const mondayDate = weekBounds.start;
 
-  const selectedDays = Array.isArray(pattern)
-    ? pattern
-    : pattern === 1
-      ? [0, 1, 2, 3, 4, 5, 6]
-      : [];
+  // Generate all 7 days of the week starting from Monday
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(mondayDate);
+    date.setDate(date.getDate() + i);
+    return date;
+  });
 
-  const toggleDay = (dayValue: number) => {
-    const newPattern = selectedDays.includes(dayValue)
-      ? selectedDays.filter((day) => day !== dayValue)
-      : [...selectedDays, dayValue];
-
-    // If all 7 days are selected, switch to "every day" (pattern = 1)
-    if (newPattern.length === 7) {
-      setPattern(1);
-    } else {
-      setPattern(newPattern);
-    }
+  const isDateSelected = (date: Date) => {
+    return (
+      date.getDate() === selectedDate.getDate() &&
+      date.getMonth() === selectedDate.getMonth() &&
+      date.getFullYear() === selectedDate.getFullYear()
+    );
   };
 
   return (
-    <View style={[s.flexRow, s.justifyBetween, s.itemsCenter, s.pb2]}>
-      {days.map((day) => {
-        const isSelected = selectedDays.includes(day.value);
+    <View style={[s.flexRow, s.gap2, s.justifyBetween]}>
+      {weekDays.map((date, index) => {
+        const isSelected = isDateSelected(date);
         return (
-          <View
-            key={day.value}
-            style={[s.flex1, s.itemsCenter, s.justifyBetween]}
+          <TouchableOpacity
+            key={index}
+            style={[
+              s.flex1,
+              s.py2,
+              s.px1,
+              s.roundedMd,
+              s.itemsCenter,
+              s.gap1,
+              isSelected ? c.bgPrimary : c.bgCard,
+              s.border1,
+              isSelected ? c.borderPrimary : c.borderDefault,
+            ]}
+            onPress={() => onSelectDate?.(date)}
           >
-            <TouchableOpacity
-              style={[
-                s.roundedFull,
-                s.justifyCenter,
-                s.itemsCenter,
-                s.border2,
-                isSelected ? c.bgPrimary : c.bgTransparent,
-                isSelected ? c.borderPrimary : c.borderDefault,
-                {
-                  width: CHECKMARK_SIZE + 12,
-                  height: CHECKMARK_SIZE + 12,
-                },
-              ]}
-              onPress={() => toggleDay(day.value)}
-            >
-              {isSelected && (
-                <Check size={CHECKMARK_SIZE} color={colors.primaryForeground} />
-              )}
-            </TouchableOpacity>
             <Text
-              style={
-                [
-                  c.textMuted,
-                  s.textBase,
-                  s.mt2,
-                  c.textForeground,
-                ] as TextStyle[]
-              }
+              style={[
+                s.textXs,
+                s.fontMedium,
+                isSelected ? c.textPrimaryForeground : c.textMuted,
+              ]}
             >
-              {day.label}
+              {DAY_NAMES[index]}
             </Text>
-          </View>
+            <Text
+              style={[
+                s.textBase,
+                s.fontSemibold,
+                isSelected ? c.textPrimaryForeground : c.textForeground,
+              ]}
+            >
+              {date.getDate()}
+            </Text>
+          </TouchableOpacity>
         );
       })}
     </View>

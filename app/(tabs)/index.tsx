@@ -10,31 +10,30 @@ import HabitView from "@/components/views/HabitView";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { useHabitChartStore } from "@/stores/habitChartStore";
+import { useHabitDateStore } from "@/stores/habitDateStore";
 import type { ProofMethod, ProofMethodId } from "@/types/HabitTypes";
 import {
   calculateStartDateFromNumDays,
   getWeekMonthBounds,
-  parseLocalDate,
 } from "@/utils/dateHelper";
 
 export default function Index() {
   const { colors } = useTheme();
 
+  // dates should be calculated on the client side
+  // to prevent timezone issues with client/server
+  const date = useHabitDateStore((state) => state.date);
+  const dateId = useHabitDateStore((state) => state.dateId); // "YYYY-MM-DD"
+  const weekday = date.getDay();
+  const bounds = getWeekMonthBounds(date);
   const showCharts = useHabitChartStore((state) => state.showCharts);
   const setShowCharts = useHabitChartStore((state) => state.setShowCharts);
   const numDays = useHabitChartStore((state) => state.numDays);
-  const currentDate = useHabitChartStore((state) => state.endDate);
-
-  // dates should be calculated on the client side
-  // to prevent timezone issues with client/server
-  const today = parseLocalDate(currentDate);
-  const weekday = today.getDay();
-  const bounds = getWeekMonthBounds(today);
-  const startDate = calculateStartDateFromNumDays(currentDate, numDays);
+  const startDate = calculateStartDateFromNumDays(dateId, numDays);
 
   // current period entries (always loaded, grouped by frequency)
   const currentHabitEntries = useQuery(api.exec.read.getGroupedHabitData, {
-    date: currentDate,
+    date: dateId,
     weekday,
     bounds,
   });
@@ -42,7 +41,7 @@ export default function Index() {
   // skip this query when showCharts is false
   const chartData = useQuery(
     api.exec.read.getHabitActivity,
-    showCharts ? { startDate, endDate: currentDate } : "skip",
+    showCharts ? { startDate, endDate: dateId } : "skip",
   );
 
   // categorize by proof method
@@ -59,11 +58,11 @@ export default function Index() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: only re-run when date changes
   useEffect(() => {
     createMissingEntries({
-      date: currentDate,
+      date: dateId,
       weekday,
       bounds,
     });
-  }, [currentDate]); // only re-run when date changes
+  }, [dateId]); // only re-run when date changes
 
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
@@ -124,7 +123,7 @@ export default function Index() {
         {/* CONTENT */}
         {currentHabitEntries && (
           <HabitView
-            date={today}
+            date={date}
             dailyHabits={currentHabitEntries.dailyHabits}
             weeklyHabits={currentHabitEntries.weeklyHabits}
             monthlyHabits={currentHabitEntries.monthlyHabits}

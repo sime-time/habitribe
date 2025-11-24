@@ -15,7 +15,11 @@ import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { useHabitSelectStore } from "@/stores/habitSelectStore";
 import type { Habit, HabitEntry } from "@/types/HabitTypes";
-import { getTodayDateString, getWeekMonthBounds } from "@/utils/dateHelper";
+import {
+  getTodayDateString,
+  getWeekMonthBounds,
+  parseLocalDate,
+} from "@/utils/dateHelper";
 import { type Frequency, getScheduleLabel } from "@/utils/habitLabelHelper";
 
 interface HabitSelectSheetProps {
@@ -34,7 +38,7 @@ export default function HabitSelectSheet({
   // client side should calculate any dates
   // this prevents timezone issues with client/server
   const habitDate = getTodayDateString();
-  const today = new Date(habitDate);
+  const today = parseLocalDate(habitDate);
   const weekday = today.getDay(); // 0-6 for daily habit pattern matching
   const bounds = getWeekMonthBounds(today);
 

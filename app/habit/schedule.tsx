@@ -13,7 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
-import WeekDaySelector from "@/components/WeekDaySelector";
+import WeekDayScheduler from "@/components/WeekDayScheduler";
 import { CHECKMARK_SIZE } from "@/constants/sizes";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
@@ -202,7 +202,7 @@ export default function HabitSchedule() {
                       </View>
                     </TouchableOpacity>
                     {Array.isArray(pattern) || pattern === 1 ? (
-                      <WeekDaySelector
+                      <WeekDayScheduler
                         pattern={pattern}
                         setPattern={setPattern}
                       />

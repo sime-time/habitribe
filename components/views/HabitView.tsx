@@ -4,6 +4,8 @@ import { s } from "@/assets/styles/utility.styles";
 import DateGroupTitle from "@/components/DateGroupTitle";
 import HabitCard from "@/components/habit/HabitCard";
 import HabitChart from "@/components/habit/HabitChart";
+import ProgressBar from "@/components/ProgressBar";
+import WeekDaySelector from "@/components/WeekDaySelector";
 import type { Id } from "@/convex/_generated/dataModel";
 import type {
   Activity,
@@ -12,7 +14,6 @@ import type {
   ProofMethod,
   ProofMethodId,
 } from "@/types/HabitTypes";
-import ProgressBar from "../ProgressBar";
 
 // Converts array of HabitActivity into a Map for O(1) lookup by habitId
 export function createActivityMap(
@@ -59,6 +60,13 @@ export default function HabitView({
   );
   return (
     <ScrollView style={[s.flex1, s.px4]} showsVerticalScrollIndicator={false}>
+      <View style={s.mb4}>
+        <WeekDaySelector
+          selectedDate={date}
+          onSelectDate={() => console.log("nothing")}
+        />
+      </View>
+
       {dailyHabits.length > 0 && (
         <>
           <View style={s.mb3}>

@@ -50,6 +50,7 @@ export default function PhotoView() {
       // Validate: Is a habit entry selected?
       if (!entry) throw Error("You must select a habit");
       if (!picture) throw Error("You must select a photo to upload");
+      console.log("entry", entry._id);
 
       // Convert picture URI string into blob
       const response = await fetch(picture);
