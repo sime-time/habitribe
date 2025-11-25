@@ -1,5 +1,9 @@
 import { create } from "zustand";
-import { getTodayDateString, parseLocalDate } from "@/utils/dateHelper";
+import {
+  formatLocalDate,
+  getTodayDateString,
+  parseLocalDate,
+} from "@/utils/dateHelper";
 
 const today = getTodayDateString();
 
@@ -17,9 +21,11 @@ export const useHabitDateStore = create<HabitDateStore>((set) => ({
     if (date instanceof Date) {
       set({
         date: date,
+        dateId: formatLocalDate(date),
       });
     } else {
       set({
+        date: parseLocalDate(date),
         dateId: date,
       });
     }

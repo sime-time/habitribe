@@ -11,7 +11,7 @@ import { s } from "@/assets/styles/utility.styles";
 import { api } from "@/convex/_generated/api";
 import type { Doc } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
-import { getTodayDateString } from "@/utils/dateHelper";
+import { useHabitDateStore } from "@/stores/habitDateStore";
 import { isComplete } from "@/utils/habitLabelHelper";
 
 type HabitCheckboxProps = {
@@ -23,6 +23,8 @@ type HabitCheckboxProps = {
 function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
+
+  const currentDate = useHabitDateStore((state) => state.dateId);
 
   const incrementProgress = useMutation(
     api.exec.update.incrementHabitEntryProgress,
@@ -51,9 +53,8 @@ function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
   const handlePress = () => {
     if (!entry) return;
     if (proofMethodType === "camera") {
-      const today = getTodayDateString();
       return router.navigate(
-        `/proof/select?habitId=${habit._id}&date=${today}`,
+        `/proof/select?habitId=${habit._id}&date=${currentDate}`,
       );
     }
 
@@ -88,18 +89,20 @@ function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
           </View>
         ) : (
           <View pointerEvents="none">
-            <PieChart
-              data={pieData || []}
-              donut={true}
-              radius={18}
-              innerRadius={spacing[3]}
-              innerCircleColor={colors.card}
-              centerLabelComponent={() => (
-                <Text style={[c.textForeground, s.textSm, s.fontSemibold]}>
-                  {entry?.progress ?? 0}
-                </Text>
-              )}
-            />
+            {pieData && (
+              <PieChart
+                data={pieData || []}
+                donut={true}
+                radius={18}
+                innerRadius={spacing[3]}
+                innerCircleColor={colors.card}
+                centerLabelComponent={() => (
+                  <Text style={[c.textForeground, s.textSm, s.fontSemibold]}>
+                    {entry?.progress ?? 0}
+                  </Text>
+                )}
+              />
+            )}
           </View>
         )}
       </LinearGradient>

@@ -31,7 +31,7 @@ export default function ProgressBar({ habitData }: ProgressBarProps) {
 
   return (
     <View style={[s.flexRow, s.itemsCenter, s.mt1]}>
-      <View style={[s.flex1, s.h3, s.rounded, s.overflowHidden, c.bgBorder]}>
+      <View style={[s.flex1, s.h2, s.rounded, s.overflowHidden, c.bgBorder]}>
         <LinearGradient
           colors={colors.gradients.success}
           style={[s.hFull, s.rounded, { width: `${progressPercentage}%` }]}

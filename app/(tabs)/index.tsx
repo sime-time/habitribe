@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Switch, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { s } from "@/assets/styles/utility.styles";
@@ -25,11 +25,13 @@ export default function Index() {
   const date = useHabitDateStore((state) => state.date);
   const dateId = useHabitDateStore((state) => state.dateId); // "YYYY-MM-DD"
   const weekday = date.getDay();
-  const bounds = getWeekMonthBounds(date);
   const showCharts = useHabitChartStore((state) => state.showCharts);
   const setShowCharts = useHabitChartStore((state) => state.setShowCharts);
   const numDays = useHabitChartStore((state) => state.numDays);
   const startDate = calculateStartDateFromNumDays(dateId, numDays);
+
+  // update bounds when date changes
+  const bounds = useMemo(() => getWeekMonthBounds(date), [date]);
 
   // current period entries (always loaded, grouped by frequency)
   const currentHabitEntries = useQuery(api.exec.read.getGroupedHabitData, {

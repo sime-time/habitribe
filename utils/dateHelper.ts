@@ -24,10 +24,11 @@ export function getTodayDateString(): string {
 // weekly helper function
 export function getWeekBounds(date: Date): { start: string; end: string } {
   const dayOfWeek = date.getDay();
+  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
   // calculate monday of this week (start)
   const monday = new Date(date);
-  monday.setDate(date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1));
+  monday.setDate(date.getDate() - daysToMonday);
 
   // calculate sunday of this week (end)
   const sunday = new Date(monday);
