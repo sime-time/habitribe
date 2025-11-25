@@ -14,6 +14,7 @@ import { useHabitDateStore } from "@/stores/habitDateStore";
 import type { ProofMethod, ProofMethodId } from "@/types/HabitTypes";
 import {
   calculateStartDateFromNumDays,
+  getTodayDateString,
   getWeekMonthBounds,
 } from "@/utils/dateHelper";
 
@@ -43,7 +44,7 @@ export default function Index() {
   // skip this query when showCharts is false
   const chartData = useQuery(
     api.exec.read.getHabitActivity,
-    showCharts ? { startDate, endDate: dateId } : "skip",
+    showCharts ? { startDate, endDate: getTodayDateString() } : "skip",
   );
 
   // categorize by proof method
