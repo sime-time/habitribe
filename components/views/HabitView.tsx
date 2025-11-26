@@ -65,7 +65,7 @@ export default function HabitView({
     monthlyHabits.length === 0;
 
   return (
-    <GestureHandlerRootView style={s.flex1}>
+    <GestureHandlerRootView style={[s.flex1]}>
       {allHabitsEmpty && <EmptyState />}
 
       {dailyHabits.length > 0 && (

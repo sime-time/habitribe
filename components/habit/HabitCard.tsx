@@ -97,7 +97,7 @@ export default function HabitCard({
   );
 
   return (
-    <Swipeable renderRightActions={renderActions} containerStyle={s.mb4}>
+    <Swipeable renderRightActions={renderActions} containerStyle={s.mb3}>
       <View
         style={[
           s.p4,
