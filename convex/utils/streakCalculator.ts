@@ -52,7 +52,7 @@ export function calculateAllStreaks(
         const isContinuous = checkContinuity(
           previousEntry.date,
           entry.date,
-          habit.schedule.frequency,
+          habit.schedule.frequency as Frequency,
           habit.schedule.pattern,
         );
 
@@ -70,7 +70,7 @@ export function calculateAllStreaks(
     }
   }
   if (currentStreak.length > 0) {
-    streaks.push(buildStreakData(currentStreak, null));
+    streaks.push(buildStreakData(currentStreak));
   }
   return streaks;
 }
