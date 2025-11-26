@@ -3,10 +3,11 @@ import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import { useEffect, useMemo } from "react";
-import { Switch, TouchableOpacity, View } from "react-native";
+import { ScrollView, Switch, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { s } from "@/assets/styles/utility.styles";
 import HabitView from "@/components/views/HabitView";
+import WeekDaySelector from "@/components/WeekDaySelector";
 import { api } from "@/convex/_generated/api";
 import useTheme from "@/hooks/useTheme";
 import { useHabitChartStore } from "@/stores/habitChartStore";
@@ -124,18 +125,27 @@ export default function Index() {
         </View>
 
         {/* CONTENT */}
-        {currentHabitEntries && (
-          <HabitView
-            date={date}
-            dailyHabits={currentHabitEntries.dailyHabits}
-            weeklyHabits={currentHabitEntries.weeklyHabits}
-            monthlyHabits={currentHabitEntries.monthlyHabits}
-            proofMethodMap={proofMethodMap}
-            dailyActivity={chartData?.dailyActivity}
-            weeklyActivity={chartData?.weeklyActivity}
-            monthlyActivity={chartData?.monthlyActivity}
-          />
-        )}
+        <ScrollView
+          style={[s.flex1, s.px4]}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={s.mb4}>
+            <WeekDaySelector />
+          </View>
+
+          {currentHabitEntries && (
+            <HabitView
+              date={date}
+              dailyHabits={currentHabitEntries.dailyHabits}
+              weeklyHabits={currentHabitEntries.weeklyHabits}
+              monthlyHabits={currentHabitEntries.monthlyHabits}
+              proofMethodMap={proofMethodMap}
+              dailyActivity={chartData?.dailyActivity}
+              weeklyActivity={chartData?.weeklyActivity}
+              monthlyActivity={chartData?.monthlyActivity}
+            />
+          )}
+        </ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );

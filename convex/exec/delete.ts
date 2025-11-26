@@ -1,6 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { ConvexError, v } from "convex/values";
-import { isComplete } from "@/utils/habitLabelHelper";
+import { internal } from "../_generated/api";
 import { mutation } from "../_generated/server";
 
 export const deleteHabit = mutation({
@@ -91,35 +91,17 @@ export const deleteProof = mutation({
     const habit = await ctx.db.get(entry.habitId);
     if (!habit) throw new ConvexError("Habit not found");
 
-    const newProgress = entry.progress - 1;
-
-    // check if current entry is complete before decreasing the progress
-    // check if decrementing the progress will cause the entry to be incomplete
-    if (isComplete(entry.progress, habit) && !isComplete(newProgress, habit)) {
-      // decrement the streak, while keeping it active
-      const activeStreak = await ctx.db
-        .query("streaks")
-        .withIndex("by_active_habit", (q) =>
-          q.eq("habitId", habit._id).eq("active", true),
-        )
-        .first();
-
-      // check if this entry is part of the active streak
-      if (activeStreak && entry.date === activeStreak.endDate) {
-        // decrement but keep the streak active
-        await ctx.db.patch(activeStreak._id, {
-          length: Math.max(0, activeStreak.length - 1),
-          endDate: activeStreak.endDate,
-        });
-      }
-    }
-
     // decrement entry progress
     await ctx.db.patch(proof.habitEntryId, {
-      progress: Math.max(0, newProgress),
+      progress: Math.max(0, entry.progress - 1),
     });
 
-    // Delete the proof
+    // rebuild streaks for this habit after progress changes
+    await ctx.runMutation(internal.utils.streakHelper.rebuildAllStreaks, {
+      habitId: habit._id,
+    });
+
+    // delete the proof
     await ctx.db.delete(args.proofId);
   },
 });

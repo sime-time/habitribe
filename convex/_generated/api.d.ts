@@ -17,8 +17,11 @@ import type * as exec_read from "../exec/read.js";
 import type * as exec_update from "../exec/update.js";
 import type * as http from "../http.js";
 import type * as utils_cronHelper from "../utils/cronHelper.js";
+import type * as utils_dateValidator from "../utils/dateValidator.js";
 import type * as utils_emailHelper from "../utils/emailHelper.js";
 import type * as utils_entryHelper from "../utils/entryHelper.js";
+import type * as utils_migrationHelper from "../utils/migrationHelper.js";
+import type * as utils_streakCalculator from "../utils/streakCalculator.js";
 import type * as utils_streakHelper from "../utils/streakHelper.js";
 
 import type {
@@ -45,8 +48,11 @@ declare const fullApi: ApiFromModules<{
   "exec/update": typeof exec_update;
   http: typeof http;
   "utils/cronHelper": typeof utils_cronHelper;
+  "utils/dateValidator": typeof utils_dateValidator;
   "utils/emailHelper": typeof utils_emailHelper;
   "utils/entryHelper": typeof utils_entryHelper;
+  "utils/migrationHelper": typeof utils_migrationHelper;
+  "utils/streakCalculator": typeof utils_streakCalculator;
   "utils/streakHelper": typeof utils_streakHelper;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

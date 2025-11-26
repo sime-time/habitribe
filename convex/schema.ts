@@ -75,9 +75,12 @@ export default defineSchema({
     endDate: v.string(),
     length: v.number(),
     active: v.boolean(),
+    entryIds: v.array(v.id("habitEntries")), // array of entries in this streak
+    breakingEntryId: v.optional(v.id("habitEntries")),
   })
     .index("by_habit", ["habitId"])
     .index("by_user", ["userId"])
     .index("by_user_habit", ["userId", "habitId"])
+    .index("by_habit_date", ["habitId", "startDate"])
     .index("by_active_habit", ["habitId", "active"]),
 });

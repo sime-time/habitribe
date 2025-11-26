@@ -29,6 +29,7 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
+import { calculateStartDate } from "@/utils/dateHelper";
 import type { Frequency } from "@/utils/habitLabelHelper";
 import {
   cancelReminder,
@@ -186,8 +187,16 @@ export default function HabitForm() {
 
   const createSubmit = async () => {
     const validHabitForm = HabitFormSchema.parse(habitForm);
+
+    // if habit is a weekly or monthly habit
+    // start the habit entry on last monday or the first of the month, respectively
+    const validStartDate = calculateStartDate(
+      validHabitForm.schedule.frequency,
+    );
+
     const habitId = await createHabit({
       ...validHabitForm,
+      startDate: validStartDate,
       proofMethodId: validHabitForm.proofMethodId as Id<"proofMethods">,
     });
 

@@ -75,23 +75,10 @@ export const incrementHabitEntryProgress = mutation({
       progress: newProgress,
     });
 
-    const habit = await ctx.db.get(entry.habitId);
-    if (!habit) throw new ConvexError("Habit not found");
-
-    // determine target goal based on habit pattern
-    const target: number = Array.isArray(habit.schedule.pattern)
-      ? 1 // daily habit on specific weekdays needs only 1 completion
-      : habit.schedule.pattern;
-
-    // if entry is completed (progress >= target), increment streak
-    if (newProgress >= target) {
-      await ctx.runMutation(
-        internal.utils.streakHelper.createOrIncrementStreak,
-        {
-          entryId: args.id,
-        },
-      );
-    }
+    // rebuild streaks for this habit whenever progress changes
+    await ctx.runMutation(internal.utils.streakHelper.rebuildAllStreaks, {
+      habitId: entry.habitId,
+    });
   },
 });
 
@@ -108,25 +95,12 @@ export const resetHabitEntryProgress = mutation({
       progress: 0,
     });
 
-    // decrement streak length when resetting
-    // but do not break the streak
+    // rebuild streaks for this habit after resetting progress
     const habit = await ctx.db.get(entry.habitId);
     if (!habit) throw new ConvexError("Habit not found");
 
-    const activeStreak = await ctx.db
-      .query("streaks")
-      .withIndex("by_active_habit", (q) =>
-        q.eq("habitId", habit._id).eq("active", true),
-      )
-      .first();
-
-    // check if this entry is part of the active streak
-    if (activeStreak && entry.date === activeStreak.endDate) {
-      // decrement but keep the streak active
-      await ctx.db.patch(activeStreak._id, {
-        length: Math.max(0, activeStreak.length - 1),
-        endDate: entry.date,
-      });
-    }
+    await ctx.runMutation(internal.utils.streakHelper.rebuildAllStreaks, {
+      habitId: habit._id,
+    });
   },
 });

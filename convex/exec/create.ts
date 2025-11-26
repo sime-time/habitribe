@@ -164,7 +164,7 @@ export const addMissingEntries = mutation({
               habit.schedule.pattern.includes(args.weekday));
 
           if (!entry && shouldExist) {
-            const entryId = await ctx.db.insert("habitEntries", {
+            await ctx.db.insert("habitEntries", {
               habitId: habit._id,
               userId: userId,
               date: args.date,
@@ -172,11 +172,13 @@ export const addMissingEntries = mutation({
             });
             created++;
 
-            // check if we need to break the streak
-            await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
-              entryId,
-              date: args.date,
-            });
+            // rebuild streaks for this habit
+            await ctx.runMutation(
+              internal.utils.streakHelper.rebuildAllStreaks,
+              {
+                habitId: habit._id,
+              },
+            );
           }
           break;
         }
@@ -185,7 +187,7 @@ export const addMissingEntries = mutation({
           const weekEntry = weeklyEntryMap.get(habit._id);
           if (!weekEntry) {
             // create habit entry on the current week's start date (monday)
-            const entryId = await ctx.db.insert("habitEntries", {
+            await ctx.db.insert("habitEntries", {
               habitId: habit._id,
               userId: userId,
               date: args.bounds.weekStart,
@@ -193,11 +195,13 @@ export const addMissingEntries = mutation({
             });
             created++;
 
-            // check if we need to break the streak
-            await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
-              entryId,
-              date: args.bounds.weekStart,
-            });
+            // rebuild streaks for this habit
+            await ctx.runMutation(
+              internal.utils.streakHelper.rebuildAllStreaks,
+              {
+                habitId: habit._id,
+              },
+            );
           }
           break;
         }
@@ -205,7 +209,7 @@ export const addMissingEntries = mutation({
           // check if today is in a month that already has an entry
           const monthEntry = monthlyEntryMap.get(habit._id);
           if (!monthEntry) {
-            const entryId = await ctx.db.insert("habitEntries", {
+            await ctx.db.insert("habitEntries", {
               habitId: habit._id,
               userId: userId,
               date: args.bounds.monthStart,
@@ -213,11 +217,13 @@ export const addMissingEntries = mutation({
             });
             created++;
 
-            // check if we need to break the streak
-            await ctx.runMutation(internal.utils.streakHelper.checkStreak, {
-              entryId,
-              date: args.bounds.monthStart,
-            });
+            // rebuild streaks for this habit
+            await ctx.runMutation(
+              internal.utils.streakHelper.rebuildAllStreaks,
+              {
+                habitId: habit._id,
+              },
+            );
           }
           break;
         }
@@ -260,21 +266,10 @@ export const addProof = mutation({
 
     const habit = await ctx.db.get(entry.habitId);
     if (habit) {
-      // determine target goal based on habit pattern
-      const target: number = Array.isArray(habit.schedule.pattern)
-        ? 1 // daily habit on specific weekdays needs only 1 completion
-        : habit.schedule.pattern;
-
-      // if entry is completed (progress >= target), create or update streak
-      // do not increment streak if newProgress goes past the target
-      if (newProgress === target) {
-        await ctx.runMutation(
-          internal.utils.streakHelper.createOrIncrementStreak,
-          {
-            entryId: args.habitEntryId,
-          },
-        );
-      }
+      // rebuild streaks for this habit whenever progress changes
+      await ctx.runMutation(internal.utils.streakHelper.rebuildAllStreaks, {
+        habitId: habit._id,
+      });
     }
 
     console.log(`inserted proof: ${proofId}`);

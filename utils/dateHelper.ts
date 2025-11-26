@@ -1,3 +1,5 @@
+import type { Frequency } from "./habitLabelHelper";
+
 /**
  * Parse a date string (YYYY-MM-DD) as local time, not UTC
  * @param dateString - YYYY-MM-DD format
@@ -61,6 +63,24 @@ export function getWeekMonthBounds(date: Date) {
   const { start: weekStart, end: weekEnd } = getWeekBounds(date);
   const { start: monthStart, end: monthEnd } = getMonthBounds(date);
   return { weekStart, weekEnd, monthStart, monthEnd };
+}
+
+export function calculateStartDate(frequency: Frequency) {
+  switch (frequency) {
+    case "weekly": {
+      const today = parseLocalDate(getTodayDateString());
+      const { start } = getWeekBounds(today);
+      return start;
+    }
+    case "monthly": {
+      const today = parseLocalDate(getTodayDateString());
+      const { start } = getMonthBounds(today);
+      return start;
+    }
+    default: {
+      return getTodayDateString();
+    }
+  }
 }
 
 /**
