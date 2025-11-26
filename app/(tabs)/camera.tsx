@@ -1,5 +1,7 @@
+import { useQuery } from "convex/react";
 import { CameraView } from "expo-camera";
-import { useRef } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useRef } from "react";
 import { StatusBar, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { spacing } from "@/assets/styles/token.styles";
@@ -8,12 +10,28 @@ import CameraMainRow from "@/components/camera/CameraMainRow";
 import CameraSelectRow from "@/components/camera/CameraSelectRow";
 import CameraTools from "@/components/camera/CameraTools";
 import PhotoView from "@/components/views/PhotoView";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useCameraSettings } from "@/stores/cameraSettingsStore";
+import { useHabitSelectStore } from "@/stores/habitSelectStore";
 
 export default function CameraScreen() {
   const { colors } = useTheme();
   const cameraRef = useRef<CameraView>(null);
+
+  const { habitId } = useLocalSearchParams<{ habitId?: string }>();
+  const habit = useQuery(
+    api.exec.read.getHabit,
+    habitId ? { habitId: habitId as Id<"habits"> } : "skip",
+  );
+  const selectHabit = useHabitSelectStore((state) => state.selectHabit);
+
+  useEffect(() => {
+    if (habit) {
+      selectHabit(habit);
+    }
+  }, [habit, selectHabit]);
 
   const zoom = useCameraSettings((state) => state.zoom);
   const mode = useCameraSettings((state) => state.mode);

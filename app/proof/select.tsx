@@ -153,7 +153,9 @@ export default function ProofSelect() {
               </View>
 
               <TouchableOpacity
-                onPress={() => router.replace("/(tabs)/camera")}
+                onPress={() =>
+                  router.replace(`/(tabs)/camera?habitId=${habitId}`)
+                }
               >
                 <LinearGradient
                   colors={colors.gradients.primary}
