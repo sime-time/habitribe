@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { formatLocalDate, getTodayDateString } from "@/utils/dateHelper";
 
-const DEFAULT_NUM_DAYS = 20 * 7; // 20 weeks
+const DEFAULT_NUM_DAYS = 180; // 6 months
 
 interface HabitChartStore {
   endDate: string;

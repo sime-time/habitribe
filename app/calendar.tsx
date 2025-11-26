@@ -26,7 +26,10 @@ import useTheme from "@/hooks/useTheme";
 export default function CalendarScreen() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
-  const { habitId } = useLocalSearchParams<{ habitId: string }>();
+  const { habitId, entryId } = useLocalSearchParams<{
+    habitId: string;
+    entryId: string;
+  }>();
 
   const { habit, proofDateUrl, longestStreak, currentStreak } =
     useQuery(api.exec.read.getHabitWithStreaksAndProofs, {
@@ -38,7 +41,9 @@ export default function CalendarScreen() {
     : undefined;
 
   const handleCalendarDayPress = (dateId: string) => {
-    router.navigate(`/proof/select?habitId=${habit?._id}&date=${dateId}`);
+    router.navigate(
+      `/proof/select?habitId=${habit?._id}&date=${dateId}&entryId=${entryId}`,
+    );
   };
 
   const flingGesture = Gesture.Fling()

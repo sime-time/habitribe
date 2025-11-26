@@ -20,18 +20,27 @@ export default function CameraScreen() {
   const { colors } = useTheme();
   const cameraRef = useRef<CameraView>(null);
 
-  const { habitId } = useLocalSearchParams<{ habitId?: string }>();
+  const { habitId, entryId } = useLocalSearchParams<{
+    habitId?: string;
+    entryId?: string;
+  }>();
   const habit = useQuery(
     api.exec.read.getHabit,
     habitId ? { habitId: habitId as Id<"habits"> } : "skip",
   );
+  const entry = useQuery(
+    api.exec.read.getHabitEntry,
+    entryId ? { id: entryId as Id<"habitEntries"> } : "skip",
+  );
   const selectHabit = useHabitSelectStore((state) => state.selectHabit);
+  const selectEntry = useHabitSelectStore((state) => state.selectEntry);
 
   useEffect(() => {
-    if (habit) {
+    if (habit && entry) {
       selectHabit(habit);
+      selectEntry(entry);
     }
-  }, [habit, selectHabit]);
+  }, [habit, entry, selectHabit, selectEntry]);
 
   const zoom = useCameraSettings((state) => state.zoom);
   const mode = useCameraSettings((state) => state.mode);

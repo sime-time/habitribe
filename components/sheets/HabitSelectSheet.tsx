@@ -100,6 +100,8 @@ export default function HabitSelectSheet({
       </View>
       <View style={[s.gap1]}>
         <Text
+          numberOfLines={1}
+          ellipsizeMode={"tail"}
           style={[
             s.textBase,
             c.textForeground,
@@ -111,8 +113,11 @@ export default function HabitSelectSheet({
         >
           {item.habit.name}
         </Text>
-        <Text style={[s.textXs, c.textMuted]}>
-          {item.habit.description}{" "}
+        <Text
+          numberOfLines={1}
+          ellipsizeMode={"tail"}
+          style={[s.textXs, c.textMuted]}
+        >
           {getScheduleLabel(
             item.habit.schedule.frequency as Frequency,
             item.habit.schedule.pattern,

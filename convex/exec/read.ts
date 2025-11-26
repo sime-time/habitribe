@@ -23,16 +23,10 @@ export const getHabit = query({
 
 export const getHabitEntry = query({
   args: {
-    habitId: v.id("habits"),
-    date: v.string(),
+    id: v.id("habitEntries"),
   },
   handler: async (ctx, args) => {
-    const entry = await ctx.db
-      .query("habitEntries")
-      .withIndex("by_habit_date", (q) =>
-        q.eq("habitId", args.habitId).eq("date", args.date),
-      )
-      .first();
+    const entry = await ctx.db.get(args.id);
     return entry;
   },
 });

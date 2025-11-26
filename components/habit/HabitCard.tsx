@@ -37,7 +37,11 @@ export default function HabitCard({
         <TouchableOpacity
           style={[c.bgWarning, s.p2, s.roundedMd]}
           onPress={() => {
-            router.navigate(`/calendar?habitId=${habit._id}`);
+            if (entry) {
+              router.navigate(
+                `/calendar?habitId=${habit._id}&entryId=${entry._id}`,
+              );
+            }
           }}
         >
           <SymbolView
@@ -97,9 +101,13 @@ export default function HabitCard({
             >
               <Emoji name={habit.icon} size={20} />
             </View>
-            <View style={[s.flexCol, s.gap1]}>
+            <View style={[s.flexCol, s.gap1, { maxWidth: "75%" }]}>
               <View style={[s.flexRow, s.gap1, s.itemsCenter]}>
-                <Text style={[s.textBase, s.fontMedium, c.textForeground]}>
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode={"tail"}
+                  style={[s.textBase, s.fontMedium, c.textForeground]}
+                >
                   {habit.name}
                 </Text>
                 {streak && streak.length > 1 && (

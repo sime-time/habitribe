@@ -2,7 +2,10 @@ import { z } from "zod";
 import { Frequency } from "@/utils/habitLabelHelper";
 
 export const HabitFormSchema = z.object({
-  name: z.string().min(1, "Habit name is required"),
+  name: z
+    .string()
+    .min(1, "Habit name is required")
+    .max(20, "Habit name must be less than 20 characters"),
   description: z.string().min(2, "Habit description is required"),
   icon: z.string().optional(),
   color: z.string().optional(),

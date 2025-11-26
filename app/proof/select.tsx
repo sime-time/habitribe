@@ -28,9 +28,10 @@ export default function ProofSelect() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
-  const { habitId, date } = useLocalSearchParams<{
+  const { habitId, date, entryId } = useLocalSearchParams<{
     habitId: string;
     date: string;
+    entryId: string;
   }>();
 
   const proofs = useQuery(api.exec.read.getProofs, {
@@ -61,6 +62,10 @@ export default function ProofSelect() {
   };
 
   const deleteProof = useMutation(api.exec.delete.deleteProof);
+
+  const handleAddProof = () => {
+    router.replace(`/(tabs)/camera?habitId=${habitId}&entryId=${entryId}`);
+  };
 
   const handleDelete = async (proofId: Id<"proofs">) => {
     Alert.alert(
@@ -152,11 +157,7 @@ export default function ProofSelect() {
                 <Ionicons name="camera" size={48} color={colors.muted} />
               </View>
 
-              <TouchableOpacity
-                onPress={() =>
-                  router.replace(`/(tabs)/camera?habitId=${habitId}`)
-                }
-              >
+              <TouchableOpacity onPress={handleAddProof}>
                 <LinearGradient
                   colors={colors.gradients.primary}
                   style={s.button}

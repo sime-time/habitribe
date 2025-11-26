@@ -54,7 +54,7 @@ function HabitCheckbox({ habit, entry, proofMethodType }: HabitCheckboxProps) {
     if (!entry) return;
     if (proofMethodType === "camera") {
       return router.navigate(
-        `/proof/select?habitId=${habit._id}&date=${currentDate}`,
+        `/proof/select?habitId=${habit._id}&date=${currentDate}&entryId=${entry._id}`,
       );
     }
 
