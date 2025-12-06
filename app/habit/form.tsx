@@ -29,6 +29,7 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useHabitFormStore } from "@/stores/habitFormStore";
+import { useTribeStore } from "@/stores/tribeStore";
 import { calculateStartDate } from "@/utils/dateHelper";
 import type { Frequency } from "@/utils/habitLabelHelper";
 import {
@@ -46,7 +47,12 @@ export default function HabitForm() {
   // functionality is determined by a query parameter for a habit id.
   // "edit" mode when id is defined,
   // "create" mode when id is undefined
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { id, tribeHabit } = useLocalSearchParams<{
+    id?: string;
+    tribeHabit?: string;
+  }>();
+  const isTribeHabit = tribeHabit === "true";
+
   const navigation = useNavigation();
 
   // set isEditMode in store
@@ -72,6 +78,9 @@ export default function HabitForm() {
   const removeReminder = useHabitFormStore((state) => state.removeReminder);
   const toggleReminders = useHabitFormStore((state) => state.toggleReminders);
   const setReminders = useHabitFormStore((state) => state.setReminders);
+
+  // tribe store to add habits to tribe
+  const addHabitToTribe = useTribeStore((state) => state.addHabit);
 
   // database mutations
   const createHabit = useMutation(api.exec.create.addHabit);
@@ -280,9 +289,20 @@ export default function HabitForm() {
     }
   };
 
+  // add a new habit to the tribe
+  const tribeSubmit = async () => {
+    // don't create a new habit in the database,
+    // instead add the habit data to a list inside the tribe store
+    const validHabit = HabitFormSchema.parse(habitForm);
+    addHabitToTribe(validHabit);
+  };
+
   const handleSubmit = async () => {
     try {
-      if (id) {
+      if (isTribeHabit) {
+        await tribeSubmit();
+        return router.back();
+      } else if (id && !isTribeHabit) {
         await updateSubmit(id);
       } else {
         await createSubmit();
@@ -391,34 +411,37 @@ export default function HabitForm() {
                   </View>
                 </TouchableOpacity>
 
-                <View style={[s.divider, c.bgMuted]} />
-
                 {/* REMINDERS */}
-                <View
-                  style={[
-                    s.flex1,
-                    s.flexRow,
-                    s.justifyBetween,
-                    s.itemsCenter,
-                    s.h13,
-                  ]}
-                >
-                  <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
-                    Reminders
-                  </Text>
-                  <View>
-                    <Switch
-                      value={remindersEnabled}
-                      onChange={() => toggleReminders()}
-                      thumbColor={colors.primaryForeground}
-                      trackColor={{
-                        false: colors.border,
-                        true: colors.primary,
-                      }}
-                      ios_backgroundColor={colors.border}
-                    />
-                  </View>
-                </View>
+                {!isTribeHabit && (
+                  <>
+                    <View style={[s.divider, c.bgMuted]} />
+                    <View
+                      style={[
+                        s.flex1,
+                        s.flexRow,
+                        s.justifyBetween,
+                        s.itemsCenter,
+                        s.h13,
+                      ]}
+                    >
+                      <Text style={[s.textLg, s.fontMedium, c.textForeground]}>
+                        Reminders
+                      </Text>
+                      <View>
+                        <Switch
+                          value={remindersEnabled}
+                          onChange={() => toggleReminders()}
+                          thumbColor={colors.primaryForeground}
+                          trackColor={{
+                            false: colors.border,
+                            true: colors.primary,
+                          }}
+                          ios_backgroundColor={colors.border}
+                        />
+                      </View>
+                    </View>
+                  </>
+                )}
 
                 {remindersEnabled && (
                   <>

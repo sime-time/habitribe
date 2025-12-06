@@ -13,6 +13,10 @@ import {
 export const s = {
   // Layout & Flexbox
   flex1: { flex: 1 } as ViewStyle,
+  flex2: { flex: 2 } as ViewStyle,
+  flex3: { flex: 3 } as ViewStyle,
+  flex4: { flex: 4 } as ViewStyle,
+  flex5: { flex: 5 } as ViewStyle,
   flexRow: { flexDirection: "row" } as ViewStyle,
   flexCol: { flexDirection: "column" } as ViewStyle,
   flexWrap: { flexWrap: "wrap" } as ViewStyle,
@@ -353,6 +357,15 @@ export const s = {
   textCenter: { textAlign: "center" } as TextStyle,
   textRight: { textAlign: "right" } as TextStyle,
 
+  // Line Height
+  leadingNone: { lineHeight: 1 } as TextStyle,
+  leading1: { lineHeight: spacing[1] } as TextStyle,
+  leading2: { lineHeight: spacing[2] } as TextStyle,
+  leading3: { lineHeight: spacing[3] } as TextStyle,
+  leading4: { lineHeight: spacing[4] } as TextStyle,
+  leading5: { lineHeight: spacing[5] } as TextStyle,
+  leading6: { lineHeight: spacing[6] } as TextStyle,
+
   // Position
   absolute: { position: "absolute" } as ViewStyle,
   relative: { position: "relative" } as ViewStyle,
@@ -419,7 +432,7 @@ export const s = {
     borderWidth: 2,
     borderRadius: borderRadius.md,
     paddingVertical: spacing[4],
-    paddingHorizontal: spacing[6],
+    paddingHorizontal: spacing[5],
   },
 } as const;
 

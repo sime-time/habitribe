@@ -27,8 +27,10 @@ export interface ColorScheme {
   gradients: {
     background: [string, string];
     primary: [string, string];
+    secondary: [string, string];
     muted: [string, string];
     success: [string, string];
+    warning: [string, string];
   };
 
   statusBarStyle: "light-content" | "dark-content";
@@ -40,8 +42,8 @@ export const lightColors: ColorScheme = {
   card: "#FFFFFF",
   primary: "#7777ff",
   primaryForeground: "#FFFFFF",
-  secondary: "#dedeff",
-  secondaryForeground: "#18181a",
+  secondary: "#EAEAFE",
+  secondaryForeground: "#5555dd",
   muted: "#979797",
   border: "#dee1e6",
   success: "#10B981",
@@ -52,6 +54,8 @@ export const lightColors: ColorScheme = {
     primary: ["#7777ff", "#5555dd"],
     muted: ["#dee1e6", "#e8ecf1"],
     success: ["#10B981", "#059669"],
+    secondary: ["#EAEAFE", "#D1D1F5"],
+    warning: ["#F59E0B", "#fcd34d"],
   },
   statusBarStyle: "dark-content" as const,
 };
@@ -62,8 +66,8 @@ export const darkColors: ColorScheme = {
   card: "#1e2128",
   primary: "#7777ff",
   primaryForeground: "#FFFFFF",
-  secondary: "#3a3a5a",
-  secondaryForeground: "#e4e4e7",
+  secondary: "#F3F3FF",
+  secondaryForeground: "#5555dd",
   muted: "#98989b",
   border: "#323743",
   success: "#34D399",
@@ -74,6 +78,8 @@ export const darkColors: ColorScheme = {
     primary: ["#7777ff", "#5555dd"],
     muted: ["#323743", "#3d434d"],
     success: ["#34D399", "#10B981"],
+    secondary: ["#EAEAFE", "#D1D1F5"],
+    warning: ["#FBBF24", "#facc15"],
   },
   statusBarStyle: "light-content" as const,
 };

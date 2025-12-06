@@ -49,6 +49,9 @@ export const createColorStyles = (colors: ColorScheme) =>
     borderDefault: { borderColor: colors.border } as ViewStyle,
     borderPrimary: { borderColor: colors.primary } as ViewStyle,
     borderSecondary: { borderColor: colors.secondary } as ViewStyle,
+    borderSecondaryForeground: {
+      borderColor: colors.secondaryForeground,
+    } as ViewStyle,
     borderMuted: { borderColor: colors.muted } as ViewStyle,
     borderForeground: { borderColor: colors.foreground } as ViewStyle,
     borderSuccess: { borderColor: colors.success } as ViewStyle,

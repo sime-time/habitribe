@@ -114,8 +114,8 @@ export function aggregateWeekValues(weeks: Activity[][]): { value: number }[] {
 export function generateMonthRange(start: string, end: string): string[] {
   const months: string[] = [];
 
-  const startDate = new Date(start);
-  const endDate = new Date(end);
+  const startDate = parseLocalDate(start);
+  const endDate = parseLocalDate(end);
 
   const currentDate = new Date(
     startDate.getFullYear(),

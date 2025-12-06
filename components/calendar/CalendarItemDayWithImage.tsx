@@ -75,7 +75,10 @@ export function CalendarItemDayWithImage({
             container: {
               backgroundColor: "transparent",
             },
-            content: { color: "white", fontWeight: fontWeight.semibold },
+            content: {
+              color: "white",
+              fontWeight: fontWeight.semibold,
+            },
           }),
         }}
       >

@@ -221,7 +221,7 @@ export default function SettingsScreen() {
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1} edges={["top"]}>
         {/* HEADER */}
-        <Header title="Settings" />
+        <Header title="Settings" options={true} />
 
         {/* CONTENT */}
         <ScrollView

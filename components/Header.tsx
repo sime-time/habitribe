@@ -7,32 +7,35 @@ import useTheme from "@/hooks/useTheme";
 
 interface HeaderProps {
   title: string;
+  options?: boolean;
 }
-export default function Header({ title }: HeaderProps) {
+export default function Header({ title, options }: HeaderProps) {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
   return (
     <View style={[s.p4, s.pt8, s.flexRow, s.justifyBetween, s.itemsCenter]}>
       <Text style={[s.text3xl, s.fontBold, c.textForeground]}>{title}</Text>
-      <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
-        <TouchableOpacity
-          onPress={() => Alert.alert("Coming Soon", "Notifications")}
-        >
-          <Ionicons
-            name="notifications-outline"
-            size={24}
-            color={colors.foreground}
+      {options && (
+        <View style={[s.flexRow, s.itemsCenter, s.gap4]}>
+          <TouchableOpacity
+            onPress={() => Alert.alert("Coming Soon", "Notifications")}
+          >
+            <Ionicons
+              name="notifications-outline"
+              size={24}
+              color={colors.foreground}
+            />
+          </TouchableOpacity>
+          <Image
+            source={{ uri: "https://i.pravatar.cc/150?img=3" }}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+            }}
           />
-        </TouchableOpacity>
-        <Image
-          source={{ uri: "https://i.pravatar.cc/150?img=3" }}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-          }}
-        />
-      </View>
+        </View>
+      )}
     </View>
   );
 }

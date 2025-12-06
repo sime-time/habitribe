@@ -23,6 +23,7 @@ import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import type { ProofWithUrl } from "@/types/HabitTypes";
+import { getTodayDateString } from "@/utils/dateHelper";
 
 export default function ProofSelect() {
   const { colors } = useTheme();
@@ -64,7 +65,26 @@ export default function ProofSelect() {
   const deleteProof = useMutation(api.exec.delete.deleteProof);
 
   const handleAddProof = () => {
-    router.replace(`/(tabs)/camera?habitId=${habitId}&entryId=${entryId}`);
+    if (getTodayDateString() !== date) {
+      Alert.alert(
+        "Current Proof",
+        "You may only add proof for today, not any day in the past.",
+        [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Understood",
+            style: "default",
+            onPress: () => {
+              router.replace(
+                `/(tabs)/camera?habitId=${habitId}&entryId=${entryId}`,
+              );
+            },
+          },
+        ],
+      );
+    } else {
+      router.replace(`/(tabs)/camera?habitId=${habitId}&entryId=${entryId}`);
+    }
   };
 
   const handleDelete = async (proofId: Id<"proofs">) => {
