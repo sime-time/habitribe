@@ -20,7 +20,7 @@ export default function TribeInviteCode() {
   const c = createColorStyles(colors);
 
   const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, _setLoading] = useState(false);
 
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
