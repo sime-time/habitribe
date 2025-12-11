@@ -21,7 +21,6 @@ import type * as utils_dateValidator from "../utils/dateValidator.js";
 import type * as utils_emailHelper from "../utils/emailHelper.js";
 import type * as utils_entryHelper from "../utils/entryHelper.js";
 import type * as utils_inviteCodeHelper from "../utils/inviteCodeHelper.js";
-import type * as utils_migrationHelper from "../utils/migrationHelper.js";
 import type * as utils_streakCalculator from "../utils/streakCalculator.js";
 import type * as utils_streakHelper from "../utils/streakHelper.js";
 
@@ -53,7 +52,6 @@ declare const fullApi: ApiFromModules<{
   "utils/emailHelper": typeof utils_emailHelper;
   "utils/entryHelper": typeof utils_entryHelper;
   "utils/inviteCodeHelper": typeof utils_inviteCodeHelper;
-  "utils/migrationHelper": typeof utils_migrationHelper;
   "utils/streakCalculator": typeof utils_streakCalculator;
   "utils/streakHelper": typeof utils_streakHelper;
 }>;

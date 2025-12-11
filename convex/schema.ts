@@ -83,4 +83,44 @@ export default defineSchema({
     .index("by_user_habit", ["userId", "habitId"])
     .index("by_habit_date", ["habitId", "startDate"])
     .index("by_active_habit", ["habitId", "active"]),
+
+  tribes: defineTable({
+    name: v.string(),
+    adminId: v.id("users"),
+    private: v.boolean(), // true = invite-only, false = public
+    inviteCode: v.string(), // 6-char unique alphanumeric
+  })
+    .index("by_admin", ["adminId"])
+    .index("by_invite_code", ["inviteCode"])
+    .index("by_private", ["private"]),
+
+  tribeMembers: defineTable({
+    tribeId: v.id("tribes"),
+    userId: v.id("users"),
+    role: v.optional(v.union(v.literal("admin"), v.literal("member"))),
+    // createdAt is when the member joined
+  })
+    .index("by_tribe", ["tribeId"])
+    .index("by_user", ["userId"])
+    .index("by_tribe_user", ["tribeId", "userId"]),
+
+  // Store habit templates in tribeHabits (not references)
+  // so members can modify their personal copies
+  // without affecting the tribe template.
+  tribeHabits: defineTable({
+    tribeId: v.id("tribes"),
+    name: v.string(),
+    description: v.optional(v.string()),
+    icon: v.optional(v.string()),
+    color: v.optional(v.string()),
+    proofMethodId: v.id("proofMethods"),
+    schedule: v.object({
+      frequency: v.union(
+        v.literal("daily"),
+        v.literal("weekly"),
+        v.literal("monthly"),
+      ),
+      pattern: v.union(v.number(), v.array(v.number())),
+    }),
+  }).index("by_tribe", ["tribeId"]),
 });
