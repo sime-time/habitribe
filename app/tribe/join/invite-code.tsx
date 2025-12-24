@@ -30,7 +30,7 @@ export default function TribeInviteCode() {
         {/* VERIFY OTP */}
         <View style={[s.flex1, s.gap6, s.px4]}>
           <Text style={[s.textBase, c.textForeground]}>
-            Input the tribe's unique invite code.
+            Insert the tribe's unique invite code.
           </Text>
           <View style={[s.gap4]}>
             <View style={[s.input, c.borderDefault]}>

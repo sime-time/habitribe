@@ -35,7 +35,7 @@ export default function TribeName() {
               </Text>
             </View>
             <Text style={[s.fontNormal, s.textSm, c.textForeground]}>
-              Have an invite code? Join a private tribe directly.
+              Have an invite code? Join a tribe directly.
             </Text>
             <TouchableOpacity
               onPress={() => router.navigate("/tribe/join/invite-code")}

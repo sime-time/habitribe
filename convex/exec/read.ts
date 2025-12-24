@@ -289,3 +289,13 @@ export const getHabitWithStreaksAndProofs = query({
     return { habit, proofDateUrl, currentStreak, longestStreak };
   },
 });
+
+export const getPublicTribes = query({
+  handler: async (ctx) => {
+    const tribes = await ctx.db
+      .query("tribes")
+      .withIndex("by_private", (q) => q.eq("private", false))
+      .collect();
+    return tribes;
+  },
+});

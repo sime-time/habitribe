@@ -21,7 +21,9 @@ export default function TribeName() {
       setError("");
       router.navigate("/tribe/create/visibility");
     } else {
-      setError("Your tribe must have a name less than 20 characters.");
+      setError(
+        "Your tribe must have a name, and it must be less than 20 characters long.",
+      );
     }
   };
 

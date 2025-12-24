@@ -50,7 +50,7 @@ export default function TribeHabits() {
 
     Toast.show({
       type: "success",
-      text1: "New tribe created",
+      text1: "New Tribe Created",
     });
 
     router.navigate(`/tribe/create/share?inviteCode=${tribe.inviteCode}`);
