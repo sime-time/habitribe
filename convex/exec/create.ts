@@ -276,3 +276,78 @@ export const addProof = mutation({
     return proofId;
   },
 });
+
+export const addTribe = mutation({
+  args: {
+    name: v.string(),
+    private: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    // the creator of this tribe is the admin
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("No user ID found");
+
+    // generate inviteCode
+    const inviteCode: string = await ctx.runQuery(
+      internal.utils.inviteCodeHelper.generateUniqueInviteCode,
+    );
+
+    const id = await ctx.db.insert("tribes", {
+      name: args.name,
+      adminId: userId,
+      private: args.private,
+      inviteCode,
+    });
+
+    return { id, inviteCode, adminId: userId };
+  },
+});
+
+export const addTribeMember = mutation({
+  args: {
+    tribeId: v.id("tribes"),
+    userId: v.id("users"),
+    role: v.union(v.literal("admin"), v.literal("member")),
+  },
+  handler: async (ctx, args) => {
+    const tribeMemberId = await ctx.db.insert("tribeMembers", {
+      tribeId: args.tribeId,
+      userId: args.userId,
+      role: args.role,
+    });
+
+    return tribeMemberId;
+  },
+});
+
+export const addTribeHabit = mutation({
+  args: {
+    tribeId: v.id("tribes"),
+    name: v.string(),
+    description: v.optional(v.string()),
+    icon: v.optional(v.string()),
+    color: v.optional(v.string()),
+    proofMethodId: v.id("proofMethods"),
+    schedule: v.object({
+      frequency: v.union(
+        v.literal("daily"),
+        v.literal("weekly"),
+        v.literal("monthly"),
+      ),
+      pattern: v.union(v.number(), v.array(v.number())),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const tribeHabitId = await ctx.db.insert("tribeHabits", {
+      tribeId: args.tribeId,
+      name: args.name,
+      description: args.description,
+      icon: args.icon,
+      color: args.color,
+      proofMethodId: args.proofMethodId,
+      schedule: args.schedule,
+    });
+
+    return tribeHabitId;
+  },
+});

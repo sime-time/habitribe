@@ -1,13 +1,13 @@
 import { ConvexError } from "convex/values";
-import { internalMutation } from "../_generated/server";
+import { internalQuery } from "../_generated/server";
 
 /**
  * Generate a unique 6-character alphanumeric invite code
  * Excludes ambiguous characters: 0, O, 1, I, l
  * Collision probability: 32^6 = ~1 billion combinations
  */
-export const generateUniqueInviteCode = internalMutation({
-  handler: async (ctx) => {
+export const generateUniqueInviteCode = internalQuery({
+  handler: async (ctx): Promise<string> => {
     const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; // 32 chars
     const maxAttempts = 5;
 

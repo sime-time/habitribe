@@ -1,12 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useMutation } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import Header from "@/components/Header";
 import TribeHabit from "@/components/tribe/TribeHabit";
+import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
 import { useTribeStore } from "@/stores/tribeStore";
 
@@ -14,7 +18,43 @@ export default function TribeHabits() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
 
+  const name = useTribeStore((state) => state.name);
+  const isPrivate = useTribeStore((state) => state.private);
   const habits = useTribeStore((state) => state.habits);
+
+  const createTribe = useMutation(api.exec.create.addTribe);
+  const createTribeMember = useMutation(api.exec.create.addTribeMember);
+  const createTribeHabit = useMutation(api.exec.create.addTribeHabit);
+
+  const handleCreateTribe = async () => {
+    const tribe = await createTribe({
+      name: name,
+      private: isPrivate,
+    });
+    await createTribeMember({
+      tribeId: tribe.id,
+      userId: tribe.adminId,
+      role: "admin",
+    });
+    for (const data of habits) {
+      await createTribeHabit({
+        tribeId: tribe.id,
+        name: data.habit.name,
+        description: data.habit.description,
+        icon: data.habit.icon,
+        color: data.habit.color,
+        proofMethodId: data.habit.proofMethodId as Id<"proofMethods">,
+        schedule: data.habit.schedule,
+      });
+    }
+
+    Toast.show({
+      type: "success",
+      text1: "New tribe created",
+    });
+
+    router.navigate(`/tribe/create/share?inviteCode=${tribe.inviteCode}`);
+  };
 
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
@@ -64,9 +104,7 @@ export default function TribeHabits() {
           </View>
 
           <View style={s.gap4}>
-            <TouchableOpacity
-              onPress={() => router.navigate("/tribe/create/share")}
-            >
+            <TouchableOpacity onPress={handleCreateTribe}>
               <LinearGradient
                 colors={colors.gradients.primary}
                 style={s.button}

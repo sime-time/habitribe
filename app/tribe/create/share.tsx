@@ -1,8 +1,11 @@
+import * as Clipboard from "expo-clipboard";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
-import { ClipboardCopy, Copy, Share, Share2 } from "lucide-react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { ClipboardCopy, Copy, CopyCheck } from "lucide-react-native";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { createColorStyles } from "@/assets/styles/color.styles";
 import { s } from "@/assets/styles/utility.styles";
 import Header from "@/components/Header";
@@ -11,7 +14,20 @@ import useTheme from "@/hooks/useTheme";
 export default function TribeShare() {
   const { colors } = useTheme();
   const c = createColorStyles(colors);
+  const { inviteCode } = useLocalSearchParams<{
+    inviteCode: string;
+  }>();
 
+  const [copied, setCopied] = useState(false);
+
+  const copyInviteCode = async () => {
+    await Clipboard.setStringAsync(inviteCode);
+    setCopied(true);
+    Toast.show({
+      type: "success",
+      text1: "Copied Invite Code",
+    });
+  };
   return (
     <LinearGradient colors={colors.gradients.background} style={s.flex1}>
       <SafeAreaView style={s.flex1}>
@@ -24,6 +40,7 @@ export default function TribeShare() {
             </Text>
 
             <TouchableOpacity
+              onPress={copyInviteCode}
               style={[
                 s.p4,
                 s.rounded,
@@ -38,8 +55,9 @@ export default function TribeShare() {
               <View style={[s.gap1, s.flex5]}>
                 <View style={[s.flexRow, s.gap2, s.itemsCenter]}>
                   <ClipboardCopy size={24} color={colors.primary} />
+
                   <Text style={[s.fontSemibold, s.textLg]}>
-                    Invite Code: 123456
+                    Invite Code: {inviteCode}
                   </Text>
                 </View>
                 <Text style={[s.textBase, c.textMuted, s.leading6]}>
@@ -48,36 +66,11 @@ export default function TribeShare() {
               </View>
 
               <View style={[s.flex1, s.itemsEnd, s.justifyCenter]}>
-                <Copy size={24} color={colors.muted} />
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                s.p4,
-                s.rounded,
-                c.bgCard,
-                s.border1,
-                c.borderDefault,
-                s.justifyBetween,
-                s.flexRow,
-                s.itemsCenter,
-              ]}
-            >
-              <View style={[s.gap1, s.flex5]}>
-                <View style={[s.flexRow, s.gap2, s.itemsCenter]}>
-                  <Share2 size={24} color={colors.primary} />
-                  <Text style={[s.fontSemibold, s.textLg]}>
-                    Send Invite Link
-                  </Text>
-                </View>
-                <Text style={[s.textBase, c.textMuted, s.leading6]}>
-                  Share a personalized deep link with your network
-                </Text>
-              </View>
-
-              <View style={[s.flex1, s.itemsEnd, s.justifyCenter]}>
-                <Share size={24} color={colors.muted} />
+                {copied ? (
+                  <CopyCheck size={24} color={colors.muted} />
+                ) : (
+                  <Copy size={24} color={colors.muted} />
+                )}
               </View>
             </TouchableOpacity>
           </View>
@@ -92,10 +85,6 @@ export default function TribeShare() {
                   Continue to Tribe
                 </Text>
               </LinearGradient>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => router.back()}>
-              <Text style={[s.textLg, c.textPrimary, s.textCenter]}>Back</Text>
             </TouchableOpacity>
           </View>
         </View>

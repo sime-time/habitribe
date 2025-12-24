@@ -104,9 +104,9 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_tribe_user", ["tribeId", "userId"]),
 
-  // Store habit templates in tribeHabits (not references)
+  // tribeHabits are habit templates (not references)
   // so members can modify their personal copies
-  // without affecting the tribe template.
+  // without affecting the tribe's template.
   tribeHabits: defineTable({
     tribeId: v.id("tribes"),
     name: v.string(),
